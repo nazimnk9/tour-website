@@ -160,8 +160,8 @@ export function ItineraryTimeline({ itinerary = DEFAULT_ITINERARY }: { itinerary
 
         {/* Right: Map Placeholder */}
         <div className="flex-1">
-          <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-lg overflow-hidden h-96 relative flex items-center justify-center">
-            <img src="/switzerland-map-with-tour-route.jpg" alt="Tour route map" className="w-full h-full object-cover" />
+          <div className="bg-gradient-to-br from-green-100 to-green-200 rounded-lg overflow-hidden h-147 relative flex items-center justify-center">
+            <img src="/switzerland-map-with-tour-route.jpg" alt="Tour route map" className="w-full h-full object-fixed" />
 
             {/* Map legend */}
             <div className="absolute bottom-4 left-4 bg-white rounded px-3 py-2 text-xs font-semibold flex gap-4">

@@ -474,7 +474,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
           {/* Left Column - Images and Details */}
           <div className="lg:col-span-2">
             {/* Image Gallery - Grid Layout */}
-            <div className="relative mb-6 rounded-lg overflow-auto bg-gray-200 grid grid-cols-3 gap-2 h-100">
+            <div className="relative mb-6 rounded-lg overflow-auto grid grid-cols-3 gap-2 h-100">
               {/* Main large image on the left */}
               <div className="col-span-2 rounded-lg overflow-auto">
                 <img

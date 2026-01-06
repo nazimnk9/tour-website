@@ -129,7 +129,7 @@ export function ItineraryTimeline({ itinerary = DEFAULT_ITINERARY }: { itinerary
         <div className="flex-1">
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-2 top-0 bottom-0 w-4 bg-orange-500"></div>
+            <div className="absolute left-2 top-2 bottom-3 w-4 bg-orange-500"></div>
 
             {/* Timeline items */}
             <div className="space-y-4 relative z-10">

@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link"
 import { Heart, ShoppingCart, Globe, User } from "lucide-react"
 
 export default function Navbar() {
@@ -10,13 +11,13 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="text-center">
-              <div className="text-sm font-bold text-orange-500 tracking-tight">
+              <Link className="text-sm font-bold text-orange-500 tracking-tight cursor-pointer block" href="/">
                 GET
                 <br />
                 YOUR
                 <br />
                 GUIDE
-              </div>
+              </Link>
             </div>
           </div>
 

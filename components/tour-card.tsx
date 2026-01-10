@@ -34,12 +34,12 @@ export default function TourCard({ tour }: { tour: Tour }) {
             className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
           />
 
-          {/* Badge - Originals by GetYourGuide */}
+          {/* Badge - Originals by City Rome Tickets */}
           <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded flex items-center gap-1 text-xs font-medium">
             <span className="w-4 h-4 bg-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
               G
             </span>
-            Originals by GetYourGuide
+            Originals by City Rome Tickets
           </div>
 
           {/* Wishlist Heart */}

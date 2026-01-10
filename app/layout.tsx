@@ -8,7 +8,7 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "GetYourGuide - Book Tours & Experiences",
+  title: "City Rome Tickets - Book Tours & Experiences",
   description: "Discover and book things to do worldwide",
   generator: "v0.app",
 }

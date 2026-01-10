@@ -37,7 +37,7 @@ export default function Navbar() {
 
             <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900">
               <Globe size={20} />
-              <span className="text-xs">EN/USD $</span>
+              <span className="text-xs">EN</span>
             </button>
 
             <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900">

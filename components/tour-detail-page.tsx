@@ -967,7 +967,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       Hollywood, Beverly Hills & Celebrity Homes Open-Air Bus Tour
                     </h3>
                     <p className="text-gray-600 text-sm mb-3">2 - 3.5 hours</p>
-                    <p className="text-gray-600 text-sm mb-3 text-xs">Certified by GetYourGuide</p>
+                    <p className="text-gray-600 text-sm mb-3 text-xs">Certified by City Rome Tickets</p>
 
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex text-yellow-400">

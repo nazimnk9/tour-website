@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="w-full bg-slate-900 text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Language & Currency Section */}
           <div className="space-y-6">
             <div>
@@ -15,13 +15,10 @@ export default function Footer() {
               <select className="w-full bg-white text-gray-900 px-4 py-2 rounded text-sm border-none font-medium">
                 <option>English (United States)</option>
                 <option>Español</option>
-                <option>Français</option>
-                <option>Deutsch</option>
-                <option>中文</option>
               </select>
             </div>
 
-            <div>
+            {/* <div>
               <h3 className="font-semibold mb-3 text-base">Currency</h3>
               <select className="w-full bg-white text-gray-900 px-4 py-2 rounded text-sm border-none font-medium">
                 <option>U.S. Dollar ($)</option>
@@ -30,11 +27,11 @@ export default function Footer() {
                 <option>Australian Dollar (A$)</option>
                 <option>Canadian Dollar (C$)</option>
               </select>
-            </div>
+            </div> */}
           </div>
 
           {/* Mobile Section */}
-          <div>
+          {/* <div>
             <h3 className="font-semibold mb-4 text-base">Mobile</h3>
             <div className="space-y-3">
               <a href="#" className="flex items-center gap-2 hover:opacity-75 transition">
@@ -52,7 +49,7 @@ export default function Footer() {
                 </div>
               </a>
             </div>
-          </div>
+          </div> */}
 
           {/* Support Section */}
           <div>
@@ -161,7 +158,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mb-8 pb-8 border-t border-slate-700 pt-8">
+        {/* <div className="mb-8 pb-8 border-t border-slate-700 pt-8">
           <h3 className="font-semibold mb-4 text-base">Ways You Can Pay</h3>
           <div className="flex flex-wrap gap-3 items-center">
             <img src="/paypal-logo.png" alt="PayPal" className="h-6" />
@@ -174,11 +171,11 @@ export default function Footer() {
             <img src="/apple-pay-logo.png" alt="Apple Pay" className="h-6" />
             <span className="text-gray-400 text-sm">+ more</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Bottom Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-4 border-t border-slate-700">
-          <p className="text-sm text-gray-300">© 2008 – 2026 GetYourGuide. Made in Zurich & Berlin.</p>
+          <p className="text-sm text-gray-300">© 2019 – 2026 City Rome Tickets. </p>
 
           <div className="flex gap-6">
             <a href="#" className="hover:text-blue-300 transition" aria-label="Facebook">

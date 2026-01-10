@@ -83,7 +83,7 @@ export default function DiscountModal() {
 
             {/* Disclaimer */}
             <p className="text-xs text-gray-600 text-center leading-relaxed">
-              You'll receive occasional promotional emails for GetYourGuide products. You can opt out at any time.
+              You'll receive occasional promotional emails for City Rome Tickets products. You can opt out at any time.
             </p>
           </div>
         </div>

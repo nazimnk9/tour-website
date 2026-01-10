@@ -8,12 +8,12 @@ export default function HeroCarousel() {
 
   const slides = [
     {
-      image: "/images/carousel_3.jpg",
+      image: "/images/carousel2.jpg",
       title: "Discover & book things to do",
       subtitle: "Find places and things to do",
     },
     {
-      image: "/images/carousel_2.jpg",
+      image: "/images/carousel1.jpg",
       title: "Discover & book things to do",
       subtitle: "Find places and things to do",
     },
@@ -39,17 +39,19 @@ export default function HeroCarousel() {
       {/* Slide */}
       <div className="relative w-full h-full">
         <img
-          src={slides[currentSlide].image || "/placeholder.svg"}
-          alt="Hero carousel"
-          className="w-full h-full object-cover"
-        />
+  src={slides[currentSlide].image || "/placeholder.svg"}
+  alt="Hero carousel"
+  className="w-full h-full object-cover blur-[3px] brightness-75"
+/>
+
 
         {/* Overlay */}
         {/* <div className="absolute inset-0 bg-opacity-40"></div> */}
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6 text-balance">Discover & book things to do</h1>
+          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6 text-balance ">Discover & book things to do</h1>
+
 
           <div className="w-full max-w-2xl">
             <div className="flex items-center bg-white rounded-full shadow-lg p-2">

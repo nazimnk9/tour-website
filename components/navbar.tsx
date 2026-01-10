@@ -12,11 +12,11 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <div className="text-center">
               <Link className="text-sm font-bold text-orange-500 tracking-tight cursor-pointer block" href="/">
-                GET
+                City
                 <br />
-                YOUR
+                Rome
                 <br />
-                GUIDE
+                Tickets
               </Link>
             </div>
           </div>

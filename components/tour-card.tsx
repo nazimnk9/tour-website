@@ -83,13 +83,13 @@ export default function TourCard({ tour }: { tour: Tour }) {
           )}
 
           {/* Rating and Reviews */}
-          <div className="flex items-center gap-2 mb-3">
+          {/* <div className="flex items-center gap-2 mb-3">
             <div className="flex items-center gap-1">
               <Star size={16} fill="#FCD34D" className="text-yellow-400" />
               <span className="font-semibold text-sm text-gray-900">{tour.rating}</span>
             </div>
             <span className="text-xs text-gray-600">({tour.reviews.toLocaleString()})</span>
-          </div>
+          </div> */}
 
           {/* Price */}
           <div className="flex items-baseline gap-2">

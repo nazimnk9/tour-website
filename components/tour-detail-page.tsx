@@ -435,7 +435,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
             {/* Rating and Reviews */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
+              {/* <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
@@ -447,20 +447,20 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <span className="font-semibold text-gray-900 text-sm">{tour.rating}</span>
               <span className="text-gray-600 text-sm">
                 <span className="underline">{tour.reviews.toLocaleString()} reviews</span>
-              </span>
+              </span> */}
               <span className="text-gray-600 text-sm">• Activity provider: One Day Tours</span>
             </div>
 
             {/* Action Buttons */}
             <div className="flex gap-2 ml-auto">
-              <button
+              {/* <button
                 onClick={() => setIsFavorite(!isFavorite)}
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded transition"
                 aria-label="Add to wishlist"
               >
                 <Heart size={20} className={isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"} />
                 <span className="text-gray-700 text-sm">Add to wishlist</span>
-              </button>
+              </button> */}
               <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded transition">
                 <Share2 size={20} className="text-gray-600" />
                 <span className="text-gray-700 text-sm">Share</span>
@@ -581,7 +581,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               </div>
 
               {/* Highlighted reviews from other travelers */}
-              <div>
+              {/* <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Highlighted reviews from other travelers</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                   <ReviewCard
@@ -599,14 +599,14 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     text="Ward was great - kept us informed about collection time on was friendly when we met him. We then picked Steve up from another hotel who was the host. He was great - funny, friendly and had great information about the local area on the way there and made pit stops for us to stretch legs and use the restrooms. Provided us with refreshments and snacks for journey The maps and the food menu were a great touch on board (Big deans cheeseburger was tasty) Would recommend this day trip. we got some great pictures in Beverly Hills and the Hollywood sign and Steve directed us to the stars on the Hollywood walk off am that we wanted to see! Thanks Steve and Ward"
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* Check availability */}
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2>
+              {/* <div className="mb-12"> */}
+                {/* <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2> */}
 
                 {/* Quick date selector */}
-                <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                {/* <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                   {[
                     "Sun\n11\nJan",
                     "Mon\n12\nJan",
@@ -630,12 +630,12 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   <button className="flex-shrink-0 px-4 py-3 rounded border border-gray-300 text-gray-600 hover:border-gray-400 flex items-center justify-center">
                     📅
                   </button>
-                </div>
+                </div> */}
 
-                <p className="text-gray-900 font-semibold mb-4">1 option available</p>
+                {/* <p className="text-gray-900 font-semibold mb-4">1 option available</p> */}
 
                 {/* Tour option card */}
-                <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
+                {/* <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
                   <h3 className="font-semibold text-gray-900 text-lg mb-4">{tour.title}</h3>
 
                   <div className="flex flex-wrap gap-6 mb-4">
@@ -668,8 +668,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 </div>
                 <div className="mb-8 pb-8 border-b border-gray-200">
                     <ItineraryTimeline />
-                  </div>
-              </div>
+                </div> */}
+              {/* </div> */}
 
               {/* Highlights */}
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -917,9 +917,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       Top rated
                     </div>
                     {/* Wishlist Heart */}
-                    <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
+                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
                       <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button>
+                    </button> */}
                   </div>
 
                   {/* Card Content */}
@@ -930,14 +930,14 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     <p className="text-gray-600 text-sm mb-3">Pickup available • Small group • 7.5 - 9 hours</p>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-2 mb-3">
+                    {/* <div className="flex items-center gap-2 mb-3">
                       <div className="flex text-yellow-400">
                         {"★".repeat(4)}
                         <span className="text-gray-300">★</span>
                       </div>
                       <span className="text-gray-900 font-semibold text-sm">4.7</span>
                       <span className="text-gray-600 text-sm">(597)</span>
-                    </div>
+                    </div> */}
 
                     {/* Price */}
                     <div className="flex items-baseline gap-2">
@@ -957,9 +957,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       alt="Hollywood Tour Bus"
                       className="w-full h-60 object-cover"
                     />
-                    <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
+                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
                       <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="p-4">
@@ -969,14 +969,14 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     <p className="text-gray-600 text-sm mb-3">2 - 3.5 hours</p>
                     <p className="text-gray-600 text-sm mb-3 text-xs">Certified by City Rome Tickets</p>
 
-                    <div className="flex items-center gap-2 mb-3">
+                    {/* <div className="flex items-center gap-2 mb-3">
                       <div className="flex text-yellow-400">
                         {"★".repeat(4)}
                         <span className="text-gray-300">★</span>
                       </div>
                       <span className="text-gray-900 font-semibold text-sm">4.5</span>
                       <span className="text-gray-600 text-sm">(1,702)</span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-baseline gap-2">
                       <span className="text-gray-600 text-sm">From</span>
@@ -995,9 +995,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       alt="Santa Monica Beach Bike Tour"
                       className="w-full h-60 object-cover"
                     />
-                    <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
+                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
                       <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="p-4">
@@ -1006,14 +1006,14 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     </h3>
                     <p className="text-gray-600 text-sm mb-3">3 hours</p>
 
-                    <div className="flex items-center gap-2 mb-3">
+                    {/* <div className="flex items-center gap-2 mb-3">
                       <div className="flex text-yellow-400">
                         {"★".repeat(4)}
                         <span className="text-gray-300">★</span>
                       </div>
                       <span className="text-gray-900 font-semibold text-sm">4.4</span>
                       <span className="text-gray-600 text-sm">(24)</span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-baseline gap-2">
                       <span className="text-gray-600 text-sm">From</span>
@@ -1032,20 +1032,20 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       alt="Hollywood Sign Private Tour"
                       className="w-full h-60 object-cover"
                     />
-                    <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
+                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
                       <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="p-4">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">Los Angeles: Private Half Day City Tour</h3>
                     <p className="text-gray-600 text-sm mb-3">4 hours • Pickup available</p>
 
-                    <div className="flex items-center gap-2 mb-3">
+                    {/* <div className="flex items-center gap-2 mb-3">
                       <div className="flex text-yellow-400">{"★".repeat(5)}</div>
                       <span className="text-gray-900 font-semibold text-sm">5.0</span>
                       <span className="text-gray-600 text-sm">(3)</span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-baseline gap-2">
                       <span className="text-gray-600 text-sm">From</span>

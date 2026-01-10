@@ -54,18 +54,20 @@ export default function HeroCarousel() {
 
 
           <div className="w-full max-w-2xl">
-            <div className="flex items-center bg-white rounded-full shadow-lg p-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-full shadow-lg p-2 gap-2 sm:gap-0">
               <input
                 type="text"
                 placeholder="Find places and things to do"
                 className="flex-1 px-6 py-4 sm:py-5 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-0 bg-white rounded-full"
               />
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 sm:px-10 py-4 sm:py-5 transition flex-shrink-0 rounded-full flex items-center gap-2">
+
+              <button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 sm:px-10 py-4 sm:py-5 transition flex-shrink-0 rounded-full flex items-center justify-center gap-2">
                 <Search size={20} />
                 Search
               </button>
             </div>
           </div>
+
         </div>
       </div>
 

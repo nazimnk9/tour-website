@@ -1,35 +1,21 @@
-"use client"
-
-import { Heart, Star } from "lucide-react"
+import { TourPlan } from "@/services/tourService"
+import { Heart } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
-interface Tour {
-  id: number
-  image: string
-  title: string
-  category: string
-  duration?: string
-  groupSize?: string
-  skipLine?: boolean
-  rating: number
-  reviews: number
-  price: number
-  fromPrice?: boolean
-  originalPrice?: number
-  likelySellOut?: boolean
-}
-
-export default function TourCard({ tour }: { tour: Tour }) {
+export default function TourCard({ tour }: { tour: TourPlan }) {
   const [isFavorite, setIsFavorite] = useState(false)
+
+  // Use first image or placeholder
+  const imageUrl = tour.images && tour.images.length > 0 ? tour.images[0].file : "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
 
   return (
     <Link href={`/tour/${tour.id}`}>
-      <div className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer">
+      <div className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition cursor-pointer h-full flex flex-col">
         {/* Image Container */}
-        <div className="relative h-48 sm:h-56 overflow-hidden group">
+        <div className="relative h-48 sm:h-56 overflow-hidden group flex-shrink-0">
           <img
-            src={tour.image || "/placeholder.svg"}
+            src={imageUrl}
             alt={tour.title}
             className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
           />
@@ -44,7 +30,11 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
           {/* Wishlist Heart */}
           <button
-            onClick={() => setIsFavorite(!isFavorite)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
             className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition shadow"
             aria-label="Add to wishlist"
           >
@@ -56,46 +46,22 @@ export default function TourCard({ tour }: { tour: Tour }) {
         </div>
 
         {/* Content */}
-        <div className="p-4 sm:p-5">
-          {/* Category */}
-          <div className="text-xs font-bold text-gray-600 uppercase mb-2">{tour.category}</div>
+        <div className="p-4 sm:p-5 flex flex-col flex-grow">
+          {/* Category - Static or derived if available */}
+          <div className="text-xs font-bold text-gray-600 uppercase mb-2">{tour.status === 'ACTIVE' ? 'ACTIVE TOUR' : 'TOUR'}</div>
 
           {/* Title */}
           <h3 className="font-bold text-sm sm:text-base text-gray-900 mb-3 line-clamp-3 h-12 sm:h-14">{tour.title}</h3>
 
-          {/* Details */}
-          <div className="text-xs text-gray-600 mb-3 space-y-1">
-            {tour.duration && <p>{tour.duration}</p>}
-            {tour.groupSize && tour.skipLine && (
-              <p>
-                {tour.groupSize} • {tour.skipLine ? "Skip the line" : ""}
-              </p>
-            )}
-            {tour.groupSize && !tour.skipLine && <p>{tour.groupSize}</p>}
-            {!tour.groupSize && tour.skipLine && <p>Skip the line</p>}
+          {/* Description used as details for now or truncated */}
+          <div className="text-xs text-gray-600 mb-3 space-y-1 line-clamp-2">
+            <p>{tour.description}</p>
           </div>
 
-          {/* Likely to sell out badge */}
-          {tour.likelySellOut && (
-            <div className="inline-block bg-red-600 text-white px-2 py-1 rounded text-xs font-bold mb-3">
-              Likely to sell out
-            </div>
-          )}
-
-          {/* Rating and Reviews */}
-          {/* <div className="flex items-center gap-2 mb-3">
-            <div className="flex items-center gap-1">
-              <Star size={16} fill="#FCD34D" className="text-yellow-400" />
-              <span className="font-semibold text-sm text-gray-900">{tour.rating}</span>
-            </div>
-            <span className="text-xs text-gray-600">({tour.reviews.toLocaleString()})</span>
-          </div> */}
-
           {/* Price */}
-          <div className="flex items-baseline gap-2">
-            {tour.fromPrice && <span className="text-xs text-gray-600">From</span>}
-            {tour.originalPrice && <span className="text-xs text-gray-400 line-through">${tour.originalPrice}</span>}
-            <span className="text-lg sm:text-xl font-bold text-gray-900">${tour.price}</span>
+          <div className="mt-auto pt-2 flex items-baseline gap-2">
+            <span className="text-xs text-gray-600">From</span>
+            <span className="text-lg sm:text-xl font-bold text-gray-900">${tour.price_adult}</span>
           </div>
         </div>
       </div>

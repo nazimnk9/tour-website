@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Heart,
   Star,
@@ -14,187 +14,44 @@ import {
   Users,
   Car,
   Users2,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 import { ItineraryTimeline } from "./Itinerary-timeline"
-
-interface Tour {
-  id: number
-  image: string
-  title: string
-  category: string
-  duration?: string
-  groupSize?: string
-  skipLine?: boolean
-  rating: number
-  reviews: number
-  price: number
-  fromPrice?: boolean
-  originalPrice?: number
-  likelySellOut?: boolean
-  description?: string
-  images?: string[]
-}
-
-const TOURS_DATA: Record<number, Tour> = {
-  1: {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "From Las Vegas: VIP Los Angeles/Hollywood Day Trip",
-    category: "DAY TRIP",
-    duration: "7 hours",
-    rating: 4.7,
-    reviews: 628,
-    price: 279,
-    fromPrice: false,
-    likelySellOut: true,
-    description:
-      "Head off into the Los Angeles/Hollywood area on board a comfortable Mercedes vehicle. Check out the best of Santa Monica, Rodeo Drive in Beverly Hills, the Sunset Strip, and the Hollywood Walk of Fame.",
-  },
-  2: {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1489749798305-4fea3ba63d60?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "From Paris: Day Trip to Champagne with 8 Tastings & Lunch",
-    category: "DAY TRIP",
-    duration: "10 - 11 hours",
-    groupSize: "Small group",
-    skipLine: true,
-    rating: 4.8,
-    reviews: 1493,
-    price: 380,
-    fromPrice: true,
-    description: "Experience the finest champagne regions with guided tastings and a gourmet lunch.",
-  },
-  3: {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "From Edinburgh: Glenfinnan, Glencoe, and Highlands Day Trip",
-    category: "DAY TRIP",
-    duration: "12 hours",
-    groupSize: "Small group",
-    rating: 4.6,
-    reviews: 6631,
-    originalPrice: 78,
-    price: 70,
-    fromPrice: true,
-    description: "Explore the breathtaking Scottish Highlands with visits to iconic locations.",
-  },
-  4: {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "From Milan: St. Moritz and Bernina Express Tour",
-    category: "DAY TRIP",
-    duration: "13 hours",
-    skipLine: true,
-    rating: 4.5,
-    reviews: 2909,
-    price: 195,
-    fromPrice: true,
-    likelySellOut: true,
-    description: "Journey through the Alps on the scenic Bernina Express train.",
-  },
-  5: {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-    ],
-    title: "Barcelona: Montserrat, Cogwheel, Black Madonna & Winery Tour",
-    category: "DAY TRIP",
-    duration: "5 - 10 hours",
-    skipLine: true,
-    rating: 4.8,
-    reviews: 5450,
-    price: 50,
-    fromPrice: true,
-    description: "Discover the sacred mountain of Montserrat and local winery experiences.",
-  },
-  6: {
-    id: 6,
-    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "Dubai: Overnight Safari, Dinner, Stargazing & Al Khayma Camp",
-    category: "DAY TRIP",
-    duration: "17 hours",
-    groupSize: "Small group",
-    rating: 4.8,
-    reviews: 2475,
-    price: 180,
-    fromPrice: true,
-    description: "Experience the desert with an overnight safari and traditional Al Khayma camp.",
-  },
-  7: {
-    id: 7,
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "From Venice: Dolomites, Cortina and Lake Braies Day Trip",
-    category: "DAY TRIP",
-    duration: "9 hours",
-    groupSize: "Small group",
-    rating: 4.9,
-    reviews: 437,
-    price: 193,
-    fromPrice: true,
-    description: "Explore the stunning Dolomites and the famous Lake Braies.",
-  },
-  8: {
-    id: 8,
-    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    ],
-    title: "Athens: Mythology of Delphi, Museum and Arachova Guided Tour",
-    category: "DAY TRIP",
-    duration: "10 hours",
-    skipLine: true,
-    rating: 4.7,
-    reviews: 4989,
-    price: 32,
-    fromPrice: true,
-    description: "Discover the mythological wonders of Delphi with expert guides.",
-  },
-}
+import { getTourById, getTourDates, getTourTimeSlots, TourDate, TourPlan, TourTimeSlot } from "@/services/tourService"
 
 function DatePicker({
   isOpen,
   onClose,
+  tourId,
+  onDateSelect
 }: {
   isOpen: boolean
   onClose: () => void
+  tourId: number
+  onDateSelect: (date: TourDate) => void
 }) {
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1))
+  const [availableDates, setAvailableDates] = useState<TourDate[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (isOpen && tourId) {
+      const fetchDates = async () => {
+        try {
+          setLoading(true)
+          const data = await getTourDates(tourId)
+          // Store available dates objects
+          setAvailableDates(data.results)
+        } catch (error) {
+          console.error("Failed to fetch tour dates", error)
+        } finally {
+          setLoading(false)
+        }
+      }
+      fetchDates()
+    }
+  }, [isOpen, tourId])
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
@@ -215,13 +72,27 @@ function DatePicker({
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const isHighlighted = [3, 4, 11, 12, 15, 18, 20, 21].includes(day)
+      // Construct date string YYYY-MM-DD manually to match API format
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const dayStr = String(day).padStart(2, '0');
+      const dateString = `${year}-${month}-${dayStr}`;
+
+      const isAvailable = availableDates.some(d => d.date === dateString);
+
       days.push(
         <div
           key={day}
-          className={`text-center py-2 text-sm font-medium cursor-pointer rounded ${
-            isHighlighted ? "bg-blue-100 text-blue-600 font-semibold" : "text-gray-600 hover:bg-gray-100"
-          }`}
+          className={`text-center py-2 text-sm font-medium rounded 
+                    ${isAvailable
+              ? "cursor-pointer text-gray-900 hover:bg-blue-50 font-semibold"
+              : "text-gray-300 cursor-not-allowed pointer-events-none"}`}
+          onClick={() => {
+            if (isAvailable) {
+              const selected = availableDates.find(d => d.date === dateString)
+              if (selected) onDateSelect(selected)
+            }
+          }}
         >
           {day}
         </div>,
@@ -246,47 +117,50 @@ function DatePicker({
   if (!isOpen) return null
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10">
-      <div className="flex items-center justify-between mb-4">
-        <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded">
+    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-6 z-10 w-[700px]">
+      <div className="flex justify-between items-start">
+        {/* Left Arrow */}
+        <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded mt-1">
           <ChevronLeft size={20} className="text-gray-600" />
         </button>
-        <h3 className="text-center font-semibold text-gray-900 text-sm">{currentMonth.monthName}</h3>
-        <button onClick={handleNextMonth} className="p-2 hover:bg-gray-100 rounded">
+
+        {/* Months Container */}
+        <div className="flex gap-8 flex-1 justify-center">
+          {/* Current Month */}
+          <div className="w-64">
+            <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
+
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+                  {day}
+                </div>
+              ))}
+              {currentMonth.days}
+            </div>
+          </div>
+
+          {/* Next Month */}
+          <div className="w-64">
+            <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
+
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                <div key={`next-${day}`} className="text-center text-xs font-semibold text-gray-500 py-2">
+                  {day}
+                </div>
+              ))}
+              {nextMonthData.days}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Arrow */}
+        <button onClick={handleNextMonth} className="p-2 hover:bg-gray-100 rounded mt-1">
           <ChevronRight size={20} className="text-gray-600" />
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 mb-6">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="text-center text-xs font-semibold text-gray-600 py-2">
-            {day}
-          </div>
-        ))}
-        {currentMonth.days}
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <div></div>
-        <h3 className="text-center font-semibold text-gray-900 text-sm">{nextMonthData.monthName}</h3>
-        <div></div>
-      </div>
-
-      <div className="grid grid-cols-7 gap-1">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={`next-${day}`} className="text-center text-xs font-semibold text-gray-600 py-2">
-            {day}
-          </div>
-        ))}
-        {nextMonthData.days}
-      </div>
-
-      <button
-        onClick={onClose}
-        className="w-full mt-4 py-2 bg-blue-500 text-white rounded font-semibold hover:bg-blue-600"
-      >
-        Close
-      </button>
     </div>
   )
 }
@@ -294,62 +168,141 @@ function DatePicker({
 function TravelerCounter({
   isOpen,
   onClose,
+  tour,
+  counts,
+  onUpdateCount
 }: {
   isOpen: boolean
   onClose: () => void
+  tour: TourPlan
+  counts: any
+  onUpdateCount: (key: string, delta: number, max: number) => void
 }) {
-  const [adultCount, setAdultCount] = useState(1)
-  const [childCount, setChildCount] = useState(0)
-
   if (!isOpen) return null
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10">
-      <div className="mb-4">
-        <label className="block text-sm font-semibold text-gray-900 mb-2">
-          Adult <span className="text-gray-600 font-normal text-xs">(Age 99 and younger)</span>
-        </label>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setAdultCount(Math.max(1, adultCount - 1))}
-            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
-          >
-            <Minus size={16} className="text-gray-600" />
-          </button>
-          <span className="text-lg font-semibold text-gray-900">{adultCount}</span>
-          <button
-            onClick={() => setAdultCount(adultCount + 1)}
-            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
-          >
-            <Plus size={16} className="text-gray-600" />
-          </button>
-        </div>
-      </div>
+    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10 w-[350px]">
 
-      <div className="mb-4">
-        <label className="block text-sm font-semibold text-gray-900 mb-2">
-          Child <span className="text-gray-600 font-normal text-xs">(Age 5-11)</span>
-        </label>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setChildCount(Math.max(0, childCount - 1))}
-            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
-          >
-            <Minus size={16} className="text-gray-600" />
-          </button>
-          <span className="text-lg font-semibold text-gray-900">{childCount}</span>
-          <button
-            onClick={() => setChildCount(childCount + 1)}
-            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
-          >
-            <Plus size={16} className="text-gray-600" />
-          </button>
+      {/* Adult */}
+      {tour.max_adults > 0 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Adult <span className="text-gray-600 font-normal text-xs">(Age {tour.adult_age_min}-{tour.adult_age_max})</span>
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onUpdateCount('adults', -1, tour.max_adults)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Minus size={16} className="text-gray-600" />
+            </button>
+            <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.adults}</span>
+            <button
+              onClick={() => onUpdateCount('adults', 1, tour.max_adults)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Plus size={16} className="text-gray-600" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      <button onClick={onClose} className="w-full py-2 bg-blue-500 text-white rounded font-semibold hover:bg-blue-600">
-        Done
-      </button>
+      {/* Child */}
+      {tour.max_children > 0 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Child <span className="text-gray-600 font-normal text-xs">(Age {tour.child_age_min}-{tour.child_age_max})</span>
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onUpdateCount('children', -1, tour.max_children)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Minus size={16} className="text-gray-600" />
+            </button>
+            <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.children}</span>
+            <button
+              onClick={() => onUpdateCount('children', 1, tour.max_children)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Plus size={16} className="text-gray-600" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Infant */}
+      {tour.max_infants > 0 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Infant <span className="text-gray-600 font-normal text-xs">(Age {tour.infant_age_min}-{tour.infant_age_max})</span>
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onUpdateCount('infants', -1, tour.max_infants)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Minus size={16} className="text-gray-600" />
+            </button>
+            <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.infants}</span>
+            <button
+              onClick={() => onUpdateCount('infants', 1, tour.max_infants)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Plus size={16} className="text-gray-600" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Youth */}
+      {(tour as any).max_youth > 0 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Youth <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).youth_age_min}-{(tour as any).youth_age_max})</span>
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onUpdateCount('youths', -1, (tour as any).max_youth)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Minus size={16} className="text-gray-600" />
+            </button>
+            <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.youths}</span>
+            <button
+              onClick={() => onUpdateCount('youths', 1, (tour as any).max_youth)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Plus size={16} className="text-gray-600" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Student UE */}
+      {(tour as any).max_student_eu > 0 && (
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Student EU <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).student_eu_age_min}-{(tour as any).student_eu_age_max})</span>
+          </label>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onUpdateCount('students', -1, (tour as any).max_student_eu)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Minus size={16} className="text-gray-600" />
+            </button>
+            <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.students}</span>
+            <button
+              onClick={() => onUpdateCount('students', 1, (tour as any).max_student_eu)}
+              className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+            >
+              <Plus size={16} className="text-gray-600" />
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
@@ -394,17 +347,149 @@ function ReviewCard({
 }
 
 export default function TourDetailPage({ tourId }: { tourId: number }) {
-  const tour = TOURS_DATA[tourId]
+  const [tour, setTour] = useState<TourPlan | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
   const [isFavorite, setIsFavorite] = useState(false)
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+
+  // Booking State
+  const [selectedDate, setSelectedDate] = useState<TourDate | null>(null)
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TourTimeSlot | null>(null)
+  const [timeSlots, setTimeSlots] = useState<TourTimeSlot[]>([])
+
+  const [counts, setCounts] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('travelerCounts')
+      if (saved) return JSON.parse(saved)
+    }
+    return {
+      adults: 1,
+      children: 0,
+      infants: 0,
+      youths: 0,
+      students: 0
+    }
+  })
+
+  // Load saved state on mount
+  useEffect(() => {
+    const savedDate = localStorage.getItem('selectedDate')
+    if (savedDate) setSelectedDate(JSON.parse(savedDate))
+
+    const savedTime = localStorage.getItem('selectedTimeSlot')
+    if (savedTime) setSelectedTimeSlot(JSON.parse(savedTime))
+  }, [])
+
+  // Save state changes
+  useEffect(() => {
+    localStorage.setItem('travelerCounts', JSON.stringify(counts))
+  }, [counts])
+
+  useEffect(() => {
+    if (selectedDate) localStorage.setItem('selectedDate', JSON.stringify(selectedDate))
+  }, [selectedDate])
+
+  useEffect(() => {
+    if (selectedTimeSlot) localStorage.setItem('selectedTimeSlot', JSON.stringify(selectedTimeSlot))
+  }, [selectedTimeSlot])
+
+  // Fetch time slots when date changes
+  useEffect(() => {
+    if (selectedDate) {
+      const fetchTimeSlots = async () => {
+        try {
+          const data = await getTourTimeSlots(selectedDate.id)
+          setTimeSlots(data.results)
+        } catch (error) {
+          console.error("Failed to fetch time slots", error)
+        }
+      }
+      fetchTimeSlots()
+    }
+  }, [selectedDate])
+
   const [isTravelerPickerOpen, setIsTravelerPickerOpen] = useState(false)
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  if (!tour) {
+  // Handlers
+  const handleDateSelect = (date: TourDate) => {
+    setSelectedDate(date)
+    setSelectedTimeSlot(null) // Reset time slot when date changes
+    localStorage.removeItem('selectedTimeSlot')
+  }
+
+  const handleTimeSlotSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const slotId = parseInt(e.target.value)
+    const slot = timeSlots.find(s => s.id === slotId) || null
+    setSelectedTimeSlot(slot)
+  }
+
+  const handleUpdateCount = (key: string, delta: number, max: number) => {
+    setCounts((prev: any) => ({
+      ...prev,
+      [key]: Math.max(0, Math.min(prev[key] + delta, max))
+    }))
+  }
+
+  // Derived state for display
+  const getTravelerSummary = () => {
+    const parts = []
+    if (counts.adults > 0) parts.push(`Adult x ${counts.adults}`)
+    if (counts.children > 0) parts.push(`Child x ${counts.children}`)
+    if (counts.infants > 0) parts.push(`Infant x ${counts.infants}`)
+    if (counts.youths > 0) parts.push(`Youth x ${counts.youths}`)
+    if (counts.students > 0) parts.push(`Student x ${counts.students}`)
+    return parts.join(", ") || "Select travelers"
+  }
+
+  const getPriceSummary = () => {
+    const parts = []
+    if (counts.adults > 0) parts.push(`${counts.adults} Adult x $${tour?.price_adult}`)
+    if (counts.children > 0) parts.push(`${counts.children} Child x $${tour?.price_child}`)
+    // Add others as needed
+    return parts.join(", ")
+  }
+
+  const calculateTotalPrice = () => {
+    let total = 0
+    if (tour) {
+      total += counts.adults * Number(tour.price_adult)
+      total += counts.children * Number(tour.price_child)
+      total += counts.infants * Number(tour.price_infant)
+      if ((tour as any).price_youth) total += counts.youths * Number((tour as any).price_youth)
+      if ((tour as any).price_student_eu) total += counts.students * Number((tour as any).price_student_eu)
+    }
+    return total.toFixed(2)
+  }
+
+
+  const fetchTourDetails = async () => {
+    try {
+      setLoading(true)
+      const data = await getTourById(tourId)
+      setTour(data)
+    } catch (err: any) {
+      setError(err.message || "Failed to load tour details")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="animate-spin text-orange-500" size={40} />
+      </div>
+    )
+  }
+
+  if (error || !tour) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Tour not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{error || "Tour not found"}</h1>
           <Link href="/" className="text-blue-600 hover:underline">
             Back to tours
           </Link>
@@ -413,13 +498,32 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     )
   }
 
-  const images = tour.images || [tour.image]
+  const images = tour.images && tour.images.length > 0
+    ? tour.images.map(img => img.file)
+    : ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop"] // Fallback
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length)
   }
   const prevImage = () => {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
+
+  // Calculate Max Price
+  const prices = [
+    Number(tour.price_adult),
+    Number(tour.price_child),
+    Number(tour.price_infant),
+    // Add other prices if they exist on the API response even if interface differs slightly
+    // Based on user request, check all price fields
+    // Note: The interface currently has price_adult, price_child, price_infant. 
+    // Accessing dynamic properties safely if they exist in the raw response but likely sticking to interface for type safety is better. 
+    // Assuming standard fields from interface for now. To strictly follow "price_youth", "price_student_eu" mentioned in request:
+    (tour as any).price_youth ? Number((tour as any).price_youth) : 0,
+    (tour as any).price_student_eu ? Number((tour as any).price_student_eu) : 0
+  ]
+  const maxPrice = Math.max(...prices).toFixed(2);
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -478,7 +582,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               {/* Main large image on the left */}
               <div className="col-span-2 rounded-lg overflow-auto">
                 <img
-                  src={images[0] || "/placeholder.svg"}
+                  src={images[0]}
                   alt={`${tour.title} - Main image`}
                   className="w-full h-full object-contain"
                 />
@@ -488,21 +592,25 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="flex flex-col gap-2">
                 {/* First thumbnail */}
                 <div className="flex-1 rounded-lg overflow-auto">
-                  <img
-                    src={images[1] || "/placeholder.svg"}
-                    alt={`${tour.title} - Image 2`}
-                    className="w-full h-full object-contain"
-                  />
+                  {images[1] && (
+                    <img
+                      src={images[1]}
+                      alt={`${tour.title} - Image 2`}
+                      className="w-full h-full object-contain"
+                    />
+                  )}
                 </div>
 
                 {/* Second thumbnail with +4 badge */}
                 <div className="flex-1 rounded-lg overflow-auto relative">
-                  <img
-                    src={images[2] || "/placeholder.svg"}
-                    alt={`${tour.title} - Image 3`}
-                    className="w-full h-full object-contain"
-                  />
-                  {/* +4 badge indicator */}
+                  {images[2] && (
+                    <img
+                      src={images[2]}
+                      alt={`${tour.title} - Image 3`}
+                      className="w-full h-full object-contain"
+                    />
+                  )}
+                  {/* + badge indicator */}
                   {images.length > 3 && (
                     <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded flex items-center gap-1 text-sm font-medium">
                       <span>+{images.length - 3}</span>
@@ -605,8 +713,48 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2>
 
-                {/* Quick date selector */}
-                <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                {/* Check availability logic */}
+                <div className="mb-6">
+                  {!selectedDate ? (
+                    <DatePicker
+                      isOpen={true}
+                      onClose={() => { }}
+                      tourId={tourId}
+                      onDateSelect={handleDateSelect}
+                    />
+                  ) : (
+                    <div>
+                      <div className="flex justify-between items-center bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                        <div>
+                          <p className="text-gray-900 font-semibold mb-1">Selected Date:</p>
+                          <p className="text-blue-700 font-bold text-lg">{selectedDate.date}</p>
+                        </div>
+                        <button onClick={() => setSelectedDate(null)} className="text-blue-600 hover:underline text-sm font-medium">Change Date</button>
+                      </div>
+
+                      {/* Time Slot Selector */}
+                      {timeSlots.length > 0 && (
+                        <div className="mb-6">
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">Select starting time</label>
+                          <select
+                            onChange={handleTimeSlotSelect}
+                            value={selectedTimeSlot?.id || ""}
+                            className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                          >
+                            <option value="" disabled>Choose a time</option>
+                            {timeSlots.map(slot => (
+                              <option key={slot.id} value={slot.id}>
+                                {slot.start_time}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                   {[
                     "Sun\n11\nJan",
                     "Mon\n12\nJan",
@@ -618,11 +766,10 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   ].map((date, idx) => (
                     <button
                       key={idx}
-                      className={`flex-shrink-0 px-4 py-3 rounded border text-center text-sm font-medium whitespace-pre-line ${
-                        idx === 1
-                          ? "border-blue-600 bg-blue-50 text-blue-900"
-                          : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
-                      }`}
+                      className={`flex-shrink-0 flex-row px-4 py-3 rounded border text-center text-sm font-medium whitespace-pre-line ${idx === 1
+                        ? "border-blue-600 bg-blue-50 text-blue-900"
+                        : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
+                        }`}
                     >
                       {date}
                     </button>
@@ -630,9 +777,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   <button className="flex-shrink-0 px-4 py-3 rounded border border-gray-300 text-gray-600 hover:border-gray-400 flex items-center justify-center">
                     📅
                   </button>
-                </div>
+                </div> 
 
-                <p className="text-gray-900 font-semibold mb-4">1 option available</p>
+                <p className="text-gray-900 font-semibold mb-4">1 option available</p> */}
 
                 {/* Tour option card */}
                 <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
@@ -651,9 +798,31 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
                   <div className="flex items-end justify-between">
                     <div>
-                      <p className="text-gray-600 text-sm mb-1">From</p>
-                      <p className="text-3xl font-bold text-gray-900">${tour.price}</p>
-                      <p className="text-gray-600 text-sm">per person</p>
+                      {/* Traveler Picker with Input Field */}
+                      <div className="mb-4 relative">
+                        <button
+                          onClick={() => setIsTravelerPickerOpen(!isTravelerPickerOpen)}
+                          className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap min-w-[200px]"
+                        >
+                          <span className="flex items-center gap-2">
+                            <span>👥</span>
+                            <span>{getTravelerSummary()}</span>
+                          </span>
+                          <ChevronLeft size={20} className="text-gray-600 rotate-180" />
+                        </button>
+                        <TravelerCounter
+                          isOpen={isTravelerPickerOpen}
+                          onClose={() => setIsTravelerPickerOpen(false)}
+                          tour={tour}
+                          counts={counts}
+                          onUpdateCount={handleUpdateCount}
+                        />
+                      </div>
+
+                      {/* Price Display */}
+                      <p className="text-gray-600 text-sm mb-1">{getPriceSummary()}</p>
+                      <p className="text-3xl font-bold text-gray-900">${calculateTotalPrice()}</p>
+                      {/* <p className="text-gray-600 text-sm">per person</p> */}
                     </div>
                     <div className="text-right">
                       <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-2">
@@ -667,7 +836,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </div>
                 </div>
                 <div className="mb-8 pb-8 border-b border-gray-200">
-                    <ItineraryTimeline />
+                  <ItineraryTimeline />
                 </div>
               </div>
 
@@ -812,21 +981,13 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
           {/* Right Column - Booking Panel */}
           <div className="lg:col-span-1">
             <div className="bg-gray-50 rounded-lg p-6 sticky top-8">
-              {/* Likely to sell out badge */}
-              {tour.likelySellOut && (
-                <div className="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold mb-4 inline-block">
-                  Likely to sell out
-                </div>
-              )}
+              {/* Likely to sell out badge - Removed as not in API data */}
 
               {/* Price */}
               <div className="mb-6">
                 <p className="text-gray-600 text-sm mb-2">From</p>
                 <div className="flex items-baseline gap-2">
-                  {tour.originalPrice && (
-                    <span className="text-gray-400 line-through text-sm">${tour.originalPrice}</span>
-                  )}
-                  <span className="text-4xl font-bold text-gray-900">${tour.price}</span>
+                  <span className="text-4xl font-bold text-gray-900">${maxPrice}</span>
                   <span className="text-gray-600 text-sm">per person</span>
                 </div>
               </div>
@@ -843,7 +1004,13 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </span>
                   <ChevronLeft size={20} className="text-gray-600 rotate-180" />
                 </button>
-                <TravelerCounter isOpen={isTravelerPickerOpen} onClose={() => setIsTravelerPickerOpen(false)} />
+                <TravelerCounter
+                  isOpen={isTravelerPickerOpen}
+                  onClose={() => setIsTravelerPickerOpen(false)}
+                  tour={tour}
+                  counts={counts}
+                  onUpdateCount={handleUpdateCount}
+                />
               </div>
 
               {/* Date Selector */}
@@ -858,7 +1025,15 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </span>
                   <ChevronLeft size={20} className="text-gray-600 rotate-180" />
                 </button>
-                <DatePicker isOpen={isDatePickerOpen} onClose={() => setIsDatePickerOpen(false)} />
+                <DatePicker
+                  isOpen={isDatePickerOpen}
+                  onClose={() => setIsDatePickerOpen(false)}
+                  tourId={tour.id}
+                  onDateSelect={(date) => {
+                    handleDateSelect(date)
+                    setIsDatePickerOpen(false)
+                  }}
+                />
               </div>
 
               {/* Benefits */}

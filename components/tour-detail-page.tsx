@@ -602,11 +602,11 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               </div> */}
 
               {/* Check availability */}
-              {/* <div className="mb-12"> */}
-                {/* <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2> */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2>
 
                 {/* Quick date selector */}
-                {/* <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                   {[
                     "Sun\n11\nJan",
                     "Mon\n12\nJan",
@@ -630,12 +630,12 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   <button className="flex-shrink-0 px-4 py-3 rounded border border-gray-300 text-gray-600 hover:border-gray-400 flex items-center justify-center">
                     📅
                   </button>
-                </div> */}
+                </div>
 
-                {/* <p className="text-gray-900 font-semibold mb-4">1 option available</p> */}
+                <p className="text-gray-900 font-semibold mb-4">1 option available</p>
 
                 {/* Tour option card */}
-                {/* <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
+                <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
                   <h3 className="font-semibold text-gray-900 text-lg mb-4">{tour.title}</h3>
 
                   <div className="flex flex-wrap gap-6 mb-4">
@@ -668,8 +668,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 </div>
                 <div className="mb-8 pb-8 border-b border-gray-200">
                     <ItineraryTimeline />
-                </div> */}
-              {/* </div> */}
+                </div>
+              </div>
 
               {/* Highlights */}
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">

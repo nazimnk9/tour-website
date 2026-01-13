@@ -143,3 +143,84 @@ export async function getTourTimeSlots(tourDateId: number | string): Promise<Tou
 
     return response.json();
 }
+
+export interface AddToCartPayload {
+    num_adults: number;
+    num_children: number;
+    num_infants: number;
+    num_youth: number;
+    num_student_eu: number;
+    tour_plan: number;
+    time_slot: number;
+}
+
+export interface AddToCartResponse {
+    id: number;
+    num_adults: number;
+    num_children: number;
+    num_infants: number;
+    item_price: number;
+    num_youth: number;
+    num_student_eu: number;
+    created_at: string;
+    updated_at: string;
+    user: number;
+    tour_plan: number;
+    time_slot: number;
+}
+
+export async function addToCart(payload: AddToCartPayload): Promise<AddToCartResponse> {
+    const response = await fetch(`${API_BASE_URL}/tour/cart/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to add item to cart");
+    }
+
+    return response.json();
+}
+
+export interface CartItem {
+    id: number;
+    num_adults: number;
+    num_children: number;
+    num_infants: number;
+    item_price: string;
+    num_youth: number;
+    num_student_eu: number;
+    created_at: string;
+    updated_at: string;
+    user: number | null;
+    tour_plan: number;
+    time_slot: number;
+}
+
+export interface CartResponse {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: CartItem[];
+}
+
+export async function getCart(cartIds: number[]): Promise<CartResponse> {
+    const idsParam = cartIds.join(",");
+    const response = await fetch(`${API_BASE_URL}/tour/cart/?cart_ids=${idsParam}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch cart items");
+    }
+
+    return response.json();
+}

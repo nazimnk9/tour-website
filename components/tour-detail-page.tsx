@@ -477,6 +477,13 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     }
   }
 
+  // Trigger fetchTourDetails when tourId changes
+  useEffect(() => {
+    if (tourId) {
+      fetchTourDetails()
+    }
+  }, [tourId])
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">

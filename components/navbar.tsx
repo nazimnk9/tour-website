@@ -6,11 +6,20 @@ import { RegisterModal } from "./auth/RegisterModal"
 import { LoginModal } from "./auth/LoginModal"
 import { isLoggedIn, removeTokens } from "@/services/authService"
 import { useEffect } from "react"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
+import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 
 export default function Navbar() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isLoggedInState, setIsLoggedInState] = useState(false)
+
+  const dispatch = useAppDispatch()
+  const cart = useAppSelector((state) => state.cart)
+
+  useEffect(() => {
+    dispatch(fetchCartCount())
+  }, [dispatch])
 
   useEffect(() => {
     setIsLoggedInState(isLoggedIn())
@@ -70,11 +79,18 @@ export default function Navbar() {
               <span className="text-xs">Wishlist</span>
             </button> */}
 
-              <button className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
-                <ShoppingCart size={20} />
+              <Link href="/cart" className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
+                <div className="relative">
+                  <ShoppingCart size={20} />
+                  {cart.count > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                      {cart.count}
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs font-medium">Cart</span>
                 <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-              </button>
+              </Link>
 
               <button className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
                 <Globe size={20} />

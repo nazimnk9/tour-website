@@ -15,10 +15,20 @@ import {
   Car,
   Users2,
   Loader2,
+  Calendar as CalendarIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { ItineraryTimeline } from "./Itinerary-timeline"
-import { getTourById, getTourDates, getTourTimeSlots, TourDate, TourPlan, TourTimeSlot } from "@/services/tourService"
+import {
+  getTourById, getTourDates, getTourTimeSlots,
+  TourDate,
+  TourPlan,
+  TourTimeSlot,
+  addToCart,
+  AddToCartPayload
+} from "@/services/tourService"
+import { useAppDispatch } from "@/lib/hooks"
+import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 
 function DatePicker({
   isOpen,
@@ -95,7 +105,7 @@ function DatePicker({
           }}
         >
           {day}
-        </div>,
+        </div>
       )
     }
 
@@ -181,7 +191,7 @@ function TravelerCounter({
   if (!isOpen) return null
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10 w-[350px]">
+    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-100 w-[350px]">
 
       {/* Adult */}
       {tour.max_adults > 0 && (
@@ -347,6 +357,7 @@ function ReviewCard({
 }
 
 export default function TourDetailPage({ tourId }: { tourId: number }) {
+  const dispatch = useAppDispatch()
   const [tour, setTour] = useState<TourPlan | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -357,6 +368,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   const [selectedDate, setSelectedDate] = useState<TourDate | null>(null)
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TourTimeSlot | null>(null)
   const [timeSlots, setTimeSlots] = useState<TourTimeSlot[]>([])
+  const [availableDates, setAvailableDates] = useState<TourDate[]>([])
+  const [datesLoading, setDatesLoading] = useState(false)
 
   const [counts, setCounts] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -390,6 +403,24 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     if (selectedDate) localStorage.setItem('selectedDate', JSON.stringify(selectedDate))
   }, [selectedDate])
 
+  // Fetch dates when tourId changes
+  useEffect(() => {
+    if (tourId) {
+      const fetchDates = async () => {
+        try {
+          setDatesLoading(true)
+          const data = await getTourDates(tourId)
+          setAvailableDates(data.results)
+        } catch (error) {
+          console.error("Failed to fetch tour dates", error)
+        } finally {
+          setDatesLoading(false)
+        }
+      }
+      fetchDates()
+    }
+  }, [tourId])
+
   useEffect(() => {
     if (selectedTimeSlot) localStorage.setItem('selectedTimeSlot', JSON.stringify(selectedTimeSlot))
   }, [selectedTimeSlot])
@@ -410,7 +441,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   }, [selectedDate])
 
   const [isTravelerPickerOpen, setIsTravelerPickerOpen] = useState(false)
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // For sidebar
+  const [isGridDatePickerOpen, setIsGridDatePickerOpen] = useState(false) // For horizontal strip
+  const [showBookingButtons, setShowBookingButtons] = useState(false) // For booking buttons toggle
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // Handlers
@@ -418,6 +451,9 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     setSelectedDate(date)
     setSelectedTimeSlot(null) // Reset time slot when date changes
     localStorage.removeItem('selectedTimeSlot')
+    setIsDatePickerOpen(false) // Close sidebar picker
+    setIsGridDatePickerOpen(false) // Close grid picker
+    setShowBookingButtons(false) // Reset booking buttons on date change
   }
 
   const handleTimeSlotSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -432,6 +468,71 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       [key]: Math.max(0, Math.min(prev[key] + delta, max))
     }))
   }
+
+  const handleAddToCart = async () => {
+    if (!tour || !selectedDate || !selectedTimeSlot) {
+      alert("Please select a date and time slot first")
+      return
+    }
+
+    try {
+      const payload: AddToCartPayload = {
+        num_adults: counts.adults,
+        num_children: counts.children,
+        num_infants: counts.infants,
+        num_youth: counts.youths,
+        num_student_eu: counts.students,
+        tour_plan: tour.id,
+        time_slot: selectedTimeSlot.id
+      }
+
+      const response = await addToCart(payload)
+
+      // Save ID to local storage (append to list)
+      const existingIds = localStorage.getItem('cartItemId')
+      let newIds = response.id.toString()
+      if (existingIds) {
+        newIds = `${existingIds},${response.id}`
+      }
+      localStorage.setItem('cartItemId', newIds)
+
+      localStorage.removeItem('selectedDate')
+      localStorage.removeItem('selectedTimeSlot')
+      localStorage.removeItem('travelerCounts')
+
+      // Reset state / UI
+      setSelectedDate(null)
+      setSelectedTimeSlot(null)
+      setCounts({ adults: 1, children: 0, infants: 0, youths: 0, students: 0 })
+      setShowBookingButtons(false)
+
+      alert("Tour added to cart!")
+
+      // Update Navbar count via Redux
+      dispatch(fetchCartCount())
+
+    } catch (error: any) {
+      console.error("Add to cart failed", error)
+      alert(error.message || "Failed to add to cart")
+    }
+  }
+
+  // Generate next 14 days for the horizontal strip
+  const getNextDays = (days: number) => {
+    const result = []
+    const today = new Date()
+    // Reset time part to ensure correct comparison
+    today.setHours(0, 0, 0, 0)
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(today)
+      date.setDate(today.getDate() + i)
+      result.push(date)
+    }
+    return result
+  }
+
+  const nextDays = getNextDays(14)
 
   // Derived state for display
   const getTravelerSummary = () => {
@@ -721,45 +822,94 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2>
 
                 {/* Check availability logic */}
-                <div className="mb-6">
-                  {!selectedDate ? (
+                {/* Horizontal Date Selector */}
+                <div className="mb-6 relative flex gap-2">
+                  <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide flex-1">
+                    {nextDays.map((date, idx) => {
+                      const dateStr = date.toISOString().split('T')[0]
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const formattedDate = `${year}-${month}-${day}`;
+
+                      const availableDate = availableDates.find(d => d.date === formattedDate)
+                      const isSelected = selectedDate?.date === formattedDate
+
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            if (availableDate) handleDateSelect(availableDate)
+                          }}
+                          disabled={!availableDate}
+                          className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-lg border transition-all
+                            ${isSelected
+                              ? "border-blue-600 bg-blue-50 text-blue-900"
+                              : availableDate
+                                ? "border-gray-300 bg-white text-gray-900 hover:border-gray-400 cursor-pointer"
+                                : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
+                            }`}
+                        >
+                          <span className="text-xs font-semibold uppercase">
+                            {idx === 0 ? "Today" : date.toLocaleString('default', { weekday: 'short' })}
+                          </span>
+                          <span className={`text-xl font-bold ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
+                            {date.getDate()}
+                          </span>
+                          <span className="text-xs">
+                            {date.toLocaleString('default', { month: 'short' })}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  {/* Calendar Icon Button */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsGridDatePickerOpen(!isGridDatePickerOpen)}
+                      className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-lg border border-gray-300 bg-white text-gray-900 hover:border-gray-400 cursor-pointer"
+                    >
+                      <CalendarIcon size={24} />
+                    </button>
+
+                    {/* Dropdown DatePicker */}
                     <DatePicker
-                      isOpen={true}
-                      onClose={() => { }}
+                      isOpen={isGridDatePickerOpen}
+                      onClose={() => setIsGridDatePickerOpen(false)}
                       tourId={tourId}
                       onDateSelect={handleDateSelect}
                     />
-                  ) : (
-                    <div>
-                      <div className="flex justify-between items-center bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-                        <div>
-                          <p className="text-gray-900 font-semibold mb-1">Selected Date:</p>
-                          <p className="text-blue-700 font-bold text-lg">{selectedDate.date}</p>
-                        </div>
-                        <button onClick={() => setSelectedDate(null)} className="text-blue-600 hover:underline text-sm font-medium">Change Date</button>
-                      </div>
-
-                      {/* Time Slot Selector */}
-                      {timeSlots.length > 0 && (
-                        <div className="mb-6">
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Select starting time</label>
-                          <select
-                            onChange={handleTimeSlotSelect}
-                            value={selectedTimeSlot?.id || ""}
-                            className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                          >
-                            <option value="" disabled>Choose a time</option>
-                            {timeSlots.map(slot => (
-                              <option key={slot.id} value={slot.id}>
-                                {slot.start_time}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  </div>
                 </div>
+
+                {/* Time Slot Selector - Only show if date selected */}
+                {selectedDate && timeSlots.length > 0 && (
+                  <div className="mb-6">
+                    <label className="block text-sm font-bold text-[#051036] mb-1">Select a starting time</label>
+                    <p className="text-sm text-gray-500 mb-3">
+                      {new Date(selectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {timeSlots.map(slot => {
+                        const isSelected = selectedTimeSlot?.id === slot.id
+                        return (
+                          <button
+                            key={slot.id}
+                            onClick={() => setSelectedTimeSlot(slot)}
+                            className={`px-6 py-2.5 rounded-lg border text-sm font-bold transition-all
+                              ${isSelected
+                                ? "bg-[#051036] text-white border-[#051036]"
+                                : "bg-white text-[#051036] border-gray-400 hover:border-[#051036]"
+                              }`}
+                          >
+                            {slot.start_time.split(':').slice(0, 2).join(':')}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
                   {[
@@ -832,9 +982,28 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       {/* <p className="text-gray-600 text-sm">per person</p> */}
                     </div>
                     <div className="text-right">
-                      <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-2">
-                        Select
-                      </button>
+                      {!showBookingButtons ? (
+                        <button
+                          onClick={() => setShowBookingButtons(true)}
+                          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-2"
+                        >
+                          Select
+                        </button>
+                      ) : (
+                        <div className="flex gap-2 mb-2">
+                          <button
+                            className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+                          >
+                            Book now
+                          </button>
+                          <button
+                            onClick={handleAddToCart}
+                            className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-teal-600 justify-end">
                         <Check size={18} />
                         <span className="text-sm font-medium">Free cancellation</span>
@@ -843,7 +1012,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </div>
                 </div>
                 <div className="mb-8 pb-8 border-b border-gray-200">
-                  <ItineraryTimeline />
+                  <ItineraryTimeline locations={tour?.locations || []} />
                 </div>
               </div>
 
@@ -1007,7 +1176,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 >
                   <span className="flex items-center gap-2">
                     <span>👥</span>
-                    <span>Adult x 1</span>
+                    <span>{getTravelerSummary()}</span>
                   </span>
                   <ChevronLeft size={20} className="text-gray-600 rotate-180" />
                 </button>
@@ -1028,7 +1197,12 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 >
                   <span className="flex items-center gap-2">
                     <span>📅</span>
-                    <span>Select date</span>
+                    <span>
+                      {selectedDate
+                        ? new Date(selectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+                        : "Select date"
+                      }
+                    </span>
                   </span>
                   <ChevronLeft size={20} className="text-gray-600 rotate-180" />
                 </button>

@@ -208,6 +208,37 @@ export interface CartResponse {
     results: CartItem[];
 }
 
+export interface TravelerDetail {
+    name: string;
+    email: string;
+}
+
+export interface BookingPayload {
+    cart_item_ids: string; // Comma separated IDs
+    traveler_details: TravelerDetail[];
+    full_name?: string;
+    email?: string;
+    country?: string;
+    phone?: string;
+}
+
+export async function createBooking(payload: BookingPayload): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/tour/booking/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to create booking");
+    }
+
+    return response.json();
+}
+
 export async function getCart(cartIds: number[]): Promise<CartResponse> {
     const idsParam = cartIds.join(",");
     const response = await fetch(`${API_BASE_URL}/tour/cart/?cart_ids=${idsParam}`, {

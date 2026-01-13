@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { getCart, getTourById, getTourDates, getTourTimeSlots, CartItem, TourPlan } from "@/services/tourService"
@@ -262,9 +263,9 @@ export default function CartPage() {
                                 </div>
                                 <p className="text-right text-xs text-teal-600 font-medium mb-6">All taxes and fees included</p>
 
-                                <button className="w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4">
+                                <Link href="/checkout" className="block w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center">
                                     Go to checkout
-                                </button>
+                                </Link>
 
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Check size={18} className="text-teal-600" />

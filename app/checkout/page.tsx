@@ -82,7 +82,7 @@ export default function CheckoutPage() {
             if (!cartIdsStr) throw new Error("No items in cart")
 
             const payload: BookingPayload = {
-                cart_item_ids: cartIdsStr,
+                cart_item_ids: cartIdsStr.split(',').map(id => parseInt(id.trim(), 10)).filter(n => !isNaN(n)),
                 traveler_details: travelerDetails
             }
 
@@ -105,7 +105,15 @@ export default function CheckoutPage() {
                 }
             }
 
-            await createBooking(payload)
+            let token = undefined;
+            if (loggedIn) {
+                const match = document.cookie.match(new RegExp('(^| )access_token=([^;]+)'));
+                if (match) {
+                    token = match[2];
+                }
+            }
+
+            await createBooking(payload, token)
             alert("Booking successful!")
 
             // Cleanup

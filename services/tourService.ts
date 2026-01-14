@@ -214,7 +214,7 @@ export interface TravelerDetail {
 }
 
 export interface BookingPayload {
-    cart_item_ids: string; // Comma separated IDs
+    cart_item_ids: number[]; // Array of integers
     traveler_details: TravelerDetail[];
     full_name?: string;
     email?: string;
@@ -222,12 +222,18 @@ export interface BookingPayload {
     phone?: string;
 }
 
-export async function createBooking(payload: BookingPayload): Promise<any> {
+export async function createBooking(payload: BookingPayload, token?: string): Promise<any> {
+    const headers: HeadersInit = {
+        "Content-Type": "application/json",
+    };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/tour/booking/`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify(payload),
     });
 

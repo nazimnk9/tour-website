@@ -64,7 +64,7 @@ export default function Navbar() {
                   <img
                     src="/images/logo_city_roam_tickets-transparent.png"   // <- put your logo file in /public/images/logo.png
                     alt="City Rome Tickets"
-                    className="h-20 w-auto md:h-20 sm:h-20"
+                    className="h-25 w-auto md:h-22 sm:h-22"
                   />
                 </Link>
               </div>

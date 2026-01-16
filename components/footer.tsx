@@ -72,29 +72,10 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#" className="hover:underline text-gray-100">
-                  Cookies and Marketing Preferences
+                  Terms and Conditions
                 </a>
               </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  General Terms and Conditions
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Information according to the Digital Services Act
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Sitemap
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Do not Sell or Share my Personal Information
-                </a>
-              </li>
+
             </ul>
           </div>
 
@@ -109,27 +90,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#" className="hover:underline text-gray-100">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
                   Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Press
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Gift Cards
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Explorer
                 </a>
               </li>
             </ul>

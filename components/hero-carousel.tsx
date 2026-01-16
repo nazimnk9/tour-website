@@ -46,7 +46,7 @@ export default function HeroCarousel() {
           </h1>
 
           {/* Search (mobile-friendly) */}
-          <div className="w-full max-w-2xl">
+          <div className="w-full max-w-lg">
             <div className="bg-white/95 backdrop-blur rounded-2xl sm:rounded-full shadow-lg p-2">
               <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 sm:gap-0">
                 <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4">

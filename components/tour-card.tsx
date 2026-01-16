@@ -54,7 +54,7 @@ export default function TourCard({ tour }: { tour: TourPlan }) {
           <h3 className="font-bold text-sm sm:text-base text-gray-900 mb-3 h-12 sm:h-14">{tour.title}</h3>
 
           {/* Description used as details for now or truncated */}
-          <div className="text-xs text-gray-600 mb-3 space-y-1 line-clamp-2">
+          <div className="text-xs text-gray-600 mb-3 mt-2 space-y-1 line-clamp-2">
             <p>{tour.description}</p>
           </div>
 

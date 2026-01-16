@@ -55,17 +55,17 @@ export default function Navbar() {
       />
       <nav className="w-full bg-white shadow-sm">
         {/* Top bar */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center mb-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          <div className="flex justify-between items-center mb-1">
             {/* Logo */}
             <div className="flex items-center gap-2">
               <div className="text-center">
-                <Link className="text-sm font-bold text-orange-500 tracking-tight cursor-pointer block" href="/">
-                  City
-                  <br />
-                  Rome
-                  <br />
-                  Tickets
+                <Link href="/" className="block cursor-pointer">
+                  <img
+                    src="/images/logo_city_roam_tickets-transparent.png"   // <- put your logo file in /public/images/logo.png
+                    alt="City Rome Tickets"
+                    className="h-20 w-auto md:h-20 sm:h-20"
+                  />
                 </Link>
               </div>
             </div>

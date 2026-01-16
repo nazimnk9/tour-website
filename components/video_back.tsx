@@ -3,7 +3,7 @@ export default function VideoBackgroundPage() {
     <main className="relative w-full min-h-screen overflow-hidden">
       {/* Video background */}
       <video
-        className="absolute inset-0 w-full h-full object-cover brightness-40"
+        className="absolute inset-0 w-full h-full object-cover brightness-45"
         src="/s_tour.mp4"
         autoPlay
         muted

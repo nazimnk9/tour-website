@@ -17,7 +17,7 @@ export default function TourCard({ tour }: { tour: TourPlan }) {
           <img
             src={imageUrl}
             alt={tour.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+            className="w-full h-full object-fixed group-hover:scale-105 transition duration-300"
           />
 
           {/* Badge - Originals by City Rome Tickets */}

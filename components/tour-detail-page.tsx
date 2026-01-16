@@ -29,6 +29,7 @@ import {
 } from "@/services/tourService"
 import { useAppDispatch } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
+import { useRouter } from "next/navigation"
 
 function DatePicker({
   isOpen,
@@ -357,6 +358,7 @@ function ReviewCard({
 }
 
 export default function TourDetailPage({ tourId }: { tourId: number }) {
+  const router = useRouter()
   const dispatch = useAppDispatch()
   const [tour, setTour] = useState<TourPlan | null>(null)
   const [loading, setLoading] = useState(true)
@@ -515,6 +517,27 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       console.error("Add to cart failed", error)
       alert(error.message || "Failed to add to cart")
     }
+  }
+
+  const handleBookNow = () => {
+    if (!tour || !selectedDate || !selectedTimeSlot) {
+      alert("Please select a date and time slot first")
+      return
+    }
+
+    const payload = {
+      num_adults: counts.adults,
+      num_children: counts.children,
+      num_infants: counts.infants,
+      num_youth: counts.youths,
+      num_student_eu: counts.students,
+      tour_plan: tour.id,
+      time_slot: selectedTimeSlot.id
+    }
+
+    // Save to local storage
+    localStorage.setItem('bookNowData', JSON.stringify(payload))
+    router.push('/checkout')
   }
 
   // Generate next 14 days for the horizontal strip
@@ -992,6 +1015,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       ) : (
                         <div className="flex gap-2 mb-2">
                           <button
+                            onClick={handleBookNow}
                             className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                           >
                             Book now

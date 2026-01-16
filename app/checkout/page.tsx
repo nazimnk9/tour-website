@@ -12,6 +12,7 @@ export default function CheckoutPage() {
     const [loggedIn, setLoggedIn] = useState(false)
     const [step, setStep] = useState(1) // 1: Contact Info (Guest), 2: Traveler Details
     const [totalAdults, setTotalAdults] = useState(0)
+    const [isBookNow, setIsBookNow] = useState(false)
 
     // Forms
     const [guestDetails, setGuestDetails] = useState({
@@ -37,7 +38,28 @@ export default function CheckoutPage() {
             setStep(2)
         }
 
-        // Load cart for adult count
+        // Check for Book Now data first
+        const bookNowDataStr = localStorage.getItem('bookNowData')
+        let bookNowMode = false
+        if (bookNowDataStr) {
+            try {
+                const bookNowData = JSON.parse(bookNowDataStr)
+                setIsBookNow(true)
+                bookNowMode = true
+
+                // Set adults count directly from data
+                const adults = bookNowData.num_adults || 0 // Default to 0 if not found, though interface implies it exists
+                setTotalAdults(adults)
+                setTravelerDetails(Array(adults).fill({ name: "", email: "" }))
+                setLoading(false)
+                return; // Skip cart loading
+            } catch (e) {
+                console.error("Failed to parse book now data", e)
+                // Fallthrough to cart logic
+            }
+        }
+
+        // Load cart for adult count if not book now
         const cartIdsStr = localStorage.getItem('cartItemId')
         if (!cartIdsStr) {
             setLoading(false)
@@ -78,12 +100,26 @@ export default function CheckoutPage() {
     const handleFinalSubmit = async () => {
         setLoading(true)
         try {
-            const cartIdsStr = localStorage.getItem('cartItemId')
-            if (!cartIdsStr) throw new Error("No items in cart")
+            let payload: BookingPayload;
 
-            const payload: BookingPayload = {
-                cart_item_ids: cartIdsStr.split(',').map(id => parseInt(id.trim(), 10)).filter(n => !isNaN(n)),
-                traveler_details: travelerDetails
+            if (isBookNow) {
+                const bookNowDataStr = localStorage.getItem('bookNowData')
+                if (!bookNowDataStr) throw new Error("Missing booking data")
+                const bookNowData = JSON.parse(bookNowDataStr)
+
+                payload = {
+                    book_now: "true",
+                    single_item: bookNowData,
+                    traveler_details: travelerDetails
+                }
+            } else {
+                const cartIdsStr = localStorage.getItem('cartItemId')
+                if (!cartIdsStr) throw new Error("No items in cart")
+
+                payload = {
+                    cart_item_ids: cartIdsStr.split(',').map(id => parseInt(id.trim(), 10)).filter(n => !isNaN(n)),
+                    traveler_details: travelerDetails
+                }
             }
 
             if (!loggedIn) {
@@ -117,7 +153,11 @@ export default function CheckoutPage() {
             alert("Booking successful!")
 
             // Cleanup
-            localStorage.removeItem('cartItemId')
+            if (isBookNow) {
+                localStorage.removeItem('bookNowData')
+            } else {
+                localStorage.removeItem('cartItemId')
+            }
             localStorage.removeItem('guestCheckoutDetails')
             window.location.href = "/"
 

@@ -213,8 +213,20 @@ export interface TravelerDetail {
     email: string;
 }
 
+export interface SingleItemPayload {
+    num_adults: number;
+    num_children: number;
+    num_infants: number;
+    num_youth: number;
+    num_student_eu: number;
+    tour_plan: number;
+    time_slot: number;
+}
+
 export interface BookingPayload {
-    cart_item_ids: number[]; // Array of integers
+    cart_item_ids?: number[]; // Array of integers, optional for book now
+    book_now?: string; // "true"
+    single_item?: SingleItemPayload;
     traveler_details: TravelerDetail[];
     full_name?: string;
     email?: string;

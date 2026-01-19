@@ -17,6 +17,7 @@ import {
   Loader2,
   Calendar as CalendarIcon,
   Image as ImageIcon,
+  X,
 } from "lucide-react"
 import Link from "next/link"
 import { ItineraryTimeline } from "./Itinerary-timeline"
@@ -449,6 +450,29 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   const [showBookingButtons, setShowBookingButtons] = useState(false) // For booking buttons toggle
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
+  // Lightbox State
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index)
+    setIsLightboxOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false)
+  }
+
+  const nextLightboxImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setLightboxIndex((prev) => (prev + 1) % images.length)
+  }
+
+  const prevLightboxImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setLightboxIndex((prev) => (prev - 1 + images.length) % images.length)
+  }
+
   // Handlers
   const handleDateSelect = (date: TourDate) => {
     setSelectedDate(date)
@@ -712,7 +736,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
             {/* Image Gallery - Grid Layout */}
             <div className="relative mb-6 rounded-lg overflow-auto grid grid-cols-3 gap-2 h-100">
               {/* Main large image on the left */}
-              <div className="col-span-2 rounded-lg overflow-auto">
+              <div className="col-span-2 rounded-lg overflow-auto cursor-pointer" onClick={() => openLightbox(0)}>
                 <img
                   src={images[0]}
                   alt={`${tour.title} - Main image`}
@@ -723,7 +747,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               {/* Right column with smaller images */}
               <div className="flex flex-col gap-2">
                 {/* First thumbnail */}
-                <div className="flex-1 rounded-lg overflow-auto">
+                <div className="flex-1 rounded-lg overflow-auto cursor-pointer" onClick={() => openLightbox(0)}>
                   {images[1] && (
                     <img
                       src={images[1]}
@@ -734,7 +758,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 </div>
 
                 {/* Second thumbnail with +4 badge */}
-                <div className="flex-1 rounded-lg overflow-auto relative">
+                <div className="flex-1 rounded-lg overflow-auto relative cursor-pointer" onClick={() => openLightbox(2)}>
                   {images[2] && (
                     <img
                       src={images[2]}
@@ -744,7 +768,13 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   )}
                   {/* + badge indicator */}
                   {images.length > 3 && (
-                    <button className="absolute bottom-5 right-5 bg-transparent backdrop-blur-[2px] border-[1.5px] border-white text-white px-5 py-3 rounded-full flex items-center gap-2.5 z-10 hover:backdrop-blur-[3px] transition-all cursor-pointer">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        openLightbox(0)
+                      }}
+                      className="absolute bottom-5 right-5 bg-transparent backdrop-blur-[2px] border-[1.5px] border-white text-white px-5 py-3 rounded-full flex items-center gap-2.5 z-10 hover:backdrop-blur-[3px] transition-all cursor-pointer"
+                    >
                       <ImageIcon size={22} strokeWidth={2.5} />
                       <span className="font-bold text-xl leading-none">+{images.length - 3}</span>
                     </button>
@@ -1466,6 +1496,52 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
           </div>
         </div>
       </div>
+      {/* Lightbox Modal */}
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center">
+          {/* Image Counter */}
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white text-xl font-bold z-50 tracking-wide">
+            {lightboxIndex + 1} / {images.length}
+          </div>
+
+          {/* Close Button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 z-50 p-2"
+          >
+            <X size={32} />
+          </button>
+
+          {/* Previous Image - Only show if more than 1 image */}
+          {images.length > 1 && (
+            <button
+              onClick={prevLightboxImage}
+              className="absolute left-4 text-white hover:text-gray-300 z-50 p-2 bg-black/50 rounded-full"
+            >
+              <ChevronLeft size={40} />
+            </button>
+          )}
+
+          {/* Main Image */}
+          <div className="relative w-full h-full flex items-center justify-center p-4">
+            <img
+              src={images[lightboxIndex]}
+              alt={`Gallery image ${lightboxIndex + 1}`}
+              className="max-w-full max-h-screen object-contain select-none"
+            />
+          </div>
+
+          {/* Next Image - Only show if more than 1 image */}
+          {images.length > 1 && (
+            <button
+              onClick={nextLightboxImage}
+              className="absolute right-4 text-white hover:text-gray-300 z-50 p-2 bg-black/50 rounded-full"
+            >
+              <ChevronRight size={40} />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }

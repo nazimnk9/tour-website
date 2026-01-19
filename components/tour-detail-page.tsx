@@ -16,6 +16,7 @@ import {
   Users2,
   Loader2,
   Calendar as CalendarIcon,
+  Image as ImageIcon,
 } from "lucide-react"
 import Link from "next/link"
 import { ItineraryTimeline } from "./Itinerary-timeline"
@@ -715,7 +716,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 <img
                   src={images[0]}
                   alt={`${tour.title} - Main image`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-fixed"
                 />
               </div>
 
@@ -727,7 +728,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     <img
                       src={images[1]}
                       alt={`${tour.title} - Image 2`}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-fixed"
                     />
                   )}
                 </div>
@@ -738,14 +739,15 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                     <img
                       src={images[2]}
                       alt={`${tour.title} - Image 3`}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-fixed"
                     />
                   )}
                   {/* + badge indicator */}
                   {images.length > 3 && (
-                    <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded flex items-center gap-1 text-sm font-medium">
-                      <span>+{images.length - 3}</span>
-                    </div>
+                    <button className="absolute bottom-5 right-5 bg-transparent backdrop-blur-[2px] border-[1.5px] border-white text-white px-5 py-3 rounded-full flex items-center gap-2.5 z-10 hover:backdrop-blur-[3px] transition-all cursor-pointer">
+                      <ImageIcon size={22} strokeWidth={2.5} />
+                      <span className="font-bold text-xl leading-none">+{images.length - 3}</span>
+                    </button>
                   )}
                 </div>
               </div>

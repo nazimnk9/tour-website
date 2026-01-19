@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import {
   Heart,
   Star,
@@ -445,6 +445,26 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   }, [selectedDate])
 
   const [isTravelerPickerOpen, setIsTravelerPickerOpen] = useState(false)
+  const travelerPickerRef = useRef<HTMLDivElement>(null)
+  const travelerPickerRefSidebar = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node
+      const isOutsideMain = travelerPickerRef.current && !travelerPickerRef.current.contains(target)
+      const isOutsideSidebar = travelerPickerRefSidebar.current && !travelerPickerRefSidebar.current.contains(target)
+
+      if (isOutsideMain && isOutsideSidebar) {
+        setIsTravelerPickerOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false) // For sidebar
   const [isGridDatePickerOpen, setIsGridDatePickerOpen] = useState(false) // For horizontal strip
   const [showBookingButtons, setShowBookingButtons] = useState(false) // For booking buttons toggle
@@ -1010,10 +1030,14 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
                   <div className="flex items-end justify-between">
                     <div>
-                      {/* Traveler Picker with Input Field */}
-                      <div className="mb-4 relative">
+                      {/* Quantity/Travelers Selector */}
+                      <div className="mb-4 relative" ref={travelerPickerRef}>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Travelers</label>
                         <button
-                          onClick={() => setIsTravelerPickerOpen(!isTravelerPickerOpen)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setIsTravelerPickerOpen(!isTravelerPickerOpen)
+                          }}
                           className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap min-w-[200px]"
                         >
                           <span className="flex items-center gap-2">
@@ -1022,6 +1046,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                           </span>
                           <ChevronLeft size={20} className="text-gray-600 rotate-180" />
                         </button>
+
                         <TravelerCounter
                           isOpen={isTravelerPickerOpen}
                           onClose={() => setIsTravelerPickerOpen(false)}
@@ -1225,9 +1250,12 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               </div>
 
               {/* Travelers Selector */}
-              <div className="mb-4 relative">
+              <div className="mb-4 relative" ref={travelerPickerRefSidebar}>
                 <button
-                  onClick={() => setIsTravelerPickerOpen(!isTravelerPickerOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsTravelerPickerOpen(!isTravelerPickerOpen)
+                  }}
                   className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium"
                 >
                   <span className="flex items-center gap-2">

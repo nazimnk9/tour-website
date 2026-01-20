@@ -445,17 +445,26 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   }, [selectedDate])
 
   const [isTravelerPickerOpen, setIsTravelerPickerOpen] = useState(false)
-  const travelerPickerRef = useRef<HTMLDivElement>(null)
+
   const travelerPickerRefSidebar = useRef<HTMLDivElement>(null)
+
+  const sidebarDatePickerRef = useRef<HTMLDivElement>(null)
+  const gridDatePickerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node
-      const isOutsideMain = travelerPickerRef.current && !travelerPickerRef.current.contains(target)
-      const isOutsideSidebar = travelerPickerRefSidebar.current && !travelerPickerRefSidebar.current.contains(target)
 
-      if (isOutsideMain && isOutsideSidebar) {
+      if (travelerPickerRefSidebar.current && !travelerPickerRefSidebar.current.contains(target)) {
         setIsTravelerPickerOpen(false)
+      }
+
+      if (sidebarDatePickerRef.current && !sidebarDatePickerRef.current.contains(target)) {
+        setIsDatePickerOpen(false)
+      }
+
+      if (gridDatePickerRef.current && !gridDatePickerRef.current.contains(target)) {
+        setIsGridDatePickerOpen(false)
       }
     }
 
@@ -891,212 +900,11 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   />
                 </div>
               </div> */}
-
-              {/* Check availability */}
               <div className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Check availability</h2>
-
-                {/* Check availability logic */}
-                {/* Horizontal Date Selector */}
-                <div className="mb-6 relative flex gap-2">
-                  <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide flex-1">
-                    {nextDays.map((date, idx) => {
-                      const dateStr = date.toISOString().split('T')[0]
-                      const year = date.getFullYear();
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const formattedDate = `${year}-${month}-${day}`;
-
-                      const availableDate = availableDates.find(d => d.date === formattedDate)
-                      const isSelected = selectedDate?.date === formattedDate
-
-                      return (
-                        <button
-                          key={idx}
-                          onClick={() => {
-                            if (availableDate) handleDateSelect(availableDate)
-                          }}
-                          disabled={!availableDate}
-                          className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-lg border transition-all
-                            ${isSelected
-                              ? "border-blue-600 bg-blue-50 text-blue-900"
-                              : availableDate
-                                ? "border-gray-300 bg-white text-gray-900 hover:border-gray-400 cursor-pointer"
-                                : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
-                            }`}
-                        >
-                          <span className="text-xs font-semibold uppercase">
-                            {idx === 0 ? "Today" : date.toLocaleString('default', { weekday: 'short' })}
-                          </span>
-                          <span className={`text-xl font-bold ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
-                            {date.getDate()}
-                          </span>
-                          <span className="text-xs">
-                            {date.toLocaleString('default', { month: 'short' })}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {/* Calendar Icon Button */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setIsGridDatePickerOpen(!isGridDatePickerOpen)}
-                      className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-lg border border-gray-300 bg-white text-gray-900 hover:border-gray-400 cursor-pointer"
-                    >
-                      <CalendarIcon size={24} />
-                    </button>
-
-                    {/* Dropdown DatePicker */}
-                    <DatePicker
-                      isOpen={isGridDatePickerOpen}
-                      onClose={() => setIsGridDatePickerOpen(false)}
-                      tourId={tourId}
-                      onDateSelect={handleDateSelect}
-                    />
-                  </div>
-                </div>
-
-                {/* Time Slot Selector - Only show if date selected */}
-                {selectedDate && timeSlots.length > 0 && (
-                  <div className="mb-6">
-                    <label className="block text-sm font-bold text-[#051036] mb-1">Select a starting time</label>
-                    <p className="text-sm text-gray-500 mb-3">
-                      {new Date(selectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                      {timeSlots.map(slot => {
-                        const isSelected = selectedTimeSlot?.id === slot.id
-                        return (
-                          <button
-                            key={slot.id}
-                            onClick={() => setSelectedTimeSlot(slot)}
-                            className={`px-6 py-2.5 rounded-lg border text-sm font-bold transition-all
-                              ${isSelected
-                                ? "bg-[#051036] text-white border-[#051036]"
-                                : "bg-white text-[#051036] border-gray-400 hover:border-[#051036]"
-                              }`}
-                          >
-                            {slot.start_time.split(':').slice(0, 2).join(':')}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                  {[
-                    "Sun\n11\nJan",
-                    "Mon\n12\nJan",
-                    "Tue\n13\nJan",
-                    "Wed\n14\nJan",
-                    "Thu\n15\nJan",
-                    "Fri\n16\nJan",
-                    "Sat\n17\nJan",
-                  ].map((date, idx) => (
-                    <button
-                      key={idx}
-                      className={`flex-shrink-0 flex-row px-4 py-3 rounded border text-center text-sm font-medium whitespace-pre-line ${idx === 1
-                        ? "border-blue-600 bg-blue-50 text-blue-900"
-                        : "border-gray-300 bg-white text-gray-900 hover:border-gray-400"
-                        }`}
-                    >
-                      {date}
-                    </button>
-                  ))}
-                  <button className="flex-shrink-0 px-4 py-3 rounded border border-gray-300 text-gray-600 hover:border-gray-400 flex items-center justify-center">
-                    📅
-                  </button>
-                </div> 
-
-                <p className="text-gray-900 font-semibold mb-4">1 option available</p> */}
-
-                {/* Tour option card */}
-                <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 mb-6">
-                  <h3 className="font-semibold text-gray-900 text-lg mb-4">{tour.title}</h3>
-
-                  <div className="flex flex-wrap gap-6 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Clock size={20} className="text-gray-600" />
-                      <span className="text-gray-700 font-medium">14 hours</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users size={20} className="text-gray-600" />
-                      <span className="text-gray-700 font-medium">Guide: English</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-end justify-between">
-                    <div>
-                      {/* Quantity/Travelers Selector */}
-                      <div className="mb-4 relative" ref={travelerPickerRef}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Travelers</label>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setIsTravelerPickerOpen(!isTravelerPickerOpen)
-                          }}
-                          className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap min-w-[200px]"
-                        >
-                          <span className="flex items-center gap-2">
-                            <span>👥</span>
-                            <span>{getTravelerSummary()}</span>
-                          </span>
-                          <ChevronLeft size={20} className="text-gray-600 rotate-180" />
-                        </button>
-
-                        <TravelerCounter
-                          isOpen={isTravelerPickerOpen}
-                          onClose={() => setIsTravelerPickerOpen(false)}
-                          tour={tour}
-                          counts={counts}
-                          onUpdateCount={handleUpdateCount}
-                        />
-                      </div>
-
-                      {/* Price Display */}
-                      <p className="text-gray-600 text-sm mb-1">{getPriceSummary()}</p>
-                      <p className="text-3xl font-bold text-gray-900">${calculateTotalPrice()}</p>
-                      {/* <p className="text-gray-600 text-sm">per person</p> */}
-                    </div>
-                    <div className="text-right">
-                      {!showBookingButtons ? (
-                        <button
-                          onClick={() => setShowBookingButtons(true)}
-                          className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-2"
-                        >
-                          Select
-                        </button>
-                      ) : (
-                        <div className="flex gap-2 mb-2">
-                          <button
-                            onClick={handleBookNow}
-                            className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
-                          >
-                            Book now
-                          </button>
-                          <button
-                            onClick={handleAddToCart}
-                            className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
-                          >
-                            Add to Cart
-                          </button>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2 text-teal-600 justify-end">
-                        <Check size={18} />
-                        <span className="text-sm font-medium">Free cancellation</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div className="mb-8 pb-8 border-b border-gray-200">
                   <ItineraryTimeline locations={tour?.locations || []} />
                 </div>
               </div>
-
               {/* Highlights */}
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
@@ -1274,7 +1082,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               </div>
 
               {/* Date Selector */}
-              <div className="mb-6 relative">
+              <div className="mb-6 relative" ref={sidebarDatePickerRef}>
                 <button
                   onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
                   className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium"
@@ -1302,7 +1110,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               </div>
 
               {/* Benefits */}
-              <div className="space-y-3 border-t border-gray-200 pt-4">
+              <div className="space-y-3 border-t border-gray-200 pt-4 mb-4">
                 <div className="flex items-start gap-3">
                   <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -1323,6 +1131,13 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </div>
                 </div>
               </div>
+
+              <Link
+                href={`/tour/${tour.id}/availability`}
+                className="w-full block text-center bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              >
+                Check availability
+              </Link>
             </div>
           </div>
         </div>

@@ -1,10 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { useEffect, useState, useRef } from "react"
+import { Search } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { API_BASE_URL } from "@/services/authService";
+interface TourSuggestion {
+  id: number
+  title: string
+  price_adult: number
+  duration?: string
+  images?: { file: string }[]
+  featured_image?: string
+}
 
 export default function HeroCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [suggestions, setSuggestions] = useState<TourSuggestion[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   const slides = [
     {
@@ -26,8 +42,58 @@ export default function HeroCarousel() {
     return () => clearInterval(timer)
   }, [slides.length])
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length)
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+  // Handle outside click to close suggestions
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  // Debounce search
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.trim().length > 0) {
+        setIsLoading(true)
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/tour/plan/?search=${encodeURIComponent(searchQuery)}`
+          )
+          if (response.ok) {
+            const data = await response.json()
+            // Assuming the API returns { data: [...] } or just [...]
+            setSuggestions(data.results || data || [])
+            setShowSuggestions(true)
+          }
+        } catch (error) {
+          console.error("Error fetching suggestions:", error)
+        } finally {
+          setIsLoading(false)
+        }
+      } else {
+        setSuggestions([])
+        setShowSuggestions(false)
+      }
+    }, 500) // 500ms debounce
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchQuery])
+
+  const handleSuggestionClick = (id: number) => {
+    setShowSuggestions(false)
+    router.push(`/tour/${id}`)
+  }
+
+  const getImageSrc = (tour: TourSuggestion) => {
+    if (tour.featured_image) return tour.featured_image
+    if (tour.images && tour.images.length > 0) return tour.images[0].file
+    return "/placeholder.svg"
+  }
 
   return (
     <div className="relative w-full h-96 sm:h-[500px] overflow-hidden">
@@ -46,13 +112,18 @@ export default function HeroCarousel() {
           </h1>
 
           {/* Search (mobile-friendly) */}
-          <div className="w-full max-w-lg lg:max-w-lg md:max-w-lg sm:max-w-sm">
-            <div className="bg-white/95 backdrop-blur rounded-2xl sm:rounded-full shadow-lg p-2">
+          <div className="w-full max-w-lg lg:max-w-lg md:max-w-lg sm:max-w-sm" ref={wrapperRef}>
+            <div className="bg-white/95 backdrop-blur rounded-2xl sm:rounded-full shadow-lg p-2 relative">
               <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2 sm:gap-0">
                 <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4">
                   <Search className="w-5 h-5 text-muted-foreground shrink-0" />
                   <input
                     type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => {
+                      if (suggestions.length > 0) setShowSuggestions(true)
+                    }}
                     placeholder={slides[currentSlide].subtitle}
                     className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
                   />
@@ -62,27 +133,62 @@ export default function HeroCarousel() {
                   <span>Search</span>
                 </button>
               </div>
+
+              {/* Suggestions Dropdown */}
+              {showSuggestions && (isLoading || suggestions.length > 0) && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl overflow-hidden z-50 max-h-[400px] overflow-y-auto">
+                  <div className="p-2">
+                    {isLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-6 h-6 border-3 border-gray-200 border-t-[#ff5533] rounded-full animate-spin"></div>
+                          <span className="text-sm text-gray-500">Searching...</span>
+                        </div>
+                      </div>
+                    ) : suggestions.length > 0 ? (
+                      <>
+                        <h3 className="text-sm font-semibold text-gray-500 px-4 py-2">Suggestions</h3>
+                        {suggestions.map((tour) => (
+                          <div
+                            key={tour.id}
+                            onClick={() => handleSuggestionClick(tour.id)}
+                            className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors"
+                          >
+                            <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                              <img
+                                src={getImageSrc(tour) || "/placeholder.svg"}
+                                alt={tour.title}
+                                className="w-full h-full object-fixed"
+                              />
+                            </div>
+                            <div className="flex flex-col items-start text-left">
+                              <span className="font-medium text-gray-900 line-clamp-1">{tour.title}</span>
+                              <span className="text-sm text-gray-500 line-clamp-1">
+                                {tour.price_adult}
+                                {tour.duration ? ` • ${tour.duration}` : ""}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="flex flex-col items-center gap-2">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                          <span className="text-sm font-medium text-gray-600">No result found</span>
+                          <span className="text-xs text-gray-500">Try a different search term</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Navigation arrows (bigger touch targets on mobile) */}
-      {/* <button
-        onClick={prevSlide}
-        className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white/80 p-3 sm:p-2 rounded-full transition z-10"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-6 h-6 text-gray-800" />
-      </button> */}
-
-      {/* <button
-        onClick={nextSlide}
-        className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/60 hover:bg-white/80 p-3 sm:p-2 rounded-full transition z-10"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-6 h-6 text-gray-800" />
-      </button> */}
 
       {/* Dots */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -90,9 +196,8 @@ export default function HeroCarousel() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`h-3 w-3 rounded-full transition ${
-              index === currentSlide ? "bg-white" : "bg-white/50"
-            }`}
+            className={`h-3 w-3 rounded-full transition ${index === currentSlide ? "bg-white" : "bg-white/50"
+              }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
@@ -100,3 +205,4 @@ export default function HeroCarousel() {
     </div>
   )
 }
+

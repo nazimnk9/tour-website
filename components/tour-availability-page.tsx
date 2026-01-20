@@ -17,7 +17,10 @@ import {
     Calendar as CalendarIcon,
     Image as ImageIcon,
     X,
-    Car
+    Car,
+    CheckCircle2,
+    AlertCircle,
+    ShieldCheck
 } from "lucide-react"
 import Link from "next/link"
 import {
@@ -31,6 +34,16 @@ import {
 import { useAppDispatch } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 import { useRouter } from "next/navigation"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 function DatePicker({
     isOpen,
@@ -325,7 +338,19 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     const dispatch = useAppDispatch()
     const [tour, setTour] = useState<TourPlan | null>(null)
     const [loading, setLoading] = useState(true)
+
     const [error, setError] = useState<string | null>(null)
+
+    // Message Modal State
+    const [messageModalOpen, setMessageModalOpen] = useState(false)
+    const [messageModalTitle, setMessageModalTitle] = useState("")
+    const [messageModalContent, setMessageModalContent] = useState("")
+
+    const showMessage = (title: string, content: string) => {
+        setMessageModalTitle(title)
+        setMessageModalContent(content)
+        setMessageModalOpen(true)
+    }
 
     // Booking State
     const [selectedDate, setSelectedDate] = useState<TourDate | null>(null)
@@ -454,7 +479,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
 
     const handleAddToCart = async () => {
         if (!tour || !selectedDate || !selectedTimeSlot) {
-            alert("Please select a date and time slot first")
+            showMessage("Missing Selection", "Please select a date and time slot first")
             return
         }
 
@@ -489,20 +514,22 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
             setCounts({ adults: 1, children: 0, infants: 0, youths: 0, students: 0 })
             setShowBookingButtons(false)
 
-            alert("Tour added to cart!")
+            setShowBookingButtons(false)
+
+            showMessage("Success", "Tour added to cart!")
 
             // Update Navbar count via Redux
             dispatch(fetchCartCount())
 
         } catch (error: any) {
             console.error("Add to cart failed", error)
-            alert(error.message || "Failed to add to cart")
+            showMessage("Error", error.message || "Failed to add to cart")
         }
     }
 
     const handleBookNow = () => {
         if (!tour || !selectedDate || !selectedTimeSlot) {
-            alert("Please select a date and time slot first")
+            showMessage("Missing Selection", "Please select a date and time slot first")
             return
         }
 
@@ -803,6 +830,49 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     </div>
                 </div>
             </div>
+
+
+            <AlertDialog open={messageModalOpen} onOpenChange={setMessageModalOpen}>
+                <AlertDialogContent className="sm:max-w-md bg-white border-0 shadow-2xl rounded-2xl p-0 overflow-hidden">
+                    <div className={`p-6 flex flex-col items-center justify-center border-b ${messageModalTitle === "Success" ? "bg-green-50 border-green-100" :
+                        messageModalTitle === "Error" ? "bg-red-50 border-red-100" :
+                            "bg-blue-50 border-blue-100"
+                        }`}>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-inner ${messageModalTitle === "Success" ? "bg-green-100" :
+                            messageModalTitle === "Error" ? "bg-red-100" :
+                                "bg-blue-100"
+                            }`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${messageModalTitle === "Success" ? "bg-green-200" :
+                                messageModalTitle === "Error" ? "bg-red-200" :
+                                    "bg-blue-200"
+                                }`}>
+                                {messageModalTitle === "Success" ? (
+                                    <CheckCircle2 className="text-green-600 w-6 h-6" />
+                                ) : messageModalTitle === "Error" || messageModalTitle.includes("Failed") || messageModalTitle === "Missing Selection" ? (
+                                    <AlertCircle className="text-red-600 w-6 h-6" />
+                                ) : (
+                                    <ShieldCheck className="text-blue-600 w-6 h-6" />
+                                )}
+                            </div>
+                        </div>
+                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
+                        <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
+                            {messageModalContent}
+                        </AlertDialogDescription>
+                    </div>
+                    <AlertDialogFooter className="p-6 pt-0 bg-white">
+                        <AlertDialogAction
+                            onClick={() => setMessageModalOpen(false)}
+                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                                messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
+                                    "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
+                                }`}
+                        >
+                            OK, Got it
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

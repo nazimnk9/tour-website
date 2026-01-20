@@ -11,12 +11,23 @@ import {
     getTourTimeSlots,
     updateCartItem,
     getCartItem,
+    deleteCartItem,
     CartItem,
     TourPlan,
     TourDate,
     TourTimeSlot,
     AddToCartPayload
 } from "@/services/tourService"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import {
     Loader2,
     Trash2,
@@ -30,7 +41,9 @@ import {
     Plus,
     Calendar as CalendarIcon,
     ChevronRight,
-    X
+    X,
+    CheckCircle2,
+    AlertCircle
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -357,6 +370,22 @@ export default function CartPage() {
     const travelerPickerRefSidebar = useRef<HTMLDivElement>(null)
     const sidebarDatePickerRef = useRef<HTMLDivElement>(null)
 
+    // Delete Modal State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [itemToDeleteId, setItemToDeleteId] = useState<number | null>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
+
+    // Message Modal State
+    const [messageModalOpen, setMessageModalOpen] = useState(false)
+    const [messageModalTitle, setMessageModalTitle] = useState("")
+    const [messageModalContent, setMessageModalContent] = useState("")
+
+    const showMessage = (title: string, content: string) => {
+        setMessageModalTitle(title)
+        setMessageModalContent(content)
+        setMessageModalOpen(true)
+    }
+
     useEffect(() => {
         loadCart()
     }, [])
@@ -525,7 +554,7 @@ export default function CartPage() {
 
     const handleUpdateItem = async (itemId: number, tourId: number) => {
         if (!editSelectedDate || !editSelectedTimeSlot) {
-            alert("Please select date and time")
+            showMessage("Missing Selection", "Please select date and time")
             return
         }
 
@@ -541,25 +570,50 @@ export default function CartPage() {
             }
 
             await updateCartItem(itemId, payload)
-            alert("Cart item updated!")
+            showMessage("Success", "Cart item updated!")
             handleCancelEdit()
             loadCart() // Reload to refresh view
         } catch (error: any) {
             console.error("Update failed", error)
-            alert(error.message || "Failed to update item")
+            showMessage("Error", error.message || "Failed to update item")
         }
     }
 
     const handleDelete = (idToRemove: number) => {
-        const cartIdsStr = localStorage.getItem('cartItemId')
-        if (cartIdsStr) {
-            const ids = cartIdsStr.split(',').filter(id => parseInt(id.trim()) !== idToRemove)
-            if (ids.length > 0) {
-                localStorage.setItem('cartItemId', ids.join(','))
-            } else {
-                localStorage.removeItem('cartItemId')
+        setItemToDeleteId(idToRemove)
+        setIsDeleteModalOpen(true)
+    }
+
+    const confirmDelete = async () => {
+        if (!itemToDeleteId) return
+
+        try {
+            setIsDeleting(true)
+            await deleteCartItem(itemToDeleteId)
+
+            // Update local storage
+            const cartIdsStr = localStorage.getItem('cartItemId')
+            if (cartIdsStr) {
+                const ids = cartIdsStr.split(',').filter(id => parseInt(id.trim()) !== itemToDeleteId)
+                if (ids.length > 0) {
+                    localStorage.setItem('cartItemId', ids.join(','))
+                } else {
+                    localStorage.removeItem('cartItemId')
+                }
             }
+
+            // Reload cart
             loadCart()
+
+            // Close modal
+            setIsDeleteModalOpen(false)
+            setItemToDeleteId(null)
+
+        } catch (error) {
+            console.error("Failed to delete item", error)
+            showMessage("Error", "Failed to delete item")
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -837,6 +891,100 @@ export default function CartPage() {
                     </div>
                 )}
             </main>
+
+            <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+                <AlertDialogContent className="sm:max-w-md bg-white border-0 shadow-2xl rounded-2xl p-0 overflow-hidden">
+                    {/* Decorative Header Background */}
+                    <div className="bg-red-50 p-6 flex flex-col items-center justify-center border-b border-red-100">
+                        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                            <div className="w-10 h-10 bg-red-200 rounded-full flex items-center justify-center">
+                                <Trash2 className="text-red-600 w-6 h-6" />
+                            </div>
+                        </div>
+                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">Delete Item</AlertDialogTitle>
+                        <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
+                            Are you sure you want to remove this tour from your cart?
+                        </AlertDialogDescription>
+                    </div>
+
+                    <div className="p-6">
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800 flex gap-2 items-start mb-6">
+                            <span className="mt-0.5">⚠️</span>
+                            <span>This action cannot be undone. You will need to add it again if you change your mind.</span>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <AlertDialogCancel
+                                disabled={isDeleting}
+                                onClick={() => setIsDeleteModalOpen(false)}
+                                className="flex-1 border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold py-3 h-auto rounded-lg"
+                            >
+                                Keep Item
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    confirmDelete()
+                                }}
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 h-auto rounded-lg shadow-md shadow-red-200"
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span>Deleting...</span>
+                                    </div>
+                                ) : (
+                                    "Yes, Delete"
+                                )}
+                            </AlertDialogAction>
+                        </div>
+                    </div>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={messageModalOpen} onOpenChange={setMessageModalOpen}>
+                <AlertDialogContent className="sm:max-w-md bg-white border-0 shadow-2xl rounded-2xl p-0 overflow-hidden">
+                    <div className={`p-6 flex flex-col items-center justify-center border-b ${messageModalTitle === "Success" ? "bg-green-50 border-green-100" :
+                        messageModalTitle === "Error" ? "bg-red-50 border-red-100" :
+                            "bg-blue-50 border-blue-100"
+                        }`}>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-inner ${messageModalTitle === "Success" ? "bg-green-100" :
+                            messageModalTitle === "Error" ? "bg-red-100" :
+                                "bg-blue-100"
+                            }`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${messageModalTitle === "Success" ? "bg-green-200" :
+                                messageModalTitle === "Error" ? "bg-red-200" :
+                                    "bg-blue-200"
+                                }`}>
+                                {messageModalTitle === "Success" ? (
+                                    <CheckCircle2 className="text-green-600 w-6 h-6" />
+                                ) : messageModalTitle === "Error" || messageModalTitle === "Missing Selection" ? (
+                                    <AlertCircle className="text-red-600 w-6 h-6" />
+                                ) : (
+                                    <ShieldCheck className="text-blue-600 w-6 h-6" />
+                                )}
+                            </div>
+                        </div>
+                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
+                        <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
+                            {messageModalContent}
+                        </AlertDialogDescription>
+                    </div>
+                    <AlertDialogFooter className="p-6 pt-0 bg-white">
+                        <AlertDialogAction
+                            onClick={() => setMessageModalOpen(false)}
+                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                                messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
+                                    "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
+                                }`}
+                        >
+                            OK, Got it
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
 
             <Footer />
         </div>

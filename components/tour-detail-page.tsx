@@ -18,6 +18,9 @@ import {
   Calendar as CalendarIcon,
   Image as ImageIcon,
   X,
+  CheckCircle2,
+  AlertCircle,
+  ShieldCheck
 } from "lucide-react"
 import Link from "next/link"
 import { ItineraryTimeline } from "./Itinerary-timeline"
@@ -32,6 +35,16 @@ import {
 import { useAppDispatch } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 import { useRouter } from "next/navigation"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 function DatePicker({
   isOpen,
@@ -173,6 +186,7 @@ function DatePicker({
           <ChevronRight size={20} className="text-gray-600" />
         </button>
       </div>
+
 
     </div>
   )
@@ -364,7 +378,19 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   const dispatch = useAppDispatch()
   const [tour, setTour] = useState<TourPlan | null>(null)
   const [loading, setLoading] = useState(true)
+
   const [error, setError] = useState<string | null>(null)
+
+  // Message Modal State
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [messageModalTitle, setMessageModalTitle] = useState("")
+  const [messageModalContent, setMessageModalContent] = useState("")
+
+  const showMessage = (title: string, content: string) => {
+    setMessageModalTitle(title)
+    setMessageModalContent(content)
+    setMessageModalOpen(true)
+  }
 
   const [isFavorite, setIsFavorite] = useState(false)
 
@@ -527,7 +553,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
   const handleAddToCart = async () => {
     if (!tour || !selectedDate || !selectedTimeSlot) {
-      alert("Please select a date and time slot first")
+      showMessage("Missing Selection", "Please select a date and time slot first")
       return
     }
 
@@ -562,20 +588,22 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       setCounts({ adults: 1, children: 0, infants: 0, youths: 0, students: 0 })
       setShowBookingButtons(false)
 
-      alert("Tour added to cart!")
+      setShowBookingButtons(false)
+
+      showMessage("Success", "Tour added to cart!")
 
       // Update Navbar count via Redux
       dispatch(fetchCartCount())
 
     } catch (error: any) {
       console.error("Add to cart failed", error)
-      alert(error.message || "Failed to add to cart")
+      showMessage("Error", error.message || "Failed to add to cart")
     }
   }
 
   const handleBookNow = () => {
     if (!tour || !selectedDate || !selectedTimeSlot) {
-      alert("Please select a date and time slot first")
+      showMessage("Missing Selection", "Please select a date and time slot first")
       return
     }
 

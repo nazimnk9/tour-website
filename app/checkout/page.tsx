@@ -4,15 +4,44 @@ import { useEffect, useState } from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { getCart, createBooking, BookingPayload, TravelerDetail } from "@/services/tourService"
+
 import { isLoggedIn } from "@/services/authService"
-import { Loader2, User, Mail, Globe, Phone, Check } from "lucide-react"
+import { Loader2, User, Mail, Globe, Phone, Check, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function CheckoutPage() {
     const [loading, setLoading] = useState(true)
     const [loggedIn, setLoggedIn] = useState(false)
     const [step, setStep] = useState(1) // 1: Contact Info (Guest), 2: Traveler Details
     const [totalAdults, setTotalAdults] = useState(0)
+
     const [isBookNow, setIsBookNow] = useState(false)
+
+    // Message Modal State
+    const [messageModalOpen, setMessageModalOpen] = useState(false)
+    const [messageModalTitle, setMessageModalTitle] = useState("")
+    const [messageModalContent, setMessageModalContent] = useState("")
+    const [onModalClose, setOnModalClose] = useState<(() => void) | null>(null)
+
+    const showMessage = (title: string, content: string, onClose?: () => void) => {
+        setMessageModalTitle(title)
+        setMessageModalContent(content)
+        if (onClose) {
+            setOnModalClose(() => onClose)
+        } else {
+            setOnModalClose(null)
+        }
+        setMessageModalOpen(true)
+    }
 
     // Forms
     const [guestDetails, setGuestDetails] = useState({
@@ -150,20 +179,20 @@ export default function CheckoutPage() {
             }
 
             await createBooking(payload, token)
-            alert("Booking successful!")
-
-            // Cleanup
-            if (isBookNow) {
-                localStorage.removeItem('bookNowData')
-            } else {
-                localStorage.removeItem('cartItemId')
-            }
-            localStorage.removeItem('guestCheckoutDetails')
-            window.location.href = "/"
+            showMessage("Success", "Booking successful!", () => {
+                // Cleanup
+                if (isBookNow) {
+                    localStorage.removeItem('bookNowData')
+                } else {
+                    localStorage.removeItem('cartItemId')
+                }
+                localStorage.removeItem('guestCheckoutDetails')
+                window.location.href = "/"
+            })
 
         } catch (error: any) {
             console.error("Booking failed", error)
-            alert(error.message || "Booking failed")
+            showMessage("Error", error.message || "Booking failed")
         } finally {
             setLoading(false)
         }
@@ -305,6 +334,51 @@ export default function CheckoutPage() {
             </main>
 
             <Footer />
+
+            <AlertDialog open={messageModalOpen} onOpenChange={setMessageModalOpen}>
+                <AlertDialogContent className="sm:max-w-md bg-white border-0 shadow-2xl rounded-2xl p-0 overflow-hidden">
+                    <div className={`p-6 flex flex-col items-center justify-center border-b ${messageModalTitle === "Success" ? "bg-green-50 border-green-100" :
+                        messageModalTitle === "Error" ? "bg-red-50 border-red-100" :
+                            "bg-blue-50 border-blue-100"
+                        }`}>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 shadow-inner ${messageModalTitle === "Success" ? "bg-green-100" :
+                            messageModalTitle === "Error" ? "bg-red-100" :
+                                "bg-blue-100"
+                            }`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${messageModalTitle === "Success" ? "bg-green-200" :
+                                messageModalTitle === "Error" ? "bg-red-200" :
+                                    "bg-blue-200"
+                                }`}>
+                                {messageModalTitle === "Success" ? (
+                                    <CheckCircle2 className="text-green-600 w-6 h-6" />
+                                ) : messageModalTitle === "Error" || messageModalTitle.includes("Failed") ? (
+                                    <AlertCircle className="text-red-600 w-6 h-6" />
+                                ) : (
+                                    <ShieldCheck className="text-blue-600 w-6 h-6" />
+                                )}
+                            </div>
+                        </div>
+                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
+                        <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
+                            {messageModalContent}
+                        </AlertDialogDescription>
+                    </div>
+                    <AlertDialogFooter className="p-6 pt-0 bg-white">
+                        <AlertDialogAction
+                            onClick={() => {
+                                setMessageModalOpen(false)
+                                if (onModalClose) onModalClose()
+                            }}
+                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                                    messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
+                                        "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
+                                }`}
+                        >
+                            OK, Got it
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

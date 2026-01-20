@@ -306,3 +306,18 @@ export async function updateCartItem(id: number, payload: Partial<AddToCartPaylo
 
     return response.json();
 }
+
+export async function deleteCartItem(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/tour/cart/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to delete cart item");
+    }
+}
+

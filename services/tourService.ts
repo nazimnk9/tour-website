@@ -321,3 +321,19 @@ export async function deleteCartItem(id: number): Promise<void> {
     }
 }
 
+
+export async function getRecommendedTours(id: number | string): Promise<TourPlanResponse> {
+    const response = await fetch(`${API_BASE_URL}/tour/plan/recomended/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch recommended tours");
+    }
+
+    return response.json();
+}

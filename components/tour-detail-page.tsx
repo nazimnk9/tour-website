@@ -30,7 +30,8 @@ import {
   TourPlan,
   TourTimeSlot,
   addToCart,
-  AddToCartPayload
+  AddToCartPayload,
+  getRecommendedTours
 } from "@/services/tourService"
 import { useAppDispatch } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
@@ -400,6 +401,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
   const [timeSlots, setTimeSlots] = useState<TourTimeSlot[]>([])
   const [availableDates, setAvailableDates] = useState<TourDate[]>([])
   const [datesLoading, setDatesLoading] = useState(false)
+  const [recommendedTours, setRecommendedTours] = useState<TourPlan[]>([])
 
   const [counts, setCounts] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -683,10 +685,20 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     }
   }
 
+  const loadRecommendedTours = async () => {
+    try {
+      const response = await getRecommendedTours(tourId)
+      setRecommendedTours(response.results)
+    } catch (error) {
+      console.error("Failed to load recommended tours", error)
+    }
+  }
+
   // Trigger fetchTourDetails when tourId changes
   useEffect(() => {
     if (tourId) {
       fetchTourDetails()
+      loadRecommendedTours()
     }
   }, [tourId])
 
@@ -1185,185 +1197,75 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               id="related-tours-carousel"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              {/* Tour Card 1 - Top Rated */}
-              <div className="flex-shrink-0 w-80">
-                <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer">
-                  {/* Image Container */}
-                  <div className="relative">
-                    <img
-                      src="/city-tour-with-people-and-buildings.jpg"
-                      alt="Full-Day City Tour of LA"
-                      className="w-full h-60 object-cover"
-                    />
-                    {/* Top rated Badge */}
-                    <div className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded text-xs font-bold">
-                      Top rated
-                    </div>
-                    {/* Wishlist Heart */}
-                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
-                      <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button> */}
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      Full-Day City Tour of LA, Hollywood, Beverly Hills & Beaches
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-3">Pickup available • Small group • 7.5 - 9 hours</p>
-
-                    {/* Rating */}
-                    {/* <div className="flex items-center gap-2 mb-3">
-                      <div className="flex text-yellow-400">
-                        {"★".repeat(4)}
-                        <span className="text-gray-300">★</span>
+              {recommendedTours.map((recTour) => (
+                <div key={recTour.id} className="flex-shrink-0 w-80">
+                  <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col">
+                    <Link href={`/tour/${recTour.id}`} className="block h-full flex flex-col">
+                      <div className="relative">
+                        <img
+                          src={recTour.images && recTour.images.length > 0 ? recTour.images[0].file : "/placeholder.jpg"}
+                          alt={recTour.title}
+                          className="w-full h-60 object-cover"
+                        />
+                        {/* <div className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded text-xs font-bold">
+                            Top rated
+                        </div> */}
                       </div>
-                      <span className="text-gray-900 font-semibold text-sm">4.7</span>
-                      <span className="text-gray-600 text-sm">(597)</span>
-                    </div> */}
 
-                    {/* Price */}
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-gray-600 text-sm">From</span>
-                      <span className="text-red-600 font-bold text-lg">$81</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Tour Card 2 */}
-              <div className="flex-shrink-0 w-80">
-                <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer">
-                  <div className="relative">
-                    <img
-                      src="/colorful-tour-bus-open-air.jpg"
-                      alt="Hollywood Tour Bus"
-                      className="w-full h-60 object-cover"
-                    />
-                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
-                      <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button> */}
-                  </div>
+                      <div className="p-6 flex flex-col flex-grow">
+                        <div className="text-xs font-bold text-gray-600 uppercase mb-2">{recTour.status === 'ACTIVE' ? 'ACTIVE TOUR' : 'TOUR'}</div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                          {recTour.title}
+                        </h3>
+                        {/* <p className="text-gray-600 text-sm mb-3">Pickup available • Small group • 7.5 - 9 hours</p> */}
 
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      Hollywood, Beverly Hills & Celebrity Homes Open-Air Bus Tour
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-3">2 - 3.5 hours</p>
-                    <p className="text-gray-600 text-sm mb-3 text-xs">Certified by City Rome Tickets</p>
+                        {/* Description used as details for now or truncated */}
+                        <div className="text-xs text-gray-600 mb-3 mt-2 space-y-1 line-clamp-2">
+                          <p>{recTour.description}</p>
+                        </div>
 
-                    {/* <div className="flex items-center gap-2 mb-3">
-                      <div className="flex text-yellow-400">
-                        {"★".repeat(4)}
-                        <span className="text-gray-300">★</span>
+                        <div className="mt-auto pt-2">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-gray-600 text-sm">From</span>
+                            <span className="text-red-600 font-bold text-lg">${recTour.price_adult}</span>
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-gray-900 font-semibold text-sm">4.5</span>
-                      <span className="text-gray-600 text-sm">(1,702)</span>
-                    </div> */}
-
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-gray-600 text-sm">From</span>
-                      <span className="text-red-600 font-bold text-lg">$33</span>
-                    </div>
+                    </Link>
                   </div>
                 </div>
-              </div>
-
-              {/* Tour Card 3 */}
-              <div className="flex-shrink-0 w-80">
-                <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer">
-                  <div className="relative">
-                    <img
-                      src="/bike-tour-santa-monica-beach.jpg"
-                      alt="Santa Monica Beach Bike Tour"
-                      className="w-full h-60 object-cover"
-                    />
-                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
-                      <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button> */}
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      LA: Santa Monica & Venice Beach Guided Bike or eBike Tour
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-3">3 hours</p>
-
-                    {/* <div className="flex items-center gap-2 mb-3">
-                      <div className="flex text-yellow-400">
-                        {"★".repeat(4)}
-                        <span className="text-gray-300">★</span>
-                      </div>
-                      <span className="text-gray-900 font-semibold text-sm">4.4</span>
-                      <span className="text-gray-600 text-sm">(24)</span>
-                    </div> */}
-
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-gray-600 text-sm">From</span>
-                      <span className="text-red-600 font-bold text-lg">$71</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tour Card 4 */}
-              <div className="flex-shrink-0 w-80">
-                <div className="bg-white rounded-lg overflow-hidden hover:shadow-lg transition cursor-pointer">
-                  <div className="relative">
-                    <img
-                      src="/hollywood-sign-hiking-tour.jpg"
-                      alt="Hollywood Sign Private Tour"
-                      className="w-full h-60 object-cover"
-                    />
-                    {/* <button className="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100 transition">
-                      <Heart size={20} className="text-gray-400 hover:text-red-500" />
-                    </button> */}
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">Los Angeles: Private Half Day City Tour</h3>
-                    <p className="text-gray-600 text-sm mb-3">4 hours • Pickup available</p>
-
-                    {/* <div className="flex items-center gap-2 mb-3">
-                      <div className="flex text-yellow-400">{"★".repeat(5)}</div>
-                      <span className="text-gray-900 font-semibold text-sm">5.0</span>
-                      <span className="text-gray-600 text-sm">(3)</span>
-                    </div> */}
-
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-gray-600 text-sm">From</span>
-                      <span className="text-red-600 font-bold text-lg">$599</span>
-                      <span className="text-gray-600 text-xs">per group up to 6</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
-            <button
-              onClick={() => {
-                const carousel = document.getElementById("related-tours-carousel")
-                if (carousel) {
-                  carousel.scrollLeft -= 400
-                }
-              }}
-              className="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition text-blue-600 hover:bg-blue-50 z-10"
-            >
-              <ChevronLeft size={24} />
-            </button>
+            {recommendedTours.length > 3 && (
+              <>
+                <button
+                  onClick={() => {
+                    const carousel = document.getElementById("related-tours-carousel")
+                    if (carousel) {
+                      carousel.scrollLeft -= 400
+                    }
+                  }}
+                  className="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition text-blue-600 hover:bg-blue-50 z-10"
+                >
+                  <ChevronLeft size={24} />
+                </button>
 
-            {/* Right Scroll Arrow */}
-            <button
-              onClick={() => {
-                const carousel = document.getElementById("related-tours-carousel")
-                if (carousel) {
-                  carousel.scrollLeft += 400
-                }
-              }}
-              className="absolute -right-6 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition text-blue-600 hover:bg-blue-50 z-10"
-            >
-              <ChevronLeft size={24} className="rotate-180" />
-            </button>
+                {/* Right Scroll Arrow */}
+                <button
+                  onClick={() => {
+                    const carousel = document.getElementById("related-tours-carousel")
+                    if (carousel) {
+                      carousel.scrollLeft += 400
+                    }
+                  }}
+                  className="absolute -right-6 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition text-blue-600 hover:bg-blue-50 z-10"
+                >
+                  <ChevronLeft size={24} className="rotate-180" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

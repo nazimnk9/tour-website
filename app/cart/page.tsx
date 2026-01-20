@@ -1,11 +1,329 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import { getCart, getTourById, getTourDates, getTourTimeSlots, CartItem, TourPlan } from "@/services/tourService"
-import { Loader2, Trash2, Edit2, ShieldCheck, CreditCard, Headphones, Check } from "lucide-react"
+import {
+    getCart,
+    getTourById,
+    getTourDates,
+    getTourTimeSlots,
+    updateCartItem,
+    getCartItem,
+    CartItem,
+    TourPlan,
+    TourDate,
+    TourTimeSlot,
+    AddToCartPayload
+} from "@/services/tourService"
+import {
+    Loader2,
+    Trash2,
+    Edit2,
+    ShieldCheck,
+    CreditCard,
+    Headphones,
+    Check,
+    ChevronLeft,
+    Minus,
+    Plus,
+    Calendar as CalendarIcon,
+    ChevronRight,
+    X
+} from "lucide-react"
+import { useRouter } from "next/navigation"
+
+// --- Components Copied from tour-detail-page/tour-availability-page ---
+
+function DatePicker({
+    isOpen,
+    onClose,
+    tourId,
+    onDateSelect
+}: {
+    isOpen: boolean
+    onClose: () => void
+    tourId: number
+    onDateSelect: (date: TourDate) => void
+}) {
+    const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1))
+    const [availableDates, setAvailableDates] = useState<TourDate[]>([])
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        if (isOpen && tourId) {
+            const fetchDates = async () => {
+                try {
+                    setLoading(true)
+                    const data = await getTourDates(tourId)
+                    // Store available dates objects
+                    setAvailableDates(data.results)
+                } catch (error) {
+                    console.error("Failed to fetch tour dates", error)
+                } finally {
+                    setLoading(false)
+                }
+            }
+            fetchDates()
+        }
+    }, [isOpen, tourId])
+
+    const getDaysInMonth = (date: Date) => {
+        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+    }
+
+    const getFirstDayOfMonth = (date: Date) => {
+        return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+    }
+
+    const renderCalendar = (date: Date) => {
+        const daysInMonth = getDaysInMonth(date)
+        const firstDay = getFirstDayOfMonth(date)
+        const days = []
+        const monthName = date.toLocaleString("default", { month: "long", year: "numeric" })
+
+        for (let i = 0; i < firstDay; i++) {
+            days.push(<div key={`empty-${i}`} className="text-center py-2"></div>)
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            // Construct date string YYYY-MM-DD manually to match API format
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const dayStr = String(day).padStart(2, '0');
+            const dateString = `${year}-${month}-${dayStr}`;
+
+            const isAvailable = availableDates.some(d => d.date === dateString);
+
+            days.push(
+                <div
+                    key={day}
+                    className={`text-center py-2 text-sm font-medium rounded 
+                    ${isAvailable
+                            ? "cursor-pointer text-gray-900 hover:bg-blue-50 font-semibold"
+                            : "text-gray-300 cursor-not-allowed pointer-events-none"}`}
+                    onClick={() => {
+                        if (isAvailable) {
+                            const selected = availableDates.find(d => d.date === dateString)
+                            if (selected) onDateSelect(selected)
+                        }
+                    }}
+                >
+                    {day}
+                </div>
+            )
+        }
+
+        return { monthName, days }
+    }
+
+    const currentMonth = renderCalendar(currentDate)
+    const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    const nextMonthData = renderCalendar(nextMonth)
+
+    const handlePrevMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+    }
+
+    const handleNextMonth = () => {
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+    }
+
+    if (!isOpen) return null
+
+    return (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-6 z-10 w-[700px]">
+            <div className="flex justify-between items-start">
+                {/* Left Arrow */}
+                <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded mt-1">
+                    <ChevronLeft size={20} className="text-gray-600" />
+                </button>
+
+                {/* Months Container */}
+                <div className="flex gap-8 flex-1 justify-center">
+                    {/* Current Month */}
+                    <div className="w-64">
+                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
+
+                        <div className="grid grid-cols-7 gap-1 mb-2">
+                            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                                <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+                                    {day}
+                                </div>
+                            ))}
+                            {currentMonth.days}
+                        </div>
+                    </div>
+
+                    {/* Next Month */}
+                    <div className="w-64">
+                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
+
+                        <div className="grid grid-cols-7 gap-1 mb-2">
+                            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                                <div key={`next-${day}`} className="text-center text-xs font-semibold text-gray-500 py-2">
+                                    {day}
+                                </div>
+                            ))}
+                            {nextMonthData.days}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Arrow */}
+                <button onClick={handleNextMonth} className="p-2 hover:bg-gray-100 rounded mt-1">
+                    <ChevronRight size={20} className="text-gray-600" />
+                </button>
+            </div>
+
+        </div>
+    )
+}
+
+function TravelerCounter({
+    isOpen,
+    onClose,
+    tour,
+    counts,
+    onUpdateCount
+}: {
+    isOpen: boolean
+    onClose: () => void
+    tour: TourPlan
+    counts: any
+    onUpdateCount: (key: string, delta: number, max: number) => void
+}) {
+    if (!isOpen) return null
+
+    return (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-100 w-[350px]">
+
+            {/* Adult */}
+            {tour.max_adults > 0 && (
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Adult <span className="text-gray-600 font-normal text-xs">(Age {tour.adult_age_min}-{tour.adult_age_max})</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onUpdateCount('adults', -1, tour.max_adults)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Minus size={16} className="text-gray-600" />
+                        </button>
+                        <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.adults}</span>
+                        <button
+                            onClick={() => onUpdateCount('adults', 1, tour.max_adults)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Child */}
+            {tour.max_children > 0 && (
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Child <span className="text-gray-600 font-normal text-xs">(Age {tour.child_age_min}-{tour.child_age_max})</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onUpdateCount('children', -1, tour.max_children)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Minus size={16} className="text-gray-600" />
+                        </button>
+                        <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.children}</span>
+                        <button
+                            onClick={() => onUpdateCount('children', 1, tour.max_children)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Infant */}
+            {tour.max_infants > 0 && (
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Infant <span className="text-gray-600 font-normal text-xs">(Age {tour.infant_age_min}-{tour.infant_age_max})</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onUpdateCount('infants', -1, tour.max_infants)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Minus size={16} className="text-gray-600" />
+                        </button>
+                        <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.infants}</span>
+                        <button
+                            onClick={() => onUpdateCount('infants', 1, tour.max_infants)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Youth */}
+            {(tour as any).max_youth > 0 && (
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Youth <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).youth_age_min}-{(tour as any).youth_age_max})</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onUpdateCount('youths', -1, (tour as any).max_youth)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Minus size={16} className="text-gray-600" />
+                        </button>
+                        <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.youths}</span>
+                        <button
+                            onClick={() => onUpdateCount('youths', 1, (tour as any).max_youth)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Student UE */}
+            {(tour as any).max_student_eu > 0 && (
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                        Student EU <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).student_eu_age_min}-{(tour as any).student_eu_age_max})</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => onUpdateCount('students', -1, (tour as any).max_student_eu)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Minus size={16} className="text-gray-600" />
+                        </button>
+                        <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.students}</span>
+                        <button
+                            onClick={() => onUpdateCount('students', 1, (tour as any).max_student_eu)}
+                            className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
+                        >
+                            <Plus size={16} className="text-gray-600" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+        </div>
+    )
+}
+
+// --- End Copied Components ---
 
 interface EnhancedCartItem extends CartItem {
     tour?: TourPlan
@@ -19,8 +337,43 @@ export default function CartPage() {
     const [loading, setLoading] = useState(true)
     const [subtotal, setSubtotal] = useState(0)
 
+    // Edit State
+    const [editingItemId, setEditingItemId] = useState<number | null>(null)
+    const [loadingEditItemId, setLoadingEditItemId] = useState<number | null>(null)
+    const [editCounts, setEditCounts] = useState({
+        adults: 0,
+        children: 0,
+        infants: 0,
+        youths: 0,
+        students: 0
+    })
+    const [editSelectedDate, setEditSelectedDate] = useState<TourDate | null>(null)
+    const [editSelectedTimeSlot, setEditSelectedTimeSlot] = useState<TourTimeSlot | null>(null)
+    const [editTimeSlots, setEditTimeSlots] = useState<TourTimeSlot[]>([])
+    const [isEditTravelerPickerOpen, setIsEditTravelerPickerOpen] = useState(false)
+    const [isEditDatePickerOpen, setIsEditDatePickerOpen] = useState(false)
+    const [editShowBookingButtons, setEditShowBookingButtons] = useState(true) // Default true for edit since we want to show times? Or logic applies?
+
+    const travelerPickerRefSidebar = useRef<HTMLDivElement>(null)
+    const sidebarDatePickerRef = useRef<HTMLDivElement>(null)
+
     useEffect(() => {
         loadCart()
+    }, [])
+
+    // Click outside for edit popovers
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            const target = event.target as Node
+            if (travelerPickerRefSidebar.current && !travelerPickerRefSidebar.current.contains(target)) {
+                setIsEditTravelerPickerOpen(false)
+            }
+            if (sidebarDatePickerRef.current && !sidebarDatePickerRef.current.contains(target)) {
+                setIsEditDatePickerOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
     const loadCart = async () => {
@@ -49,20 +402,13 @@ export default function CartPage() {
                     const tour = await getTourById(item.tour_plan)
 
                     // Resolve Date and Time
-                    // Strategy: Fetch dates for the tour, find the one containing the time slot?
-                    // This is computationally heavy but necessary without a direct slot endpoint.
-                    // Loop through dates to find the slot.
                     let dateStr = ""
                     let timeStr = ""
 
-                    // Note: Ideally we'd have getTourTimeSlotById or similar. 
-                    // Attempting to resolve by fetching dates and searching.
                     const dates = await getTourDates(tour.id)
                     let foundDate = null
                     let foundSlot = null
 
-                    // Optimization: We can't easily guess which date so we might have to search.
-                    // Limiting search to active dates to be reasonable.
                     for (const d of dates.results) {
                         const slots = await getTourTimeSlots(d.id)
                         const match = slots.results.find(s => s.id === item.time_slot)
@@ -76,8 +422,6 @@ export default function CartPage() {
                     if (foundDate && foundSlot) {
                         const dateObj = new Date(foundDate.date)
                         dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-
-                        // Format time (e.g. 10:00 AM)
                         const [hours, minutes] = foundSlot.start_time.split(':')
                         const h = parseInt(hours, 10)
                         const ampm = h >= 12 ? 'PM' : 'AM'
@@ -99,8 +443,6 @@ export default function CartPage() {
             }))
 
             setCartItems(enrichedItems)
-
-            // Calculate subtotal
             const total = enrichedItems.reduce((acc, item) => acc + parseFloat(item.item_price), 0)
             setSubtotal(total)
 
@@ -111,8 +453,104 @@ export default function CartPage() {
         }
     }
 
+    const handleEditClick = async (item: EnhancedCartItem) => {
+        setEditingItemId(item.id)
+        setLoadingEditItemId(item.id)
+
+        // Fetch fresh data for edit
+        try {
+            const freshItem = await getCartItem(item.id)
+
+            setEditCounts({
+                adults: freshItem.num_adults,
+                children: freshItem.num_children,
+                infants: freshItem.num_infants,
+                youths: freshItem.num_youth,
+                students: freshItem.num_student_eu
+            })
+
+            // We need to resolve the Date object and TimeSlot object for the picker
+            // We can reuse the logic from loadCart or just do it freshly here
+            if (item.tour) {
+                const dates = await getTourDates(item.tour.id)
+                let foundDate = null
+                let foundSlot = null
+
+                for (const d of dates.results) {
+                    const slots = await getTourTimeSlots(d.id)
+                    const match = slots.results.find(s => s.id === freshItem.time_slot)
+                    if (match) {
+                        foundSlot = match
+                        foundDate = d
+                        setEditTimeSlots(slots.results) // Set available slots for that date
+                        break
+                    }
+                }
+                setEditSelectedDate(foundDate)
+                setEditSelectedTimeSlot(foundSlot)
+            }
+
+            // Allow showing booking buttons (time slots) immediately since we have data
+            setEditShowBookingButtons(true)
+
+        } catch (error) {
+            console.error("Failed to fetch fresh item for edit", error)
+            // Fallback to current item data if fetch fails?
+        } finally {
+            setLoadingEditItemId(null)
+        }
+    }
+
+    const handleEditDateSelect = async (date: TourDate) => {
+        setEditSelectedDate(date)
+        setEditSelectedTimeSlot(null) // Reset time slot
+        try {
+            const data = await getTourTimeSlots(date.id)
+            setEditTimeSlots(data.results)
+        } catch (error) {
+            console.error("Failed to fetch time slots", error)
+        }
+        setIsEditDatePickerOpen(false)
+        // Ensure buttons/slots are visible
+        setEditShowBookingButtons(true)
+    }
+
+    const handleCancelEdit = () => {
+        setEditingItemId(null)
+        setEditCounts({ adults: 0, children: 0, infants: 0, youths: 0, students: 0 })
+        setEditSelectedDate(null)
+        setEditSelectedTimeSlot(null)
+        setEditTimeSlots([])
+    }
+
+    const handleUpdateItem = async (itemId: number, tourId: number) => {
+        if (!editSelectedDate || !editSelectedTimeSlot) {
+            alert("Please select date and time")
+            return
+        }
+
+        try {
+            const payload: Partial<AddToCartPayload> = {
+                num_adults: editCounts.adults,
+                num_children: editCounts.children,
+                num_infants: editCounts.infants,
+                num_youth: editCounts.youths,
+                num_student_eu: editCounts.students,
+                tour_plan: tourId,
+                time_slot: editSelectedTimeSlot.id
+            }
+
+            await updateCartItem(itemId, payload)
+            alert("Cart item updated!")
+            handleCancelEdit()
+            loadCart() // Reload to refresh view
+        } catch (error: any) {
+            console.error("Update failed", error)
+            alert(error.message || "Failed to update item")
+        }
+    }
+
     const handleDelete = (idToRemove: number) => {
-        // Remove from local storage
         const cartIdsStr = localStorage.getItem('cartItemId')
         if (cartIdsStr) {
             const ids = cartIdsStr.split(',').filter(id => parseInt(id.trim()) !== idToRemove)
@@ -121,16 +559,25 @@ export default function CartPage() {
             } else {
                 localStorage.removeItem('cartItemId')
             }
-            // Reload
             loadCart()
-            // Dispatch redux update if we had access here, but standard reload works for page content
-            // To update navbar, we'd need to dispatch.
-            // But we are in CartPage.
-            // Let's dispatch for completeness if user verified redux flow.
-            // Since we are not inside a provider boundary that prevents imports easily outside components...
-            // We can just rely on reload for now or add dispatch.
-            window.dispatchEvent(new Event("storage")); // Hack to trigger updates? No.
         }
+    }
+
+    const handleUpdateCount = (key: string, delta: number, max: number) => {
+        setEditCounts((prev: any) => ({
+            ...prev,
+            [key]: Math.max(0, Math.min(prev[key] + delta, max))
+        }))
+    }
+
+    const getTravelerSummary = () => {
+        const parts = []
+        if (editCounts.adults > 0) parts.push(`Adult x ${editCounts.adults}`)
+        if (editCounts.children > 0) parts.push(`Child x ${editCounts.children}`)
+        if (editCounts.infants > 0) parts.push(`Infant x ${editCounts.infants}`)
+        if (editCounts.youths > 0) parts.push(`Youth x ${editCounts.youths}`)
+        if (editCounts.students > 0) parts.push(`Student x ${editCounts.students}`)
+        return parts.join(", ") || "Select travelers"
     }
 
     if (loading) {
@@ -161,16 +608,8 @@ export default function CartPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Cart Items List */}
                         <div className="lg:col-span-2 space-y-6">
-                            {/* Group by date? The image shows "Thursday, January 15". 
-                                We'll just render list for simplicity or group if needed. 
-                                Image shows grouping headers. Let's try basic grouping if possible, 
-                                but simple list is robust for now. */}
-
                             {cartItems.map((item) => (
                                 <div key={item.id}>
-                                    {/* Date Header (Simulator) */}
-                                    {/* <h3 className="text-lg font-bold text-gray-700 mb-4">{item.dateString}</h3> */}
-
                                     <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row gap-6">
                                         {/* Image */}
                                         <div className="w-full sm:w-32 h-32 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden">
@@ -193,35 +632,26 @@ export default function CartPage() {
                                                 <h3 className="text-lg font-bold text-[#051036] line-clamp-2">
                                                     {item.tour?.title || "Tour Title"}
                                                 </h3>
-                                                {/* Price mobile */}
-                                                {/* <span className="font-bold text-lg sm:hidden">${item.item_price}</span> */}
                                             </div>
 
-                                            {/* Rating - Mocked/Static as not in TourPlan */}
-                                            <div className="flex items-center gap-1 mb-2">
-                                                <div className="flex text-yellow-400 text-xs">
-                                                    ★★★★☆
-                                                </div>
-                                                <span className="text-xs text-gray-500">4.6 (3,817)</span>
-                                            </div>
+                                            {/* Date/Time (View Mode) */}
+                                            {editingItemId !== item.id && (
+                                                <>
+                                                    <div className="flex items-center gap-2 text-sm text-[#051036] font-medium mb-1">
+                                                        <span>{item.dateString ? `${item.dateString} • ${item.timeString}` : "Date & Time not available"}</span>
+                                                    </div>
 
-                                            {/* Date/Time */}
-                                            <div className="flex items-center gap-2 text-sm text-[#051036] font-medium mb-1">
-                                                <Check size={16} className="text-transparent" /> {/* Spacer/Icon? Image shows clock */}
-                                                <span>{item.dateString ? `${item.dateString} • ${item.timeString}` : "Date & Time not available"}</span>
-                                            </div>
-
-                                            {/* Travelers */}
-                                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                                                {/* Image shows User icon */}
-                                                <span>
-                                                    {[
-                                                        item.num_adults > 0 ? `${item.num_adults} adult${item.num_adults > 1 ? 's' : ''}` : '',
-                                                        item.num_children > 0 ? `${item.num_children} child${item.num_children > 1 ? 'ren' : ''}` : '',
-                                                        item.num_infants > 0 ? `${item.num_infants} infant${item.num_infants > 1 ? 's' : ''}` : ''
-                                                    ].filter(Boolean).join(', ')}
-                                                </span>
-                                            </div>
+                                                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                                                        <span>
+                                                            {[
+                                                                item.num_adults > 0 ? `${item.num_adults} adult${item.num_adults > 1 ? 's' : ''}` : '',
+                                                                item.num_children > 0 ? `${item.num_children} child${item.num_children > 1 ? 'ren' : ''}` : '',
+                                                                item.num_infants > 0 ? `${item.num_infants} infant${item.num_infants > 1 ? 's' : ''}` : ''
+                                                            ].filter(Boolean).join(', ')}
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            )}
 
                                             {/* Free Cancellation */}
                                             <div className="flex items-center gap-2 text-sm text-teal-700 font-medium mb-4">
@@ -229,24 +659,135 @@ export default function CartPage() {
                                                 <span>Free cancellation</span>
                                             </div>
 
-                                            {/* Actions & Price */}
-                                            <div className="flex justify-between items-end">
-                                                <div className="flex gap-4">
-                                                    <button className="flex items-center gap-1 px-4 py-1.5 border border-gray-300 rounded-full text-sm font-semibold text-[#051036] hover:bg-gray-50">
-                                                        <Edit2 size={14} />
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDelete(item.id)}
-                                                        className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                                                    >
-                                                        <Trash2 size={20} />
-                                                    </button>
+                                            {/* EDIT FORM (Show if editing) */}
+                                            {editingItemId === item.id && item.tour && (
+                                                <div className="mb-4 space-y-4">
+                                                    {loadingEditItemId === item.id ? (
+                                                        <div className="flex justify-center p-8">
+                                                            <Loader2 className="animate-spin text-orange-600" size={32} />
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {/* Travelers Selector */}
+                                                            <div className="mb-4 relative" ref={travelerPickerRefSidebar}>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        setIsEditTravelerPickerOpen(!isEditTravelerPickerOpen)
+                                                                    }}
+                                                                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium"
+                                                                >
+                                                                    <span className="flex items-center gap-2">
+                                                                        <span>👥</span>
+                                                                        <span>{getTravelerSummary()}</span>
+                                                                    </span>
+                                                                    <ChevronLeft size={20} className="text-gray-600 rotate-180" />
+                                                                </button>
+                                                                <TravelerCounter
+                                                                    isOpen={isEditTravelerPickerOpen}
+                                                                    onClose={() => setIsEditTravelerPickerOpen(false)}
+                                                                    tour={item.tour}
+                                                                    counts={editCounts}
+                                                                    onUpdateCount={handleUpdateCount}
+                                                                />
+                                                            </div>
+
+                                                            {/* Date Selector */}
+                                                            <div className="mb-6 relative" ref={sidebarDatePickerRef}>
+                                                                <button
+                                                                    onClick={() => setIsEditDatePickerOpen(!isEditDatePickerOpen)}
+                                                                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium"
+                                                                >
+                                                                    <span className="flex items-center gap-2">
+                                                                        <span>📅</span>
+                                                                        <span>
+                                                                            {editSelectedDate
+                                                                                ? new Date(editSelectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+                                                                                : "Select date"
+                                                                            }
+                                                                        </span>
+                                                                    </span>
+                                                                    <ChevronLeft size={20} className="text-gray-600 rotate-180" />
+                                                                </button>
+                                                                <DatePicker
+                                                                    isOpen={isEditDatePickerOpen}
+                                                                    onClose={() => setIsEditDatePickerOpen(false)}
+                                                                    tourId={item.tour.id}
+                                                                    onDateSelect={handleEditDateSelect}
+                                                                />
+                                                            </div>
+
+                                                            {/* Time Slot Selector */}
+                                                            {editSelectedDate && editTimeSlots.length > 0 && editShowBookingButtons && (
+                                                                <div className="mb-6">
+                                                                    <label className="block text-sm font-bold text-[#051036] mb-1">Select a starting time</label>
+                                                                    <p className="text-sm text-gray-500 mb-3">
+                                                                        {new Date(editSelectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                                                                    </p>
+                                                                    <div className="flex flex-wrap gap-3">
+                                                                        {editTimeSlots.map(slot => {
+                                                                            const isSelected = editSelectedTimeSlot?.id === slot.id
+                                                                            return (
+                                                                                <button
+                                                                                    key={slot.id}
+                                                                                    onClick={() => setEditSelectedTimeSlot(slot)}
+                                                                                    className={`px-6 py-2.5 rounded-lg border text-sm font-bold transition-all
+                                                            ${isSelected
+                                                                                            ? "bg-[#051036] text-white border-[#051036]"
+                                                                                            : "bg-white text-[#051036] border-gray-400 hover:border-[#051036]"
+                                                                                        }`}
+                                                                                >
+                                                                                    {slot.start_time.split(':').slice(0, 2).join(':')}
+                                                                                </button>
+                                                                            )
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Update/Cancel Buttons */}
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={() => handleUpdateItem(item.id, item.tour!.id)}
+                                                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                                                                >
+                                                                    Update
+                                                                </button>
+                                                                <button
+                                                                    onClick={handleCancelEdit}
+                                                                    className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
-                                                <div className="text-xl font-bold text-[#051036]">
-                                                    ${item.item_price}
+                                            )}
+
+                                            {/* Actions & Price (View Mode) */}
+                                            {editingItemId !== item.id && (
+                                                <div className="flex justify-between items-end">
+                                                    <div className="flex gap-4">
+                                                        <button
+                                                            onClick={() => handleEditClick(item)}
+                                                            className="flex items-center gap-1 px-4 py-1.5 border border-gray-300 rounded-full text-sm font-semibold text-[#051036] hover:bg-gray-50"
+                                                        >
+                                                            <Edit2 size={14} />
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(item.id)}
+                                                            className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <Trash2 size={20} />
+                                                        </button>
+                                                    </div>
+                                                    <div className="text-xl font-bold text-[#051036]">
+                                                        ${item.item_price}
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

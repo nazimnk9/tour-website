@@ -273,3 +273,36 @@ export async function getCart(cartIds: number[]): Promise<CartResponse> {
 
     return response.json();
 }
+
+export async function getCartItem(id: number): Promise<CartItem> {
+    const response = await fetch(`${API_BASE_URL}/tour/cart/${id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch cart item");
+    }
+
+    return response.json();
+}
+
+export async function updateCartItem(id: number, payload: Partial<AddToCartPayload>): Promise<CartItem> {
+    const response = await fetch(`${API_BASE_URL}/tour/cart/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update cart item");
+    }
+
+    return response.json();
+}

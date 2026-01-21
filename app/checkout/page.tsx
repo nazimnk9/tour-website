@@ -6,7 +6,7 @@ import Footer from "@/components/footer"
 import { getCart, createBooking, BookingPayload, TravelerDetail } from "@/services/tourService"
 
 import { isLoggedIn } from "@/services/authService"
-import { Loader2, User, Mail, Globe, Phone, Check, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react"
+import { Loader2, User, Mail, Globe, Phone, Check, CheckCircle2, AlertCircle, ShieldCheck, ChevronsUpDown } from "lucide-react"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,6 +17,20 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
 export const countries = [
     { name: "Afghanistan", code: "AF", dial_code: "+93", flag: "🇦🇫" },
@@ -266,6 +280,7 @@ export default function CheckoutPage() {
     const [loggedIn, setLoggedIn] = useState(false)
     const [step, setStep] = useState(1) // 1: Contact Info (Guest), 2: Traveler Details
     const [totalAdults, setTotalAdults] = useState(0)
+    const [openCountry, setOpenCountry] = useState(false)
 
     const [isBookNow, setIsBookNow] = useState(false)
 
@@ -498,19 +513,81 @@ export default function CheckoutPage() {
                                     <label className="block text-sm font-semibold text-gray-700 mb-1">Country</label>
                                     <div className="relative">
                                         <Globe className="absolute left-3 top-3.5 text-gray-400" size={18} />
-                                        <select
-                                            required
-                                            className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-white"
-                                            value={guestDetails.country}
-                                            onChange={e => setGuestDetails({ ...guestDetails, country: e.target.value })}
-                                        >
-                                            <option value="" disabled>Select Country</option>
-                                            {countries.map((country) => (
-                                                <option key={country.code} value={country.name}>
-                                                    {country.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <Popover open={openCountry} onOpenChange={setOpenCountry}>
+                                            <PopoverTrigger asChild>
+                                                <button
+                                                    role="combobox"
+                                                    aria-expanded={openCountry}
+                                                    className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white text-left flex justify-between items-center text-sm transition-all hover:bg-gray-50 hover:border-blue-300"
+                                                >
+                                                    {guestDetails.country ? (
+                                                        <span className="font-medium text-gray-900">
+                                                            {/* {countries.find((country) => country.name === guestDetails.country)?.flag}{" "} */}
+                                                            {countries.find((country) => country.name === guestDetails.country)?.name}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-gray-500">Select Country</span>
+                                                    )}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[310px] p-1 bg-white border border-gray-200 shadow-xl rounded-xl max-h-[400px]" align="start">
+                                                <Command className="w-full">
+                                                    <div className="px-2 pt-2 pb-1">
+                                                        <CommandInput
+                                                            placeholder="Search country..."
+                                                            className="h-10 rounded-lg bg-gray-50 border-0 focus:ring-0 px-3 text-sm"
+                                                        />
+                                                    </div>
+                                                    <div className="h-[1px] bg-gray-100 mx-2 mb-1" />
+                                                    <CommandList className="max-h-[300px] overflow-y-auto px-1 custom-scrollbar">
+                                                        <CommandEmpty className="py-6 text-center text-sm text-gray-500">No country found.</CommandEmpty>
+                                                        <CommandGroup>
+                                                            {[...countries].sort((a, b) => {
+                                                                if (a.name === guestDetails.country) return -1
+                                                                if (b.name === guestDetails.country) return 1
+                                                                return 0
+                                                            }).map((country) => (
+                                                                <CommandItem
+                                                                    key={country.code}
+                                                                    value={country.name}
+                                                                    className="flex items-center gap-3 p-2.5 cursor-pointer hover:bg-blue-50 hover:text-blue-700 transition-colors rounded-lg mx-1 my-0.5 group aria-selected:bg-blue-50"
+                                                                    onSelect={(currentValue) => {
+                                                                        setGuestDetails({ ...guestDetails, country: country.name })
+                                                                        setOpenCountry(false)
+                                                                    }}
+                                                                >
+                                                                    {/* Checkmark Circle */}
+                                                                    <div className={cn(
+                                                                        "flex items-center justify-center w-5 h-5 rounded-full border transition-all shrink-0",
+                                                                        guestDetails.country === country.name
+                                                                            ? "bg-blue-600 border-blue-600"
+                                                                            : "border-gray-200 group-hover:border-blue-300"
+                                                                    )}>
+                                                                        {guestDetails.country === country.name && (
+                                                                            <Check className="h-3 w-3 text-white" />
+                                                                        )}
+                                                                    </div>
+
+                                                                    {/* Flag */}
+                                                                    {/* <span className="text-2xl leading-none shadow-sm rounded-sm overflow-hidden">{country.flag}</span> */}
+
+                                                                    {/* Text Content */}
+                                                                    <div className="flex flex-col">
+                                                                        <span className={cn(
+                                                                            "font-medium transition-colors text-sm",
+                                                                            guestDetails.country === country.name ? "text-blue-700" : "text-gray-700 group-hover:text-blue-700"
+                                                                        )}>
+                                                                            {country.name}
+                                                                        </span>
+                                                                    </div>
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
                                 </div>
                                 <div>

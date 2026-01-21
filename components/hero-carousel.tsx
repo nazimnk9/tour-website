@@ -96,14 +96,16 @@ export default function HeroCarousel() {
   }
 
   return (
-    <div className="relative w-full h-96 sm:h-[500px] overflow-hidden">
+    <div className="relative w-full h-96 sm:h-[500px] z-20">
       {/* Slide */}
       <div className="relative w-full h-full">
-        <img
-          src={slides[currentSlide].image || "/placeholder.svg"}
-          alt="Hero carousel"
-          className="w-full h-full object-cover blur-[1px] brightness-40"
-        />
+        <div className="absolute inset-0 overflow-hidden">
+          <img
+            src={slides[currentSlide].image || "/placeholder.svg"}
+            alt="Hero carousel"
+            className="w-full h-full object-cover blur-[1px] brightness-40"
+          />
+        </div>
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6">
@@ -136,7 +138,7 @@ export default function HeroCarousel() {
 
               {/* Suggestions Dropdown */}
               {showSuggestions && (isLoading || suggestions.length > 0) && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl overflow-hidden z-50 max-h-[400px] overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl overflow-hidden z-1000 max-h-[400px] overflow-y-auto">
                   <div className="p-2">
                     {isLoading ? (
                       <div className="flex items-center justify-center py-8">
@@ -148,11 +150,12 @@ export default function HeroCarousel() {
                     ) : suggestions.length > 0 ? (
                       <>
                         <h3 className="text-sm font-semibold text-gray-500 px-4 py-2">Suggestions</h3>
-                        {suggestions.map((tour) => (
+                        {suggestions.map((tour, index) => (
                           <div
                             key={tour.id}
                             onClick={() => handleSuggestionClick(tour.id)}
-                            className="flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors"
+                            className={`flex items-center gap-4 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors ${index !== suggestions.length - 1 ? "border-b-2 border-gray-100" : ""
+                              }`}
                           >
                             <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
                               <img
@@ -162,8 +165,8 @@ export default function HeroCarousel() {
                               />
                             </div>
                             <div className="flex flex-col items-start text-left">
-                              <span className="font-medium text-gray-900 line-clamp-1">{tour.title}</span>
-                              <span className="text-sm text-gray-500 line-clamp-1">
+                              <span className="font-medium text-gray-900">{tour.title}</span>
+                              <span className="text-sm text-gray-500">
                                 {tour.price_adult}
                                 {tour.duration ? ` • ${tour.duration}` : ""}
                               </span>

@@ -340,6 +340,8 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     const [loading, setLoading] = useState(true)
 
     const [error, setError] = useState<string | null>(null)
+    const [isBookingLoading, setIsBookingLoading] = useState(false)
+    const [isCartLoading, setIsCartLoading] = useState(false)
 
     // Message Modal State
     const [messageModalOpen, setMessageModalOpen] = useState(false)
@@ -484,6 +486,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
         }
 
         try {
+            setIsCartLoading(true)
             const payload: AddToCartPayload = {
                 num_adults: counts.adults,
                 num_children: counts.children,
@@ -524,6 +527,8 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
         } catch (error: any) {
             console.error("Add to cart failed", error)
             showMessage("Error", error.message || "Failed to add to cart")
+        } finally {
+            setIsCartLoading(false)
         }
     }
 
@@ -532,6 +537,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
             showMessage("Missing Selection", "Please select a date and time slot first")
             return
         }
+        setIsBookingLoading(true)
 
         const payload = {
             num_adults: counts.adults,
@@ -809,15 +815,31 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                     <div className="flex gap-2 mb-2">
                                         <button
                                             onClick={handleBookNow}
-                                            className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+                                            disabled={isBookingLoading}
+                                            className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[120px]"
                                         >
-                                            Book now
+                                            {isBookingLoading ? (
+                                                <>
+                                                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                                                    Booking...
+                                                </>
+                                            ) : (
+                                                "Book now"
+                                            )}
                                         </button>
                                         <button
                                             onClick={handleAddToCart}
-                                            className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition"
+                                            disabled={isCartLoading}
+                                            className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center min-w-[140px]"
                                         >
-                                            Add to Cart
+                                            {isCartLoading ? (
+                                                <>
+                                                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                                                    Adding...
+                                                </>
+                                            ) : (
+                                                "Add to Cart"
+                                            )}
                                         </button>
                                     </div>
                                 )}
@@ -863,7 +885,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     <AlertDialogFooter className="p-6 pt-0 bg-white">
                         <AlertDialogAction
                             onClick={() => setMessageModalOpen(false)}
-                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
                                 messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
                                     "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
                                 }`}

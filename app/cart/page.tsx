@@ -349,6 +349,7 @@ export default function CartPage() {
     const [cartItems, setCartItems] = useState<EnhancedCartItem[]>([])
     const [loading, setLoading] = useState(true)
     const [subtotal, setSubtotal] = useState(0)
+    const [isUpdating, setIsUpdating] = useState(false)
 
     // Edit State
     const [editingItemId, setEditingItemId] = useState<number | null>(null)
@@ -559,6 +560,7 @@ export default function CartPage() {
         }
 
         try {
+            setIsUpdating(true)
             const payload: Partial<AddToCartPayload> = {
                 num_adults: editCounts.adults,
                 num_children: editCounts.children,
@@ -576,6 +578,8 @@ export default function CartPage() {
         } catch (error: any) {
             console.error("Update failed", error)
             showMessage("Error", error.message || "Failed to update item")
+        } finally {
+            setIsUpdating(false)
         }
     }
 
@@ -803,9 +807,17 @@ export default function CartPage() {
                                                             <div className="flex items-center gap-2">
                                                                 <button
                                                                     onClick={() => handleUpdateItem(item.id, item.tour!.id)}
-                                                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                                                                    disabled={isUpdating}
+                                                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[100px] cursor-pointer"
                                                                 >
-                                                                    Update
+                                                                    {isUpdating ? (
+                                                                        <>
+                                                                            <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                                                                            Updating...
+                                                                        </>
+                                                                    ) : (
+                                                                        "Update"
+                                                                    )}
                                                                 </button>
                                                                 <button
                                                                     onClick={handleCancelEdit}
@@ -825,7 +837,7 @@ export default function CartPage() {
                                                     <div className="flex gap-4">
                                                         <button
                                                             onClick={() => handleEditClick(item)}
-                                                            className="flex items-center gap-1 px-4 py-1.5 border border-gray-300 rounded-full text-sm font-semibold text-[#051036] hover:bg-gray-50"
+                                                            className="flex items-center gap-1 px-4 py-1.5 border border-gray-300 rounded-full text-sm font-semibold text-[#051036] hover:bg-gray-50 cursor-pointer"
                                                         >
                                                             <Edit2 size={14} />
                                                             Edit
@@ -974,7 +986,7 @@ export default function CartPage() {
                     <AlertDialogFooter className="p-6 pt-0 bg-white">
                         <AlertDialogAction
                             onClick={() => setMessageModalOpen(false)}
-                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
                                 messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
                                     "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
                                 }`}

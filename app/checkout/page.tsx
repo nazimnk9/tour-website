@@ -529,7 +529,7 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            <button type="submit" className="w-full bg-[#0071EB] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition mt-4">
+                            <button type="submit" className="w-full bg-[#0071EB] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition mt-4 cursor-pointer">
                                 Continue
                             </button>
                         </form>
@@ -572,7 +572,7 @@ export default function CheckoutPage() {
 
                         <button
                             onClick={handleFinalSubmit}
-                            className="w-full bg-[#0071EB] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition mt-8 flex items-center justify-center gap-2"
+                            className="w-full bg-[#0071EB] text-white font-bold py-3 rounded-lg hover:bg-blue-600 transition mt-8 flex items-center justify-center gap-2 cursor-pointer"
                         >
                             <Check size={20} />
                             Final Submit
@@ -617,7 +617,7 @@ export default function CheckoutPage() {
                                 setMessageModalOpen(false)
                                 if (onModalClose) onModalClose()
                             }}
-                            className={`w-full py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
                                 messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
                                     "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
                                 }`}

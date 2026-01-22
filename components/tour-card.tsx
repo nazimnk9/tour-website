@@ -29,7 +29,7 @@ export default function TourCard({ tour }: { tour: TourPlan }) {
           </div>
 
           {/* Wishlist Heart */}
-          <button
+          {/* <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -39,7 +39,7 @@ export default function TourCard({ tour }: { tour: TourPlan }) {
             aria-label="Add to wishlist"
           >
             <Heart size={20} className={isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"} />
-          </button>
+          </button> */}
 
           {/* Orange bar at bottom of image */}
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange-500"></div>

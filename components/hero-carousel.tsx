@@ -167,7 +167,7 @@ export default function HeroCarousel() {
                             <div className="flex flex-col items-start text-left">
                               <span className="font-medium text-gray-900">{tour.title}</span>
                               <span className="text-sm text-gray-500">
-                                {tour.price_adult}
+                                €{tour.price_adult}
                                 {tour.duration ? ` • ${tour.duration}` : ""}
                               </span>
                             </div>

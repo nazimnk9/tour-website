@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="w-full bg-slate-900 text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Language & Currency Section */}
           <div className="space-y-6">
             <div>
@@ -96,27 +96,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Work With Us Section */}
-          <div>
-            <h3 className="font-semibold mb-4 text-base">Work With Us</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  As a Supply Partner
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  As a Content Creator
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  As an Affiliate Partner
-                </a>
-              </li>
-            </ul>
-          </div>
+          
         </div>
 
         {/* <div className="mb-8 pb-8 border-t border-slate-700 pt-8">

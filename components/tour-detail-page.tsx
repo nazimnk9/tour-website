@@ -1092,7 +1092,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="mb-6">
                 <p className="text-gray-600 text-sm mb-2">From</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-gray-900">${maxPrice}</span>
+                  <span className="text-4xl font-bold text-gray-900">€{maxPrice}</span>
                   <span className="text-gray-600 text-sm">per person</span>
                 </div>
               </div>

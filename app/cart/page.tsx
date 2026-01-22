@@ -97,7 +97,7 @@ function DatePicker({
         const monthName = date.toLocaleString("default", { month: "long", year: "numeric" })
 
         for (let i = 0; i < firstDay; i++) {
-            days.push(<div key={`empty-${i}`} className="text-center py-2"></div>)
+            days.push(<div key={`empty-i}`} className="text-center py-2"></div>)
         }
 
         for (let day = 1; day <= daysInMonth; day++) {

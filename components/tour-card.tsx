@@ -61,7 +61,7 @@ export default function TourCard({ tour }: { tour: TourPlan }) {
           {/* Price */}
           <div className="mt-auto pt-2 flex items-baseline gap-2">
             <span className="text-xs text-gray-600">From</span>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">${tour.price_adult}</span>
+            <span className="text-lg sm:text-xl font-bold text-gray-900">€{tour.price_adult}</span>
           </div>
         </div>
       </div>

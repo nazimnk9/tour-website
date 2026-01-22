@@ -1228,7 +1228,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                         <div className="mt-auto pt-2">
                           <div className="flex items-baseline gap-2">
                             <span className="text-gray-600 text-sm">From</span>
-                            <span className="text-red-600 font-bold text-lg">${recTour.price_adult}</span>
+                            <span className="text-red-600 font-bold text-lg">€{recTour.price_adult}</span>
                           </div>
                         </div>
                       </div>

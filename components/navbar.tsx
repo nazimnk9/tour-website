@@ -136,17 +136,6 @@ export default function Navbar() {
                             <ChevronRight size={16} className="text-[#051036]" />
                           </div>
                         </div>
-
-                        <div className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <Sun size={20} className="text-[#051036] stroke-[1.5]" />
-                            <span className="text-[15px] text-[#051036]">Appearance</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[13px] text-gray-500 font-medium">Always light</span>
-                            <ChevronRight size={16} className="text-[#051036]" />
-                          </div>
-                        </div>
                       </div>
 
                       <div className="border-b border-gray-100 my-2 -mx-4"></div>
@@ -155,11 +144,6 @@ export default function Navbar() {
                         <div className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
                           <HelpCircle size={20} className="text-[#051036] stroke-[1.5]" />
                           <span className="text-[15px] text-[#051036]">Support</span>
-                        </div>
-
-                        <div className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
-                          <Smartphone size={20} className="text-[#051036] stroke-[1.5]" />
-                          <span className="text-[15px] text-[#051036]">Download the app</span>
                         </div>
 
                         {isLoggedInState && (

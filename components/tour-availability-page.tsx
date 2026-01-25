@@ -142,7 +142,7 @@ function DatePicker({
     if (!isOpen) return null
 
     return (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-6 z-10 w-[700px]">
+        <div className="absolute top-full right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 md:p-6 z-50 w-[90vw] max-w-[350px] md:max-w-[700px] md:w-[700px]">
             <div className="flex justify-between items-start">
                 {/* Left Arrow */}
                 <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-100 rounded mt-1">
@@ -150,7 +150,7 @@ function DatePicker({
                 </button>
 
                 {/* Months Container */}
-                <div className="flex gap-8 flex-1 justify-center">
+                <div className="flex gap-0 md:gap-8 flex-1 justify-center">
                     {/* Current Month */}
                     <div className="w-64">
                         <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
@@ -165,8 +165,8 @@ function DatePicker({
                         </div>
                     </div>
 
-                    {/* Next Month */}
-                    <div className="w-64">
+                    {/* Next Month - Hidden on Mobile */}
+                    <div className="hidden md:block w-64">
                         <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
 
                         <div className="grid grid-cols-7 gap-1 mb-2">
@@ -206,7 +206,7 @@ function TravelerCounter({
     if (!isOpen) return null
 
     return (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-100 w-[350px]">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10 w-[90vw] sm:w-[350px]">
             {/* Changing top-full to bottom-full for this page maybe? Original was top-full. Let's stick to original but ensure z-index */}
 
             {/* Adult */}

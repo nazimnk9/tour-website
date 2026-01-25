@@ -111,7 +111,7 @@ function DatePicker({
         <div
           key={day}
           className={`text-center py-2 text-sm font-medium rounded 
-                    ${isAvailable
+                ${isAvailable
               ? "cursor-pointer text-gray-900 hover:bg-blue-50 font-semibold"
               : "text-gray-300 cursor-not-allowed pointer-events-none"}`}
           onClick={() => {
@@ -764,32 +764,11 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
             {/* Rating and Reviews */}
             <div className="flex items-center gap-2">
-              {/* <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    className={i < Math.floor(tour.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-                  />
-                ))}
-              </div>
-              <span className="font-semibold text-gray-900 text-sm">{tour.rating}</span>
-              <span className="text-gray-600 text-sm">
-                <span className="underline">{tour.reviews.toLocaleString()} reviews</span>
-              </span> */}
-              <span className="text-gray-600 text-sm">• Activity provider: {tour.duration_days}</span>
+              <span className="text-gray-600 text-sm">• Activity provider: {tour.duration_days} day(s)</span>
             </div>
 
             {/* Action Buttons */}
             <div className="flex gap-2 ml-auto">
-              {/* <button
-                onClick={() => setIsFavorite(!isFavorite)}
-                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded transition"
-                aria-label="Add to wishlist"
-              >
-                <Heart size={20} className={isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"} />
-                <span className="text-gray-700 text-sm">Add to wishlist</span>
-              </button> */}
               <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded transition">
                 <Share2 size={20} className="text-gray-600" />
                 <span className="text-gray-700 text-sm">Share</span>
@@ -863,34 +842,35 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
               {/* Activity Features */}
               <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-4">
-                  <Check size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">Free cancellation</p>
-                    <p className="text-gray-600 text-sm">Cancel up to 24 hours in advance for a full refund</p>
+                {tour.free_cancellation && (
+                  <div className="flex items-start gap-4">
+                    <Check size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">Free cancellation</p>
+                      <p className="text-gray-600 text-sm">Cancel up to 24 hours in advance for a full refund</p>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="flex items-start gap-4">
                   <Share2 size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-gray-900 text-sm">Reserve now & pay later</p>
                     <p className="text-gray-600 text-sm">
-                      Keep your travel plans flexible — book your spot and pay nothing today.{" "}
-                      <a href="#" className="text-blue-600 hover:underline">
-                        flexible
-                      </a>
+                      Keep your travel plans flexible — book your spot and pay nothing today.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <Clock size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">Duration 14 hours</p>
-                    <p className="text-gray-600 text-sm">Check availability to see starting times</p>
+                {tour.duration_days && (
+                  <div className="flex items-start gap-4">
+                    <Clock size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">Duration {tour.duration_days} day(s)</p>
+                      <p className="text-gray-600 text-sm">Check availability to see starting times</p>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="flex items-start gap-4">
                   <Users size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
@@ -900,183 +880,121 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <Car size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">Pickup included</p>
-                    <p className="text-gray-600 text-sm">
-                      Pickup from your hotel is not guaranteed if you book this activity with less than 48-hours notice.
-                      A pickup address and time might be assigned to you
-                    </p>
+                {tour.pickup_included && (
+                  <div className="flex items-start gap-4">
+                    <Car size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">Pickup included</p>
+                      <p className="text-gray-600 text-sm">
+                        Pickup from your hotel is included. Check details for more info.
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <Users2 size={24} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">Small group</p>
-                    <p className="text-gray-600 text-sm">Limited to 14 participants</p>
-                  </div>
-                </div>
+                )}
               </div>
 
-              {/* Highlighted reviews from other travelers */}
-              {/* <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Highlighted reviews from other travelers</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                  <ReviewCard
-                    reviewer="Rose"
-                    location="United Kingdom"
-                    date="December 24, 2025"
-                    rating={5}
-                    text="What a day, myself and my mother really enjoyed this, Steve was our tour guide, he was extremely knowledgeable, friendly and made everyone feel very comfortable. Once in a life time trip for us and we couldn't have been in better hands on the day. From start to finish it was excellent, so many sites to be seen and photo opportunities along the way, definitely recommend, you won't regret it."
-                  />
-                  <ReviewCard
-                    reviewer="Esme"
-                    location="United Kingdom"
-                    date="December 22, 2025"
-                    rating={5}
-                    text="Ward was great - kept us informed about collection time on was friendly when we met him. We then picked Steve up from another hotel who was the host. He was great - funny, friendly and had great information about the local area on the way there and made pit stops for us to stretch legs and use the restrooms. Provided us with refreshments and snacks for journey The maps and the food menu were a great touch on board (Big deans cheeseburger was tasty) Would recommend this day trip. we got some great pictures in Beverly Hills and the Hollywood sign and Steve directed us to the stars on the Hollywood walk off am that we wanted to see! Thanks Steve and Ward"
-                  />
-                </div>
-              </div> */}
               <div className="mb-12">
                 <div className="mb-8 pb-8 border-b border-gray-200">
                   <ItineraryTimeline locations={tour?.locations || []} />
                 </div>
               </div>
-              {/* Highlights */}
+
+
+              {/* Highlights & Full Description */}
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Highlights</h2>
-                  <ul className="space-y-3">
-                    <li className="flex gap-3">
-                      <span className="text-gray-700">•</span>
-                      <span className="text-gray-700">
-                        Travel around the Los Angeles area in a luxurious Mercedes-Benz vehicle
-                      </span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-gray-700">•</span>
-                      <span className="text-gray-700">
-                        See Santa Monica, the Hollywood Walk of Fame, Sunset Strip, and Rodeo Drive
-                      </span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-gray-700">•</span>
-                      <span className="text-gray-700">
-                        Learn about each of the landmarks along the way from your knowledgeable guide
-                      </span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-gray-700">•</span>
-                      <span className="text-gray-700">
-                        Take a walk along Rodeo Drive and take a picture at the Beverly Hills Sign
-                      </span>
-                    </li>
-                    <li className="flex gap-3">
-                      <span className="text-gray-700">•</span>
-                      <span className="text-gray-700">
-                        Savor a hot meal as you sit down to lunch at a restaurant in Santa Monica
-                      </span>
-                    </li>
-                  </ul>
-                </div>
+                {tour.highlights && tour.highlights.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Highlights</h2>
+                    <ul className="space-y-3">
+                      {tour.highlights.map((highlight, index) => (
+                        <li key={index} className="flex gap-3">
+                          <span className="text-gray-700 font-bold">•</span>
+                          <span className="text-gray-700 text-sm">{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">Full description</h2>
-                  <p className="text-gray-700 text-sm leading-relaxed mb-3">
-                    Follow experienced guides on a tour of the Los Angeles/Hollywood area in a luxurious Mercedes
-                    vehicle. Enjoy included water, snacks, and lunch, and stay connected with WIFI and USB charging
-                    ports.
-                  </p>
-                  <p className="text-gray-700 text-sm leading-relaxed">...</p>
-                  <button className="text-blue-600 hover:underline text-sm font-medium mt-3">See more</button>
+                  <div className="text-gray-700 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
+                    {tour.full_description || tour.description}
+                  </div>
                 </div>
               </div>
 
-              {/* Includes */}
+              {/* Includes & Excludes */}
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Includes</h2>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">
-                        Hotel pickups and drop-offs from 30+ hotels in Las Vegas on the strip
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">Experienced Tour Guide</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">
-                        bottled water and snacks are included in the vehicle
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">hot lunch at a restaurant</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">WIFI</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">USB charging ports</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">comfortable reclining leather seats</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-red-500 font-semibold text-sm">✕</span>
-                      <span className="text-gray-700 text-sm">Gratuities</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-red-500 font-semibold text-sm">✕</span>
-                      <span className="text-gray-700 text-sm">Souvenirs</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Important information</h2>
-
-                  <div className="mb-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">Not suitable for</h3>
-                    <ul className="space-y-2 text-gray-700 text-sm">
-                      <li>• Children under 5 years</li>
+                {tour.includes && tour.includes.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Includes</h2>
+                    <ul className="space-y-3">
+                      {tour.includes.map((item, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <Check size={20} className="text-teal-600 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-700 text-sm">{item}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
+                )}
 
-                  <div className="mb-6">
-                    <h3 className="font-semibold text-gray-900 mb-3">Not allowed</h3>
-                    <ul className="space-y-2 text-gray-700 text-sm">
-                      <li>• Pets</li>
-                      <li>• Luggage or large bags</li>
-                      <li>• Mobility scooters</li>
-                      <li>• Alcohol and drugs...</li>
+                {/* Excludes */}
+                {tour.excludes && tour.excludes.length > 0 && (
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Excludes</h2>
+                    <ul className="space-y-3">
+                      {tour.excludes.map((item, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="text-red-500 font-bold text-sm">✕</span>
+                          <span className="text-gray-700 text-sm">{item}</span>
+                        </li>
+                      ))}
                     </ul>
-                    <button className="text-blue-600 hover:underline text-sm font-medium mt-3">See more</button>
+                  </div>
+                )}
+              </div>
+
+              {/* Important Information */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Important information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    {tour.not_suitable_for && tour.not_suitable_for.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3">Not suitable for</h3>
+                        <ul className="space-y-2 text-gray-700 text-sm">
+                          {tour.not_suitable_for.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {tour.not_allowed && tour.not_allowed.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3">Not allowed</h3>
+                        <ul className="space-y-2 text-gray-700 text-sm">
+                          {tour.not_allowed.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Know before you go</h3>
-                    <ul className="space-y-2 text-gray-700 text-sm">
-                      <li>
-                        • Please do not book a flight, show, or restaurant reservation close to the expected return time
-                        in case of traffic, car trouble, or some unforeseen event
-                      </li>
-                      <li>
-                        • Please ensure that you are reachable by phone on the day of the tour just in case the driver
-                        cannot find you...
-                      </li>
-                    </ul>
-                    <button className="text-blue-600 hover:underline text-sm font-medium mt-3">See more</button>
+                    {tour.know_before_you_go && tour.know_before_you_go.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3">Know before you go</h3>
+                        <ul className="space-y-2 text-gray-700 text-sm">
+                          {tour.know_before_you_go.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1163,10 +1081,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                   <div>
                     <p className="font-semibold text-gray-900 text-sm">Reserve now & pay later</p>
                     <p className="text-gray-600 text-xs">
-                      Keep your travel plans flexible — book your spot and pay nothing today.{" "}
-                      <a href="#" className="text-blue-600 hover:underline">
-                        Read more
-                      </a>
+                      Keep your travel plans flexible — book your spot and pay nothing today.
                     </p>
                   </div>
                 </div>
@@ -1207,9 +1122,6 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                           alt={recTour.title}
                           className="w-full h-60 object-cover"
                         />
-                        {/* <div className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded text-xs font-bold">
-                            Top rated
-                        </div> */}
                       </div>
 
 
@@ -1218,7 +1130,6 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                         <h3 className="text-lg font-bold text-gray-900 mb-2">
                           {recTour.title}
                         </h3>
-                        {/* <p className="text-gray-600 text-sm mb-3">Pickup available • Small group • 7.5 - 9 hours</p> */}
 
                         {/* Description used as details for now or truncated */}
                         <div className="text-xs text-gray-600 mb-3 mt-2 space-y-1 line-clamp-2">

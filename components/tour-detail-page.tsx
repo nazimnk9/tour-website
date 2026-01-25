@@ -284,21 +284,21 @@ function TravelerCounter({
       )}
 
       {/* Youth */}
-      {(tour as any).max_youth > 0 && (
+      {tour.max_youth > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
-            Youth <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).youth_age_min}-{(tour as any).youth_age_max})</span>
+            Youth <span className="text-gray-600 font-normal text-xs">(Age {tour.youth_age_min}-{tour.youth_age_max})</span>
           </label>
           <div className="flex items-center gap-4">
             <button
-              onClick={() => onUpdateCount('youths', -1, (tour as any).max_youth)}
+              onClick={() => onUpdateCount('youths', -1, tour.max_youth)}
               className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
             >
               <Minus size={16} className="text-gray-600" />
             </button>
             <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.youths}</span>
             <button
-              onClick={() => onUpdateCount('youths', 1, (tour as any).max_youth)}
+              onClick={() => onUpdateCount('youths', 1, tour.max_youth)}
               className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
             >
               <Plus size={16} className="text-gray-600" />
@@ -308,21 +308,21 @@ function TravelerCounter({
       )}
 
       {/* Student UE */}
-      {(tour as any).max_student_eu > 0 && (
+      {tour.max_student_eu > 0 && (
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-900 mb-2">
-            Student EU <span className="text-gray-600 font-normal text-xs">(Age {(tour as any).student_eu_age_min}-{(tour as any).student_eu_age_max})</span>
+            Student EU <span className="text-gray-600 font-normal text-xs">(Age {tour.student_eu_age_min}-{tour.student_eu_age_max})</span>
           </label>
           <div className="flex items-center gap-4">
             <button
-              onClick={() => onUpdateCount('students', -1, (tour as any).max_student_eu)}
+              onClick={() => onUpdateCount('students', -1, tour.max_student_eu)}
               className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
             >
               <Minus size={16} className="text-gray-600" />
             </button>
             <span className="text-lg font-semibold text-gray-900 w-6 text-center">{counts.students}</span>
             <button
-              onClick={() => onUpdateCount('students', 1, (tour as any).max_student_eu)}
+              onClick={() => onUpdateCount('students', 1, tour.max_student_eu)}
               className="p-2 hover:bg-gray-100 rounded-full border border-gray-300"
             >
               <Plus size={16} className="text-gray-600" />
@@ -666,8 +666,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       total += counts.adults * Number(tour.price_adult)
       total += counts.children * Number(tour.price_child)
       total += counts.infants * Number(tour.price_infant)
-      if ((tour as any).price_youth) total += counts.youths * Number((tour as any).price_youth)
-      if ((tour as any).price_student_eu) total += counts.students * Number((tour as any).price_student_eu)
+      if (tour.price_youth) total += counts.youths * Number(tour.price_youth)
+      if (tour.price_student_eu) total += counts.students * Number(tour.price_student_eu)
     }
     return total.toFixed(2)
   }
@@ -744,8 +744,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     // Note: The interface currently has price_adult, price_child, price_infant. 
     // Accessing dynamic properties safely if they exist in the raw response but likely sticking to interface for type safety is better. 
     // Assuming standard fields from interface for now. To strictly follow "price_youth", "price_student_eu" mentioned in request:
-    (tour as any).price_youth ? Number((tour as any).price_youth) : 0,
-    (tour as any).price_student_eu ? Number((tour as any).price_student_eu) : 0
+    tour.price_youth ? Number(tour.price_youth) : 0,
+    tour.price_student_eu ? Number(tour.price_student_eu) : 0
   ]
   const maxPrice = Math.max(...prices).toFixed(2);
 
@@ -777,7 +777,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <span className="text-gray-600 text-sm">
                 <span className="underline">{tour.reviews.toLocaleString()} reviews</span>
               </span> */}
-              <span className="text-gray-600 text-sm">• Activity provider: One Day Tours</span>
+              <span className="text-gray-600 text-sm">• Activity provider: {tour.duration_days}</span>
             </div>
 
             {/* Action Buttons */}

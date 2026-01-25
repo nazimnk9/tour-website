@@ -70,6 +70,18 @@ export default function Navbar() {
               </div>
             </div>
 
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="/tour" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
+                Tours
+              </Link>
+              <Link href="/about-us" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
+                About us
+              </Link>
+              <Link href="/contact" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
+                Contact
+              </Link>
+            </div>
+
             {/* Right menu items */}
             <div className="flex items-center gap-6">
               {/* <button className="text-blue-600 text-sm font-medium hover:text-blue-700">Become a supplier</button>

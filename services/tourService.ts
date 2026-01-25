@@ -31,6 +31,24 @@ export interface TourPlan {
     price_infant: string;
     infant_age_min: number;
     infant_age_max: number;
+    max_youth: number;
+    price_youth: string;
+    youth_age_min: number;
+    youth_age_max: number;
+    max_student_eu: number;
+    price_student_eu: string;
+    student_eu_age_min: number;
+    student_eu_age_max: number;
+    free_cancellation: boolean;
+    pickup_included: boolean;
+    highlights: string[];
+    full_description: string | null;
+    includes: string[];
+    excludes: string[];
+    not_suitable_for: string[];
+    not_allowed: string[];
+    know_before_you_go: string[];
+    duration_days: number | null;
     status: string;
     is_active: boolean;
     created_at: string;
@@ -44,8 +62,26 @@ export interface TourPlanResponse {
     results: TourPlan[];
 }
 
-export async function getTourPlans(page: number = 1): Promise<TourPlanResponse> {
-    const response = await fetch(`${API_BASE_URL}/tour/plan/?page=${page}`, {
+export interface TourFilterParams {
+    page?: number;
+    duration_days_min?: number;
+    duration_days_max?: number;
+    price_adult_min?: number;
+    price_adult_max?: number;
+}
+
+export async function getTourPlans(params: TourFilterParams = {}): Promise<TourPlanResponse> {
+    const queryParams = new URLSearchParams();
+
+    if (params.page) queryParams.append("page", params.page.toString());
+    else queryParams.append("page", "1");
+
+    if (params.duration_days_min !== undefined) queryParams.append("duration_days_min", params.duration_days_min.toString());
+    if (params.duration_days_max !== undefined) queryParams.append("duration_days_max", params.duration_days_max.toString());
+    if (params.price_adult_min !== undefined) queryParams.append("price_adult_min", params.price_adult_min.toString());
+    if (params.price_adult_max !== undefined) queryParams.append("price_adult_max", params.price_adult_max.toString());
+
+    const response = await fetch(`${API_BASE_URL}/tour/plan/?${queryParams.toString()}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

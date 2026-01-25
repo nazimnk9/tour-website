@@ -22,7 +22,7 @@ export default function ToursSection() {
       if (pageNum === 1) setLoading(true)
       else setLoadingMore(true)
 
-      const data = await getTourPlans(pageNum)
+      const data = await getTourPlans({ page: pageNum })
 
       if (pageNum === 1) {
         setTours(data.results)

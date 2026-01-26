@@ -7,6 +7,16 @@ import { User, Bell, CreditCard, ChevronDown, Loader2, AlertTriangle, Trash2, Hi
 import { getUserProfile, updateUserProfile, deleteUserAccount, removeTokens } from "@/services/authService"
 import { getBookingHistory } from "@/services/tourService"
 import { useRouter } from "next/navigation"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 export default function SettingsPage() {
     const router = useRouter()
@@ -18,6 +28,23 @@ export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState<'personal' | 'history'>('personal')
     const [bookings, setBookings] = useState<any[]>([])
     const [bookingsLoading, setBookingsLoading] = useState(false)
+
+    // Alert Dialog state
+    const [alertDialogState, setAlertDialogState] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        type: 'success' | 'error' | 'info';
+    }>({
+        isOpen: false,
+        title: "",
+        description: "",
+        type: 'info'
+    })
+
+    const showAlert = (title: string, description: string, type: 'success' | 'error' | 'info' = 'info') => {
+        setAlertDialogState({ isOpen: true, title, description, type })
+    }
 
     const [formData, setFormData] = useState({
         first_name: "",
@@ -111,9 +138,9 @@ export default function SettingsPage() {
             }
 
             await updateUserProfile(payload)
-            alert("Settings updated successfully!")
+            showAlert("Success", "Settings updated successfully!", 'success')
         } catch (err: any) {
-            alert(err.message || "Failed to update settings")
+            showAlert("Error", err.message || "Failed to update settings", 'error')
         } finally {
             setSaveLoading(false)
         }
@@ -126,7 +153,7 @@ export default function SettingsPage() {
             removeTokens()
             router.push('/')
         } catch (err: any) {
-            alert(err.message || "Failed to delete account")
+            showAlert("Error", err.message || "Failed to delete account", 'error')
         } finally {
             setDeleteLoading(false)
             setIsDeleteModalOpen(false)
@@ -350,8 +377,8 @@ export default function SettingsPage() {
                                                         </td>
                                                         <td className="px-6 py-5">
                                                             <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${booking.status === 'open' ? 'bg-blue-50 text-blue-600' :
-                                                                    booking.status === 'confirmed' ? 'bg-green-50 text-green-600' :
-                                                                        'bg-gray-50 text-gray-600'
+                                                                booking.status === 'confirmed' ? 'bg-green-50 text-green-600' :
+                                                                    'bg-gray-50 text-gray-600'
                                                                 }`}>
                                                                 {booking.status}
                                                             </span>
@@ -401,6 +428,34 @@ export default function SettingsPage() {
                     </div>
                 </div>
             )}
+
+            {/* Success/Error Alert Dialog */}
+            <AlertDialog open={alertDialogState.isOpen} onOpenChange={(open) => setAlertDialogState(prev => ({ ...prev, isOpen: open }))}>
+                <AlertDialogContent className="bg-white rounded-2xl p-8 max-w-sm">
+                    <AlertDialogHeader>
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto ${alertDialogState.type === 'success' ? 'bg-green-50' : alertDialogState.type === 'error' ? 'bg-red-50' : 'bg-blue-50'}`}>
+                            {alertDialogState.type === 'success' ? (
+                                <DollarSign className="text-green-600 w-8 h-8" />
+                            ) : alertDialogState.type === 'error' ? (
+                                <AlertTriangle className="text-red-600 w-8 h-8" />
+                            ) : (
+                                <Bell className="text-blue-600 w-8 h-8" />
+                            )}
+                        </div>
+                        <AlertDialogTitle className="text-2xl font-bold text-[#051036] text-center">
+                            {alertDialogState.title}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-500 text-center text-base pt-2">
+                            {alertDialogState.description}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="pt-6 sm:justify-center">
+                        <AlertDialogAction className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-12 rounded-full transition-all shadow-lg shadow-orange-500/20 border-none outline-none">
+                            OK
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             <Footer />
         </div>

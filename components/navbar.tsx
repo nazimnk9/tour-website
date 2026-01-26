@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { Heart, ShoppingCart, Globe, User, LogIn, Bell, Sun, HelpCircle, Smartphone, ChevronRight, LogOut } from "lucide-react"
+import { Heart, ShoppingCart, Globe, User, LogIn, Bell, Sun, HelpCircle, Smartphone, ChevronRight, LogOut, Menu, X } from "lucide-react"
 import { useState } from "react"
 import { RegisterModal } from "./auth/RegisterModal"
 import { LoginModal } from "./auth/LoginModal"
@@ -13,6 +13,7 @@ export default function Navbar() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isLoggedInState, setIsLoggedInState] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const dispatch = useAppDispatch()
   const cart = useAppSelector((state) => state.cart)
@@ -173,11 +174,49 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
+
+              {/* Mobile Hamburger Menu */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer transition-all duration-200"
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <span className="text-xs font-medium">{isMenuOpen ? "Close" : "Menu"}</span>
+              </button>
             </div>
           </div>
+        </div>
 
-          {/* Sub navigation */}
-          {/* <div className="flex gap-8">
+        {/* Mobile menu content */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 animate-in slide-in-from-top duration-200">
+            <div className="px-4 pt-2 pb-6 space-y-2">
+              <Link
+                href="/tour"
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
+              >
+                Tours
+              </Link>
+              <Link
+                href="/about-us"
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
+              >
+                About us
+              </Link>
+              <Link
+                href="/contact"
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        )}
+        {/* Sub navigation */}
+        {/* <div className="flex gap-8">
           <button className="text-gray-700 font-medium hover:text-gray-900 flex items-center gap-1">
             Places to see
             <span className="text-xs">▼</span>
@@ -191,7 +230,6 @@ export default function Navbar() {
             <span className="text-xs">▼</span>
           </button>
         </div> */}
-        </div>
       </nav>
     </>
   )

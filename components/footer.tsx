@@ -88,11 +88,11 @@ export default function Footer() {
                   About Us
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="hover:underline text-gray-100">
                   Blog
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -119,13 +119,13 @@ export default function Footer() {
           <p className="text-sm text-gray-300">© 2019 – 2026 City Rome Tickets. </p>
 
           <div className="flex gap-6">
-            <a href="#" className="hover:text-blue-300 transition" aria-label="Facebook">
+            {/* <a href="#" className="hover:text-blue-300 transition" aria-label="Facebook">
               <Facebook size={22} />
-            </a>
+            </a> */}
             <a href="#" className="hover:text-pink-300 transition" aria-label="Instagram">
               <Instagram size={22} />
             </a>
-            <a href="#" className="hover:text-blue-300 transition" aria-label="Twitter">
+            {/* <a href="#" className="hover:text-blue-300 transition" aria-label="Twitter">
               <Twitter size={22} />
             </a>
             <a href="#" className="hover:text-red-300 transition" aria-label="Pinterest">
@@ -135,7 +135,7 @@ export default function Footer() {
             </a>
             <a href="#" className="hover:text-blue-300 transition" aria-label="LinkedIn">
               <Linkedin size={22} />
-            </a>
+            </a> */}
           </div>
         </div>
       </div>

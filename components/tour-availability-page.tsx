@@ -770,17 +770,17 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                             </div>
                         </div>
 
-                        <div className="flex items-end justify-between">
-                            <div>
-                                {/* Quantity/Travelers Selector */}
-                                <div className="mb-4 relative" ref={travelerPickerRef}>
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between items-stretch gap-8">
+                            {/* Left Side: Travelers Selector */}
+                            <div className="flex-1">
+                                <div className="relative w-full mb-0 md:mb-10" ref={travelerPickerRef}>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Travelers</label>
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             setIsTravelerPickerOpen(!isTravelerPickerOpen)
                                         }}
-                                        className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap min-w-[200px]"
+                                        className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap"
                                     >
                                         <span className="flex items-center gap-2">
                                             <span>👥</span>
@@ -797,53 +797,52 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                         onUpdateCount={handleUpdateCount}
                                     />
                                 </div>
-
-                                {/* Price Display */}
-                                <p className="text-gray-600 text-sm mb-1">{getPriceSummary()}</p>
-                                <p className="text-3xl font-bold text-gray-900">${calculateTotalPrice()}</p>
-                                {/* <p className="text-gray-600 text-sm">per person</p> */}
                             </div>
-                            <div className="text-right">
-                                {!showBookingButtons ? (
-                                    <button
-                                        onClick={() => setShowBookingButtons(true)}
-                                        className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-2"
-                                    >
-                                        Select
-                                    </button>
-                                ) : (
-                                    <div className="flex gap-2 mb-2">
+
+                            {/* Right Side: Price, Booking Buttons, and Cancellation */}
+                            <div className="flex-1 flex flex-col items-stretch md:items-end gap-4 text-left md:text-right">
+                                <div>
+                                    <p className="text-gray-600 text-sm mb-1">{getPriceSummary()}</p>
+                                    <p className="text-3xl font-bold text-gray-900">${calculateTotalPrice()}</p>
+                                </div>
+
+                                <div className="w-full sm:w-auto">
+                                    {!showBookingButtons ? (
                                         <button
-                                            onClick={handleBookNow}
-                                            disabled={isBookingLoading}
-                                            className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[120px]"
+                                            onClick={() => setShowBookingButtons(true)}
+                                            className="w-full sm:min-w-[160px] bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                                         >
-                                            {isBookingLoading ? (
-                                                <>
-                                                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                                                    Booking...
-                                                </>
-                                            ) : (
-                                                "Book now"
-                                            )}
+                                            Select
                                         </button>
-                                        <button
-                                            onClick={handleAddToCart}
-                                            disabled={isCartLoading}
-                                            className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center min-w-[140px]"
-                                        >
-                                            {isCartLoading ? (
-                                                <>
-                                                    <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                                                    Adding...
-                                                </>
-                                            ) : (
-                                                "Add to Cart"
-                                            )}
-                                        </button>
-                                    </div>
-                                )}
-                                <div className="flex items-center gap-2 text-teal-600 justify-end">
+                                    ) : (
+                                        <div className="flex flex-col sm:flex-row gap-2 w-full">
+                                            <button
+                                                onClick={handleBookNow}
+                                                disabled={isBookingLoading}
+                                                className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[120px] w-full"
+                                            >
+                                                {isBookingLoading ? (
+                                                    <><Loader2 className="animate-spin mr-2 h-4 w-4" />Booking...</>
+                                                ) : (
+                                                    "Book now"
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={handleAddToCart}
+                                                disabled={isCartLoading}
+                                                className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center min-w-[140px] w-full"
+                                            >
+                                                {isCartLoading ? (
+                                                    <><Loader2 className="animate-spin mr-2 h-4 w-4" />Adding...</>
+                                                ) : (
+                                                    "Add to Cart"
+                                                )}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-2 text-teal-600 md:justify-end justify-start">
                                     <Check size={18} />
                                     <span className="text-sm font-medium">Free cancellation</span>
                                 </div>

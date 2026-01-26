@@ -206,7 +206,7 @@ function TravelerCounter({
     if (!isOpen) return null
 
     return (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10 w-[90vw] sm:w-[350px]">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10 w-[80vw] sm:w-[350px]">
             {/* Changing top-full to bottom-full for this page maybe? Original was top-full. Let's stick to original but ensure z-index */}
 
             {/* Adult */}
@@ -780,7 +780,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                             e.stopPropagation()
                                             setIsTravelerPickerOpen(!isTravelerPickerOpen)
                                         }}
-                                        className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap"
+                                        className="w-full md:w-[350px] flex items-center justify-between px-4 py-3 border border-gray-300 rounded-lg hover:border-gray-400 transition text-gray-700 font-medium whitespace-nowrap"
                                     >
                                         <span className="flex items-center gap-2">
                                             <span>👥</span>

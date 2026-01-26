@@ -312,7 +312,7 @@ export default function SettingsPage() {
                                     <button
                                         onClick={handleSave}
                                         disabled={saveLoading}
-                                        className="bg-[#DDE2E5] text-[#1A2B49] px-10 py-3 rounded-full font-bold hover:bg-gray-300 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                        className="bg-orange-300 text-[#1A2B49] px-10 py-3 rounded-full font-bold hover:bg-orange-500 transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                                     >
                                         {saveLoading && <Loader2 size={16} className="animate-spin" />}
                                         Save

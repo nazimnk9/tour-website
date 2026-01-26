@@ -55,3 +55,69 @@ export function isLoggedIn() {
     }
     return false;
 }
+export function getAccessToken() {
+    if (typeof document !== 'undefined') {
+        const cookie = document.cookie.split(';').find((item) => item.trim().startsWith('access_token='));
+        return cookie ? cookie.split('=')[1] : null;
+    }
+    return null;
+}
+
+export async function getUserProfile() {
+    const token = getAccessToken();
+    if (!token) throw new Error("No access token found");
+
+    const response = await fetch(`${API_BASE_URL}/me/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch user profile");
+    }
+
+    return response.json();
+}
+
+export async function updateUserProfile(data: any) {
+    const token = getAccessToken();
+    if (!token) throw new Error("No access token found");
+
+    const response = await fetch(`${API_BASE_URL}/me/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update user profile");
+    }
+
+    return response.json();
+}
+
+export async function deleteUserAccount() {
+    const token = getAccessToken();
+    if (!token) throw new Error("No access token found");
+
+    const response = await fetch(`${API_BASE_URL}/me/`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to delete user account");
+    }
+}

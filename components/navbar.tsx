@@ -1,11 +1,11 @@
 "use client"
 import Link from "next/link"
 import { Heart, ShoppingCart, Globe, User, LogIn, Bell, Sun, HelpCircle, Smartphone, ChevronRight, LogOut, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { RegisterModal } from "./auth/RegisterModal"
 import { LoginModal } from "./auth/LoginModal"
-import { isLoggedIn, removeTokens } from "@/services/authService"
-import { useEffect } from "react"
+import { isLoggedIn, removeTokens, getUserProfile } from "@/services/authService"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 
@@ -14,22 +14,53 @@ export default function Navbar() {
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isLoggedInState, setIsLoggedInState] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [userName, setUserName] = useState("Profile")
 
+  const profileRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
   const dispatch = useAppDispatch()
   const cart = useAppSelector((state) => state.cart)
+
+  const handleLogout = () => {
+    removeTokens()
+    setIsLoggedInState(false)
+    setUserName("Profile")
+    router.push('/')
+  }
 
   useEffect(() => {
     dispatch(fetchCartCount())
   }, [dispatch])
 
   useEffect(() => {
-    setIsLoggedInState(isLoggedIn())
-  }, [])
+    const checkLogin = async () => {
+      if (isLoggedIn()) {
+        try {
+          const profile = await getUserProfile()
+          setIsLoggedInState(true)
+          setUserName(profile.first_name || "User")
+        } catch (error) {
+          console.error("Session expired", error)
+          handleLogout()
+        }
+      } else {
+        setIsLoggedInState(false)
+        setUserName("Profile")
+      }
+    }
+    checkLogin()
+  }, [isLoggedInState])
 
-  const handleLogout = () => {
-    removeTokens()
-    setIsLoggedInState(false)
-  }
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const openRegister = () => {
     setIsRegisterOpen(true)
@@ -52,7 +83,10 @@ export default function Navbar() {
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         onSwitchToRegister={openRegister}
-        onLoginSuccess={() => setIsLoggedInState(true)}
+        onLoginSuccess={() => {
+          setIsLoggedInState(true)
+          dispatch(fetchCartCount())
+        }}
       />
       <nav className="w-full bg-white shadow-sm">
         {/* Top bar */}
@@ -63,7 +97,7 @@ export default function Navbar() {
               <div className="text-center">
                 <Link href="/" className="block cursor-pointer">
                   <img
-                    src="/images/logo_city_roam_tickets-transparent.png"   // <- put your logo file in /public/images/logo.png
+                    src="/images/logo_city_roam_tickets-transparent.png"
                     alt="City Rome Tickets"
                     className="h-25 w-auto md:h-22 sm:h-22"
                   />
@@ -85,13 +119,6 @@ export default function Navbar() {
 
             {/* Right menu items */}
             <div className="flex items-center gap-6">
-              {/* <button className="text-blue-600 text-sm font-medium hover:text-blue-700">Become a supplier</button>
-            
-            <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900">
-              <Heart size={20} />
-              <span className="text-xs">Wishlist</span>
-            </button> */}
-
               <Link href="/cart" className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
                 <div className="relative">
                   <ShoppingCart size={20} />
@@ -111,18 +138,21 @@ export default function Navbar() {
                 <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
               </button>
 
-              <div className="relative group z-50">
-                <button className="flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
+              <div className="relative group z-50" ref={profileRef}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer"
+                >
                   <User size={20} />
-                  <span className="text-xs font-medium">Profile</span>
+                  <span className="text-xs font-medium">{userName}</span>
                   <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
                 </button>
 
                 {/* Profile Dropdown */}
-                <div className="absolute right-0 top-full pt-[10px] w-80 hidden group-hover:block transition-all duration-200 z-[100]">
+                <div className={`absolute right-0 top-full pt-[10px] w-80 ${isProfileOpen ? 'block' : 'hidden md:group-hover:block'} transition-all duration-200 z-[100]`}>
                   <div className="bg-white rounded-xl shadow-[0_2px_20px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-4 bg-transparent">
-                      <h3 className="text-xl font-bold text-[#051036] mb-4 text-left">Profile</h3>
+                      <h3 className="text-xl font-bold text-[#051036] mb-4 text-left">{userName}</h3>
 
                       {!isLoggedInState && (
                         <div
@@ -136,40 +166,31 @@ export default function Navbar() {
                         </div>
                       )}
 
-                      <div className="border-b border-gray-100 my-2 -mx-4"></div>
-
                       <div className="space-y-1 mt-2">
-                        <Link href="/settings" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <Bell size={20} className="text-[#051036] stroke-[1.5]" />
-                            <span className="text-[15px] text-[#051036]">Settings</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {/* <span className="flex items-center justify-center w-5 h-5 bg-[#D91B42] text-white text-[10px] font-bold rounded-full">1</span> */}
-                            <ChevronRight size={16} className="text-[#051036]" />
-                          </div>
-                        </Link>
-                      </div>
-
-                      <div className="border-b border-gray-100 my-2 -mx-4"></div>
-
-                      <div className="space-y-1 mt-2">
-                        <div className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
-                          <HelpCircle size={20} className="text-[#051036] stroke-[1.5]" />
-                          <span className="text-[15px] text-[#051036]">Support</span>
-                        </div>
-
                         {isLoggedInState && (
-                          <div
-                            onClick={handleLogout}
-                            className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4"
-                          >
-                            <LogOut size={20} className="text-[#051036] stroke-[1.5]" />
-                            <span className="text-[15px] text-[#051036]">Log out</span>
-                          </div>
+                          <>
+                            <Link href="/settings" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
+                              <div className="flex items-center gap-3">
+                                <Bell size={20} className="text-[#051036] stroke-[1.5]" />
+                                <span className="text-[15px] text-[#051036]">Settings</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <ChevronRight size={16} className="text-[#051036]" />
+                              </div>
+                            </Link>
+
+                            <div className="border-b border-gray-100 my-2 -mx-4"></div>
+
+                            <div
+                              onClick={handleLogout}
+                              className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4"
+                            >
+                              <LogOut size={20} className="text-[#051036] stroke-[1.5]" />
+                              <span className="text-[15px] text-[#051036]">Log out</span>
+                            </div>
+                          </>
                         )}
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -215,21 +236,6 @@ export default function Navbar() {
             </div>
           </div>
         )}
-        {/* Sub navigation */}
-        {/* <div className="flex gap-8">
-          <button className="text-gray-700 font-medium hover:text-gray-900 flex items-center gap-1">
-            Places to see
-            <span className="text-xs">▼</span>
-          </button>
-          <button className="text-gray-700 font-medium hover:text-gray-900 flex items-center gap-1">
-            Things to do
-            <span className="text-xs">▼</span>
-          </button>
-          <button className="text-gray-700 font-medium hover:text-gray-900 flex items-center gap-1">
-            Trip inspiration
-            <span className="text-xs">▼</span>
-          </button>
-        </div> */}
       </nav>
     </>
   )

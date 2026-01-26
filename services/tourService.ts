@@ -373,3 +373,23 @@ export async function getRecommendedTours(id: number | string): Promise<TourPlan
 
     return response.json();
 }
+
+export async function getBookingHistory(): Promise<any> {
+    const token = typeof document !== 'undefined' ? document.cookie.split(';').find((item) => item.trim().startsWith('access_token='))?.split('=')[1] : null;
+    if (!token) throw new Error("No access token found");
+
+    const response = await fetch(`${API_BASE_URL}/tour/booking/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch booking history");
+    }
+
+    return response.json();
+}

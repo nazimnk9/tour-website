@@ -139,16 +139,16 @@ export default function Navbar() {
                       <div className="border-b border-gray-100 my-2 -mx-4"></div>
 
                       <div className="space-y-1 mt-2">
-                        <div className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
+                        <Link href="/settings" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
                           <div className="flex items-center gap-3">
                             <Bell size={20} className="text-[#051036] stroke-[1.5]" />
-                            <span className="text-[15px] text-[#051036]">Updates</span>
+                            <span className="text-[15px] text-[#051036]">Settings</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="flex items-center justify-center w-5 h-5 bg-[#D91B42] text-white text-[10px] font-bold rounded-full">1</span>
+                            {/* <span className="flex items-center justify-center w-5 h-5 bg-[#D91B42] text-white text-[10px] font-bold rounded-full">1</span> */}
                             <ChevronRight size={16} className="text-[#051036]" />
                           </div>
-                        </div>
+                        </Link>
                       </div>
 
                       <div className="border-b border-gray-100 my-2 -mx-4"></div>

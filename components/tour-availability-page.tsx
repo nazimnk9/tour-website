@@ -34,6 +34,9 @@ import {
 import { useAppDispatch } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
 import { useRouter } from "next/navigation"
+import { isLoggedIn } from "@/services/authService"
+import { LoginModal } from "@/components/auth/LoginModal"
+import { RegisterModal } from "@/components/auth/RegisterModal"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -342,6 +345,8 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     const [error, setError] = useState<string | null>(null)
     const [isBookingLoading, setIsBookingLoading] = useState(false)
     const [isCartLoading, setIsCartLoading] = useState(false)
+    const [isLoginOpen, setIsLoginOpen] = useState(false)
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false)
 
     // Message Modal State
     const [messageModalOpen, setMessageModalOpen] = useState(false)
@@ -533,6 +538,10 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     }
 
     const handleBookNow = () => {
+        if (!isLoggedIn()) {
+            setIsLoginOpen(true)
+            return
+        }
         if (!tour || !selectedDate || !selectedTimeSlot) {
             showMessage("Missing Selection", "Please select a date and time slot first")
             return
@@ -830,7 +839,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                             <button
                                                 onClick={handleAddToCart}
                                                 disabled={isCartLoading}
-                                                className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center min-w-[140px] w-full"
+                                                className="bg-orange-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-orange-600 transition flex items-center justify-center min-w-[140px] w-full cursor-pointer"
                                             >
                                                 {isCartLoading ? (
                                                     <><Loader2 className="animate-spin mr-2 h-4 w-4" />Adding...</>
@@ -851,6 +860,24 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     </div>
                 </div>
             </div>
+
+
+            <LoginModal
+                isOpen={isLoginOpen}
+                onClose={() => setIsLoginOpen(false)}
+                onSwitchToRegister={() => {
+                    setIsLoginOpen(false)
+                    setIsRegisterOpen(true)
+                }}
+            />
+            <RegisterModal
+                isOpen={isRegisterOpen}
+                onClose={() => setIsRegisterOpen(false)}
+                onSwitchToLogin={() => {
+                    setIsRegisterOpen(false)
+                    setIsLoginOpen(true)
+                }}
+            />
 
 
             <AlertDialog open={messageModalOpen} onOpenChange={setMessageModalOpen}>

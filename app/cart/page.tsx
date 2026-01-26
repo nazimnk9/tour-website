@@ -18,6 +18,9 @@ import {
     TourTimeSlot,
     AddToCartPayload
 } from "@/services/tourService"
+import { isLoggedIn } from "@/services/authService"
+import { LoginModal } from "@/components/auth/LoginModal"
+import { RegisterModal } from "@/components/auth/RegisterModal"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -346,6 +349,7 @@ interface EnhancedCartItem extends CartItem {
 }
 
 export default function CartPage() {
+    const router = useRouter()
     const [cartItems, setCartItems] = useState<EnhancedCartItem[]>([])
     const [loading, setLoading] = useState(true)
     const [subtotal, setSubtotal] = useState(0)
@@ -367,6 +371,9 @@ export default function CartPage() {
     const [isEditTravelerPickerOpen, setIsEditTravelerPickerOpen] = useState(false)
     const [isEditDatePickerOpen, setIsEditDatePickerOpen] = useState(false)
     const [editShowBookingButtons, setEditShowBookingButtons] = useState(true) // Default true for edit since we want to show times? Or logic applies?
+
+    const [isLoginOpen, setIsLoginOpen] = useState(false)
+    const [isRegisterOpen, setIsRegisterOpen] = useState(false)
 
     const travelerPickerRefSidebar = useRef<HTMLDivElement>(null)
     const sidebarDatePickerRef = useRef<HTMLDivElement>(null)
@@ -870,9 +877,18 @@ export default function CartPage() {
                                 </div>
                                 <p className="text-right text-xs text-teal-600 font-medium mb-6">All taxes and fees included</p>
 
-                                <Link href="/checkout" className="block w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center">
+                                <button
+                                    onClick={() => {
+                                        if (isLoggedIn()) {
+                                            router.push('/checkout')
+                                        } else {
+                                            setIsLoginOpen(true)
+                                        }
+                                    }}
+                                    className="block w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center cursor-pointer"
+                                >
                                     Go to checkout
-                                </Link>
+                                </button>
 
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Check size={18} className="text-teal-600" />
@@ -999,6 +1015,23 @@ export default function CartPage() {
 
 
             <Footer />
+
+            <LoginModal
+                isOpen={isLoginOpen}
+                onClose={() => setIsLoginOpen(false)}
+                onSwitchToRegister={() => {
+                    setIsLoginOpen(false)
+                    setIsRegisterOpen(true)
+                }}
+            />
+            <RegisterModal
+                isOpen={isRegisterOpen}
+                onClose={() => setIsRegisterOpen(false)}
+                onSwitchToLogin={() => {
+                    setIsRegisterOpen(false)
+                    setIsLoginOpen(true)
+                }}
+            />
         </div>
     )
 }

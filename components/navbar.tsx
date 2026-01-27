@@ -153,7 +153,12 @@ export default function Navbar() {
                   <div className="bg-white rounded-xl shadow-[0_2px_20px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-4 bg-transparent">
                       <h3 className="text-xl font-bold text-[#051036] mb-4 text-left">{userName}</h3>
-
+                      <Link href="/contact" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <HelpCircle size={20} className="text-[#051036] stroke-[1.5]" />
+                          <span className="text-[15px] text-[#051036]">Support</span>
+                        </div>
+                      </Link>
                       {!isLoggedInState && (
                         <div
                           onClick={openRegister}

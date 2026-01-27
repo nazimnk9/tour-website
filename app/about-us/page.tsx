@@ -86,7 +86,7 @@ export default function AboutUsPage() {
                         <img
                             src="/ocean.jpg"
                             alt="Background"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-fixed"
                         />
                         <div className="absolute inset-0 bg-[#051036]/30"></div>
                     </div>

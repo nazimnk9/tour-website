@@ -56,22 +56,22 @@ export default function Footer() {
             <h3 className="font-semibold mb-4 text-base">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:underline text-gray-100">
+                <a href="/contact" className="hover:underline text-gray-100">
                   Contact
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline text-gray-100">
+                <a href="/legal-notice" className="hover:underline text-gray-100">
                   Legal Notice
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline text-gray-100">
+                <a href="/privacy-policy" className="hover:underline text-gray-100">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline text-gray-100">
+                <a href="/terms-and-conditions" className="hover:underline text-gray-100">
                   Terms and Conditions
                 </a>
               </li>
@@ -84,7 +84,7 @@ export default function Footer() {
             <h3 className="font-semibold mb-4 text-base">Company</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:underline text-gray-100">
+                <a href="/about-us" className="hover:underline text-gray-100">
                   About Us
                 </a>
               </li>
@@ -96,7 +96,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          
+
         </div>
 
         {/* <div className="mb-8 pb-8 border-t border-slate-700 pt-8">

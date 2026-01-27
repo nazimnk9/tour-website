@@ -100,15 +100,14 @@ export default function DiscountModal() {
           {/* White Body */}
           <div className="px-6 py-6 space-y-4 min-h-[200px] flex flex-col justify-center">
             {isLoading ? (
-              <div className="flex justify-center items-center py-8">
+              <div className="py-2">
                 <Loader2 className="animate-spin text-orange-500" size={40} />
               </div>
             ) : (
               <>
                 {notice && (
-                  <div className="text-center space-y-2">
-                    <h3 className="text-lg font-bold text-[#051036]">{notice.title}</h3>
-                    <p className="text-gray-600 text-sm">{notice.description}</p>
+                  <div className=" space-y-2">
+                    <h3 className="text-lg font-bold text-[#051036]">{notice.description}</h3>
                   </div>
                 )}
 

@@ -100,7 +100,7 @@ export default function DiscountModal() {
           {/* White Body */}
           <div className="px-6 py-6 space-y-4 min-h-[200px] flex flex-col justify-center">
             {isLoading ? (
-              <div className="py-2">
+              <div className="py-1">
                 <Loader2 className="animate-spin text-orange-500" size={40} />
               </div>
             ) : (

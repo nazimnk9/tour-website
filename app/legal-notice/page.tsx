@@ -16,8 +16,8 @@ export default function LegalNoticePage() {
                     <section>
                         <h2 className="text-2xl font-bold text-[#051036] mb-4">1. Identification</h2>
                         <p>
-                            This website is operated by City Rome Tickets. Our official address is located in Rome, Italy.
-                            For any inquiries, you can contact us at example@gmail.com or via phone at +33 321-654-987.
+                            This website is operated by City Rome Tickets. Our official address is located in Via santamaura 32, Italy.
+                            For any inquiries, you can contact us at <a href="mailto:cityrometickets@gmail.com">cityrometickets@gmail.com</a> or via phone at +33 321-654-987.
                         </p>
                     </section>
 

@@ -96,9 +96,9 @@ export default function ToursPage() {
                 <Navbar />
                 {/* Header Section */}
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 ">
                     <div className="">
-                        <div className="py-8 md:py-12">
+                        <div className="py-5 md:py-8">
                             <h1 className="text-3xl md:text-4xl font-bold text-[#051036] mb-3">
                                 Available Tours in Italy
                             </h1>

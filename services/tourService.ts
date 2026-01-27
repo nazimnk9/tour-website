@@ -393,3 +393,33 @@ export async function getBookingHistory(): Promise<any> {
 
     return response.json();
 }
+
+export interface TourNotice {
+    id: number;
+    title: string;
+    description: string;
+    is_active: boolean;
+}
+
+export interface TourNoticeResponse {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: TourNotice[];
+}
+
+export async function getTourNotice(): Promise<TourNoticeResponse> {
+    const response = await fetch(`${API_BASE_URL}/tour/notice/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to fetch tour notice");
+    }
+
+    return response.json();
+}

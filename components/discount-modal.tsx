@@ -85,7 +85,7 @@ export default function DiscountModal() {
               </div>
             </div>
             <h2 className="text-xl font-bold text-white flex-1 leading-tight">
-              You've been selected for an exclusive discount
+              Important Notice
             </h2>
             {/* Close button */}
             <button
@@ -107,7 +107,7 @@ export default function DiscountModal() {
               <>
                 {notice && (
                   <div className=" space-y-2">
-                    <h3 className="text-lg font-bold text-[#051036]">{notice.description}</h3>
+                    <h4 className="text-lg font-semibold text-[#051036]">{notice.description}</h4>
                   </div>
                 )}
 

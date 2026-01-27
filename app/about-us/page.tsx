@@ -28,7 +28,7 @@ export default function AboutUsPage() {
                                 "
                             >
                                 <img
-                                src="/images/memory.png"
+                                src="/images/memory_1.webp"
                                 alt="Scenic landscape"
                                 className="w-full h-full object-cover object-center"
                                 loading="lazy"

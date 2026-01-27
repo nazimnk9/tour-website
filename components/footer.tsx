@@ -1,141 +1,154 @@
 "use client"
-
-import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react"
+import Link from "next/link"
+import { Facebook,  Instagram, Mail, Phone, MapPin  } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-slate-900 text-white py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          {/* Language & Currency Section */}
-          <div className="space-y-6">
+    <footer className="w-full bg-slate-900 text-white">
+      {/* Top gradient divider (subtle, keeps same bg) */}
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        {/* Top row */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Brand / short description */}
+          <div className="lg:col-span-6">
+            <div className="space-y-4">
+              <div className="rounded-xl ">
+                  <Link href="/" className="block cursor-pointer">
+                  <img
+                    src="/images/logo_city_roam_tickets-transparent.png"
+                    alt="City Rome Tickets"
+                    className="h-25 w-auto md:h-22 sm:h-22"
+                  />
+                </Link>
+                </div>
+              <div className="flex items-center gap-3">
+                
+                <div>
+                  <p className="text-xs text-white/60 tracking-[0.2em] uppercase mt-1">
+                    Tours & Tickets
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-sm text-white/70 leading-relaxed max-w-md">
+                Book unforgettable experiences with trusted local experts. Fast support, flexible booking,
+                and great value—every time.
+              </p>
+
+              {/* Quick contact (compact + responsive) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <a
+                  href="mailto:cityrometickets@gmail.com"
+                  className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition"
+                >
+                  <span className="h-9 w-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-400">
+                    <Mail size={18} />
+                  </span>
+                  <span className="text-sm text-white/80 group-hover:text-white transition break-all">
+                    cityrometickets@gmail.com
+                  </span>
+                </a>
+
+                <a
+                  href="tel:+337711048902"
+                  className="group flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 hover:bg-white/10 transition"
+                >
+                  <span className="h-9 w-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-400">
+                    <Phone size={18} />
+                  </span>
+                  <span className="text-sm text-white/80 group-hover:text-white transition">
+                    +33 771 104 8902
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Links */}
+          <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-2 gap-8">
+            {/* Support */}
             <div>
-              <h3 className="font-semibold mb-3 text-base">Language</h3>
-              <select className="w-full bg-white text-gray-900 px-4 py-2 rounded text-sm border-none font-medium">
-                <option>English (United States)</option>
-                <option>Español</option>
-              </select>
+              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+                Support
+              </h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li>
+                  <Link href="/contact" className="text-white/70 hover:text-white transition">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal-notice" className="text-white/70 hover:text-white transition">
+                    Legal Notice
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms-and-conditions" className="text-white/70 hover:text-white transition">
+                    Terms and Conditions
+                  </Link>
+                </li>
+              </ul>
             </div>
 
-            {/* <div>
-              <h3 className="font-semibold mb-3 text-base">Currency</h3>
-              <select className="w-full bg-white text-gray-900 px-4 py-2 rounded text-sm border-none font-medium">
-                <option>U.S. Dollar ($)</option>
-                <option>Euro (€)</option>
-                <option>British Pound (£)</option>
-                <option>Australian Dollar (A$)</option>
-                <option>Canadian Dollar (C$)</option>
-              </select>
+            {/* Company */}
+            <div>
+              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+                Company
+              </h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li>
+                  <Link href="/about-us" className="text-white/70 hover:text-white transition">
+                    About Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Language (kept) */}
+            {/* <div className="col-span-2 sm:col-span-1">
+              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+                Language
+              </h3>
+              <div className="mt-4">
+                <select className="w-full bg-white text-gray-900 px-4 py-3 rounded-xl text-sm border-none font-medium outline-none">
+                  <option>English</option>
+                  <option>Español</option>
+                </select>
+                <p className="text-xs text-white/50 mt-3 leading-relaxed">
+                  Choose your preferred language for the best experience.
+                </p>
+              </div>
             </div> */}
           </div>
 
-          {/* Mobile Section */}
-          {/* <div>
-            <h3 className="font-semibold mb-4 text-base">Mobile</h3>
-            <div className="space-y-3">
-              <a href="#" className="flex items-center gap-2 hover:opacity-75 transition">
-                <img src="/google-play-logo.jpg" alt="Google Play" className="h-10" />
-                <div className="text-xs">
-                  <div className="text-gray-300">GET IT ON</div>
-                  <div className="font-semibold">Google Play</div>
-                </div>
-              </a>
-              <a href="#" className="flex items-center gap-2 hover:opacity-75 transition">
-                <img src="/app-store-logo.jpg" alt="App Store" className="h-10" />
-                <div className="text-xs">
-                  <div className="text-gray-300">Download on the</div>
-                  <div className="font-semibold">App Store</div>
-                </div>
-              </a>
-            </div>
-          </div> */}
-
-          {/* Support Section */}
-          <div>
-            <h3 className="font-semibold mb-4 text-base">Support</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/contact" className="hover:underline text-gray-100">
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a href="/legal-notice" className="hover:underline text-gray-100">
-                  Legal Notice
-                </a>
-              </li>
-              <li>
-                <a href="/privacy-policy" className="hover:underline text-gray-100">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="/terms-and-conditions" className="hover:underline text-gray-100">
-                  Terms and Conditions
-                </a>
-              </li>
-
-            </ul>
-          </div>
-
-          {/* Company Section */}
-          <div>
-            <h3 className="font-semibold mb-4 text-base">Company</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/about-us" className="hover:underline text-gray-100">
-                  About Us
-                </a>
-              </li>
-              {/* <li>
-                <a href="#" className="hover:underline text-gray-100">
-                  Blog
-                </a>
-              </li> */}
-            </ul>
-          </div>
-
-
+          {/* Small “location / note” card */}
+          
         </div>
 
-        {/* <div className="mb-8 pb-8 border-t border-slate-700 pt-8">
-          <h3 className="font-semibold mb-4 text-base">Ways You Can Pay</h3>
-          <div className="flex flex-wrap gap-3 items-center">
-            <img src="/paypal-logo.png" alt="PayPal" className="h-6" />
-            <img src="/mastercard-logo.jpg" alt="Mastercard" className="h-6" />
-            <img src="/visa-logo.jpg" alt="Visa" className="h-6" />
-            <img src="/union-pay-logo.jpg" alt="UnionPay" className="h-6" />
-            <img src="/amex-logo.jpg" alt="American Express" className="h-6" />
-            <img src="/jcb-logo.jpg" alt="JCB" className="h-6" />
-            <img src="/google-pay-logo.jpg" alt="Google Pay" className="h-6" />
-            <img src="/apple-pay-logo.png" alt="Apple Pay" className="h-6" />
-            <span className="text-gray-400 text-sm">+ more</span>
-          </div>
-        </div> */}
+        {/* Divider */}
+        <div className="mt-12 h-px w-full bg-white/10" />
 
-        {/* Bottom Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-4 border-t border-slate-700">
-          <p className="text-sm text-gray-300">© 2019 – 2026 City Rome Tickets. </p>
+        {/* Bottom row */}
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-white/60 text-center sm:text-left">
+            © 2019 – 2026 City Rome Tickets.
+          </p>
 
-          <div className="flex gap-6">
-            {/* <a href="#" className="hover:text-blue-300 transition" aria-label="Facebook">
-              <Facebook size={22} />
-            </a> */}
-            <a href="#" className="hover:text-pink-300 transition" aria-label="Instagram">
-              <Instagram size={22} />
+          <div className="flex items-center gap-3">
+            <a
+              href="#"
+              className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition"
+              aria-label="Instagram"
+            >
+              <Instagram size={20} className="text-white/80" />
             </a>
-            {/* <a href="#" className="hover:text-blue-300 transition" aria-label="Twitter">
-              <Twitter size={22} />
-            </a>
-            <a href="#" className="hover:text-red-300 transition" aria-label="Pinterest">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7h-2.5V12h2.5v-1.9c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 16.9 22 12c0-5.5-4.5-10-10-10z" />
-              </svg>
-            </a>
-            <a href="#" className="hover:text-blue-300 transition" aria-label="LinkedIn">
-              <Linkedin size={22} />
-            </a> */}
           </div>
         </div>
       </div>

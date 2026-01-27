@@ -408,6 +408,15 @@ export interface TourNoticeResponse {
     results: TourNotice[];
 }
 
+export interface ContactMessage {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    subject: string;
+    message: string;
+}
+
 export async function getTourNotice(): Promise<TourNoticeResponse> {
     const response = await fetch(`${API_BASE_URL}/tour/notice/`, {
         method: "GET",
@@ -419,6 +428,23 @@ export async function getTourNotice(): Promise<TourNoticeResponse> {
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || "Failed to fetch tour notice");
+    }
+
+    return response.json();
+}
+
+export async function sendContactMessage(payload: ContactMessage): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/tour/contacts/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to send contact message");
     }
 
     return response.json();

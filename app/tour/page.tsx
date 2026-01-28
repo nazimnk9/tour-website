@@ -338,7 +338,7 @@ function ToursContent() {
                 {/* Empty State */}
                 {!loading && !error && tours.length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No tours found.</p>
+                        <p className="text-gray-500 text-[70px]">No tours found.</p>
                     </div>
                 )}
             </div>

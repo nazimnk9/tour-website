@@ -78,8 +78,9 @@ export default function DiscountModal() {
       <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
         <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
           {/* Orange Header */}
-          <div className="bg-orange-500 px-6 py-6 relative flex items-start gap-4">
-            <div className="flex-shrink-0 pt-1">
+          <div className="bg-orange-500 px-6 py-2 relative flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 justify-center">
+              <div className="flex-shrink-0 pt-1">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
                 <Percent className="h-6 w-6 text-orange-500" />
               </div>
@@ -87,6 +88,7 @@ export default function DiscountModal() {
             <h2 className="text-xl font-bold text-white flex-1 leading-tight">
               Important Notice
             </h2>
+            </div>
             {/* Close button */}
             <button
               onClick={handleClose}
@@ -98,7 +100,7 @@ export default function DiscountModal() {
           </div>
 
           {/* White Body */}
-          <div className="px-6 py-6 space-y-4 min-h-[200px] flex flex-col justify-center">
+          <div className="px-6 py-6 space-y-4 min-h-[100px] flex flex-col justify-center">
             {isLoading ? (
               <div className="py-1">
                 <Loader2 className="animate-spin text-orange-500" size={40} />

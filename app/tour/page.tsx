@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, Suspense } from "react"
 import { getTourPlans, TourPlan } from "@/services/tourService"
 import TourCard from "@/components/tour-card"
 import { ChevronDown, X, Search, Loader2 } from "lucide-react"
@@ -17,7 +17,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export default function ToursPage() {
+function ToursContent() {
     const [tours, setTours] = useState<TourPlan[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -163,188 +163,201 @@ export default function ToursPage() {
     }, [searchQuery, initialSearch])
 
     return (
-        <>
-            <div className="min-h-screen bg-gray-50 pb-12">
-                <Navbar />
-                {/* Header Section */}
+        <div className="min-h-screen bg-gray-50 pb-12">
+            <Navbar />
+            {/* Header Section */}
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 ">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 md:py-8 border-b border-gray-100 mb-8">
-                        <div>
-                            <h1 className="text-3xl md:text-4xl font-bold text-[#051036] mb-3">
-                                {initialSearch ? "Search Result" : "Available Tours in Italy"}
-                            </h1>
-                            {!initialSearch && (
-                                <p className="text-gray-600 text-lg">
-                                    Choose your next adventure and book instantly.
-                                </p>
-                            )}
-                        </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 ">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 md:py-8 border-b border-gray-100 mb-8">
+                    <div>
+                        <h1 className="text-3xl md:text-4xl font-bold text-[#051036] mb-3">
+                            {initialSearch ? "Search Result" : "Available Tours in Italy"}
+                        </h1>
+                        {!initialSearch && (
+                            <p className="text-gray-600 text-lg">
+                                Choose your next adventure and book instantly.
+                            </p>
+                        )}
+                    </div>
 
-                        {/* Search field on the right */}
-                        <div className="w-full max-w-md relative" ref={wrapperRef}>
-                            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden p-1">
-                                <div className="grid grid-cols-[auto_1fr_auto] items-center">
-                                    <button
-                                        onClick={handleReset}
-                                        className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-[#ff5533]/50 rounded-lg transition-colors"
-                                    >
-                                        Reset
-                                    </button>
-                                    <div className="flex items-center gap-3 px-4 py-2">
-                                        <Search className="w-5 h-5 text-muted-foreground shrink-0" />
-                                        <input
-                                            type="text"
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            onFocus={() => {
-                                                if (suggestions.length > 0) setShowSuggestions(true)
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') handleSearch()
-                                            }}
-                                            placeholder="Search tours..."
-                                            className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
-                                        />
-                                    </div>
-
-                                    <button
-                                        onClick={handleSearch}
-                                        className="bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 py-2 transition rounded-lg flex items-center justify-center gap-2 text-sm"
-                                    >
-                                        <span>Search</span>
-                                    </button>
+                    {/* Search field on the right */}
+                    <div className="w-full max-w-md relative" ref={wrapperRef}>
+                        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden p-1">
+                            <div className="grid grid-cols-[auto_1fr_auto] items-center">
+                                <button
+                                    onClick={handleReset}
+                                    className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-[#ff5533]/50 rounded-lg transition-colors"
+                                >
+                                    Reset
+                                </button>
+                                <div className="flex items-center gap-3 px-4 py-2">
+                                    <Search className="w-5 h-5 text-muted-foreground shrink-0" />
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        onFocus={() => {
+                                            if (suggestions.length > 0) setShowSuggestions(true)
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleSearch()
+                                        }}
+                                        placeholder="Search tours..."
+                                        className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
+                                    />
                                 </div>
+
+                                <button
+                                    onClick={handleSearch}
+                                    className="bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 py-2 transition rounded-lg flex items-center justify-center gap-2 text-sm"
+                                >
+                                    <span>Search</span>
+                                </button>
                             </div>
+                        </div>
 
-                            {/* Suggestions Dropdown */}
-                            {showSuggestions && (isSearching || suggestions.length > 0) && (
-                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[110] max-h-[300px] overflow-y-auto">
-                                    {isSearching ? (
-                                        <div className="flex items-center justify-center py-6">
-                                            <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
-                                        </div>
-                                    ) : suggestions.length === 0 ? (
-                                        <div className="flex items-center justify-center py-6">
-                                            <span className="text-sm font-medium text-gray-600">No result found</span>
-                                            <span className="text-xs text-gray-500">Try a different search term</span>
-                                        </div>
-                                    ) : (
-                                        <div className="p-2">
-                                            <h3 className="text-sm font-semibold text-gray-500 px-4 py-2">Suggestions</h3>
-                                            {suggestions.map((tour) => (
-                                                <div
-                                                    key={tour.id}
-                                                    onClick={() => {
-                                                        router.push(`/tour/${tour.id}`)
-                                                        setShowSuggestions(false)
-                                                    }}
-                                                    className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-                                                >
-                                                    <div className="w-10 h-10 rounded overflow-hidden shrink-0">
-                                                        <img
-                                                            src={(tour.featured_image || (tour.images && tour.images[0]?.file) || "/placeholder.svg")}
-                                                            alt={tour.title}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-col overflow-hidden">
-                                                        <span className="font-medium text-sm text-gray-900">{tour.title}</span>
-                                                        <span className="text-xs text-gray-500">€{tour.price_adult}</span>
-                                                    </div>
+                        {/* Suggestions Dropdown */}
+                        {showSuggestions && (isSearching || suggestions.length > 0) && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[110] max-h-[300px] overflow-y-auto">
+                                {isSearching ? (
+                                    <div className="flex items-center justify-center py-6">
+                                        <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+                                    </div>
+                                ) : suggestions.length === 0 ? (
+                                    <div className="flex items-center justify-center py-6">
+                                        <span className="text-sm font-medium text-gray-600">No result found</span>
+                                        <span className="text-xs text-gray-500">Try a different search term</span>
+                                    </div>
+                                ) : (
+                                    <div className="p-2">
+                                        <h3 className="text-sm font-semibold text-gray-500 px-4 py-2">Suggestions</h3>
+                                        {suggestions.map((tour) => (
+                                            <div
+                                                key={tour.id}
+                                                onClick={() => {
+                                                    router.push(`/tour/${tour.id}`)
+                                                    setShowSuggestions(false)
+                                                }}
+                                                className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                                            >
+                                                <div className="w-10 h-10 rounded overflow-hidden shrink-0">
+                                                    <img
+                                                        src={(tour.featured_image || (tour.images && tour.images[0]?.file) || "/placeholder.svg")}
+                                                        alt={tour.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <span className="font-medium text-sm text-gray-900">{tour.title}</span>
+                                                    <span className="text-xs text-gray-500">€{tour.price_adult}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                {/* Filters */}
+                <div className="flex flex-wrap gap-4 mb-8">
+                    <Select
+                        value={durationFilter || ""}
+                        onValueChange={handleDurationChange}
+                    >
+                        <SelectTrigger className={`w-fit rounded-full text-xs font-medium border shadow-none ${durationFilter ? 'bg-orange-50 border-orange-500 text-orange-600 [&>svg:last-child]:hidden' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}>
+                            <div className="flex items-center gap-2 mr-1">
+                                <SelectValue placeholder="Any Duration" />
+                            </div>
+                            {durationFilter && (
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        e.preventDefault()
+                                        clearDurationFilter(e)
+                                    }}
+                                    className="hover:bg-orange-200 rounded-full p-0.5 cursor-pointer pointer-events-auto z-10"
+                                >
+                                    <X size={14} />
                                 </div>
                             )}
-                        </div>
-                    </div>
-                    {/* Filters */}
-                    <div className="flex flex-wrap gap-4 mb-8">
-                        <Select
-                            value={durationFilter || ""}
-                            onValueChange={handleDurationChange}
-                        >
-                            <SelectTrigger className={`w-fit rounded-full text-xs font-medium border shadow-none ${durationFilter ? 'bg-orange-50 border-orange-500 text-orange-600 [&>svg:last-child]:hidden' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}>
-                                <div className="flex items-center gap-2 mr-1">
-                                    <SelectValue placeholder="Any Duration" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="0-3">0-3 hours</SelectItem>
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="4-6">4-6 hours</SelectItem>
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="7+">7+ Hours</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Select
+                        value={priceFilter || ""}
+                        onValueChange={handlePriceChange}
+                    >
+                        <SelectTrigger className={`w-fit rounded-full text-xs font-medium border shadow-none ${priceFilter ? 'bg-orange-50 border-orange-500 text-orange-600 [&>svg:last-child]:hidden' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}>
+                            <div className="flex items-center gap-2 mr-1">
+                                <SelectValue placeholder="Any Price" />
+                            </div>
+                            {priceFilter && (
+                                <div
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        e.preventDefault()
+                                        clearPriceFilter(e)
+                                    }}
+                                    className="hover:bg-orange-200 rounded-full p-0.5 cursor-pointer pointer-events-auto z-10"
+                                >
+                                    <X size={14} />
                                 </div>
-                                {durationFilter && (
-                                    <div
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            e.preventDefault()
-                                            clearDurationFilter(e)
-                                        }}
-                                        className="hover:bg-orange-200 rounded-full p-0.5 cursor-pointer pointer-events-auto z-10"
-                                    >
-                                        <X size={14} />
-                                    </div>
-                                )}
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="0-3">0-3 hours</SelectItem>
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="4-6">4-6 hours</SelectItem>
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="7+">7+ Hours</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select
-                            value={priceFilter || ""}
-                            onValueChange={handlePriceChange}
-                        >
-                            <SelectTrigger className={`w-fit rounded-full text-xs font-medium border shadow-none ${priceFilter ? 'bg-orange-50 border-orange-500 text-orange-600 [&>svg:last-child]:hidden' : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'}`}>
-                                <div className="flex items-center gap-2 mr-1">
-                                    <SelectValue placeholder="Any Price" />
-                                </div>
-                                {priceFilter && (
-                                    <div
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            e.preventDefault()
-                                            clearPriceFilter(e)
-                                        }}
-                                        className="hover:bg-orange-200 rounded-full p-0.5 cursor-pointer pointer-events-auto z-10"
-                                    >
-                                        <X size={14} />
-                                    </div>
-                                )}
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="500">$500</SelectItem>
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="1000">$1000</SelectItem>
-                                <SelectItem className="cursor-pointer hover:bg-gray-50" value="1500+">$1500+</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    {/* Tour Grid */}
-                    {loading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 text-orange-500 border-b-2 border-orange-500"></div>
-                        </div>
-                    ) : error ? (
-                        <div className="text-center py-12">
-                            <p className="text-red-500 font-medium">{error}</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {tours.map((tour) => (
-                                <TourCard key={tour.id} tour={tour} />
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Empty State */}
-                    {!loading && !error && tours.length === 0 && (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 text-lg">No tours found.</p>
-                        </div>
-                    )}
+                            )}
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="500">$500</SelectItem>
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="1000">$1000</SelectItem>
+                            <SelectItem className="cursor-pointer hover:bg-gray-50" value="1500+">$1500+</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
+
+                {/* Tour Grid */}
+                {loading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 text-orange-500 border-b-2 border-orange-500"></div>
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-12">
+                        <p className="text-red-500 font-medium">{error}</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-12">
+                        {tours.map((tour) => (
+                            <TourCard key={tour.id} tour={tour} />
+                        ))}
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!loading && !error && tours.length === 0 && (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No tours found.</p>
+                    </div>
+                )}
             </div>
             <Footer />
-        </>
+        </div>
+    )
+}
+
+export default function ToursPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <div className="flex justify-center items-center h-64">
+                    <Loader2 className="animate-spin text-orange-500" size={40} />
+                </div>
+            </div>
+        }>
+            <ToursContent />
+        </Suspense>
     )
 }

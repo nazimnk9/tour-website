@@ -68,6 +68,7 @@ export interface TourFilterParams {
     duration_days_max?: number;
     price_adult_min?: number;
     price_adult_max?: number;
+    search?: string;
 }
 
 export async function getTourPlans(params: TourFilterParams = {}): Promise<TourPlanResponse> {
@@ -80,6 +81,7 @@ export async function getTourPlans(params: TourFilterParams = {}): Promise<TourP
     if (params.duration_days_max !== undefined) queryParams.append("duration_days_max", params.duration_days_max.toString());
     if (params.price_adult_min !== undefined) queryParams.append("price_adult_min", params.price_adult_min.toString());
     if (params.price_adult_max !== undefined) queryParams.append("price_adult_max", params.price_adult_max.toString());
+    if (params.search) queryParams.append("search", params.search);
 
     const response = await fetch(`${API_BASE_URL}/tour/plan/?${queryParams.toString()}`, {
         method: "GET",

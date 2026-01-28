@@ -1,9 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { getTourPlans, TourPlan } from "@/services/tourService"
 import TourCard from "@/components/tour-card"
-import { ChevronDown, X } from "lucide-react"
+import { ChevronDown, X, Search, Loader2 } from "lucide-react"
+import { useSearchParams, useRouter } from "next/navigation"
+import { API_BASE_URL } from "@/services/authService"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 
@@ -20,8 +22,16 @@ export default function ToursPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [page, setPage] = useState(1)
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    // Search and filter states
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    const initialSearch = searchParams.get('search') || ""
+    const [searchQuery, setSearchQuery] = useState(initialSearch)
+    const [suggestions, setSuggestions] = useState<any[]>([])
+    const [showSuggestions, setShowSuggestions] = useState(false)
+    const [isSearching, setIsSearching] = useState(false)
 
-    // Filter states
     const [durationFilter, setDurationFilter] = useState<string | null>(null)
     const [priceFilter, setPriceFilter] = useState<string | null>(null)
 
@@ -31,6 +41,7 @@ export default function ToursPage() {
                 setLoading(true)
 
                 const params: any = { page }
+                if (initialSearch) params.search = initialSearch
 
                 // Apply Duration Filter
                 if (durationFilter === "0-3") {
@@ -66,7 +77,24 @@ export default function ToursPage() {
         }
 
         fetchTours()
-    }, [page, durationFilter, priceFilter])
+    }, [page, durationFilter, priceFilter, initialSearch])
+
+    // Sync search query state with URL parameter
+    useEffect(() => {
+        setSearchQuery(initialSearch)
+    }, [initialSearch])
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [])
 
     const handleDurationChange = (value: string) => {
         setDurationFilter(value === durationFilter ? null : value)
@@ -90,6 +118,50 @@ export default function ToursPage() {
         setPage(1)
     }
 
+    const handleSearch = () => {
+        if (searchQuery.trim()) {
+            router.push(`/tour?search=${encodeURIComponent(searchQuery.trim())}`)
+        } else {
+            router.push('/tour')
+        }
+        setShowSuggestions(false)
+    }
+
+    const handleReset = () => {
+        setSearchQuery("")
+        router.push('/tour')
+        setShowSuggestions(false)
+    }
+
+    // Sugesstions logic (reused from hero-carousel)
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            if (searchQuery.trim().length > 0
+                //&& searchQuery !== initialSearch
+            ) {
+                setIsSearching(true)
+                try {
+                    const response = await fetch(
+                        `${API_BASE_URL}/tour/plan/?search=${encodeURIComponent(searchQuery)}`
+                    )
+                    if (response.ok) {
+                        const data = await response.json()
+                        setSuggestions(data.results || data || [])
+                        setShowSuggestions(true)
+                    }
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error)
+                } finally {
+                    setIsSearching(false)
+                }
+            } else {
+                setSuggestions([])
+                setShowSuggestions(false)
+            }
+        }, 500)
+        return () => clearTimeout(delayDebounceFn)
+    }, [searchQuery, initialSearch])
+
     return (
         <>
             <div className="min-h-screen bg-gray-50 pb-12">
@@ -97,14 +169,95 @@ export default function ToursPage() {
                 {/* Header Section */}
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 ">
-                    <div className="">
-                        <div className="py-5 md:py-8">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 md:py-8 border-b border-gray-100 mb-8">
+                        <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-[#051036] mb-3">
-                                Available Tours in Italy
+                                {initialSearch ? "Search Result" : "Available Tours in Italy"}
                             </h1>
-                            <p className="text-gray-600 text-lg">
-                                Choose your next adventure and book instantly.
-                            </p>
+                            {!initialSearch && (
+                                <p className="text-gray-600 text-lg">
+                                    Choose your next adventure and book instantly.
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Search field on the right */}
+                        <div className="w-full max-w-md relative" ref={wrapperRef}>
+                            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden p-1">
+                                <div className="grid grid-cols-[auto_1fr_auto] items-center">
+                                    <button
+                                        onClick={handleReset}
+                                        className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-[#ff5533]/50 rounded-lg transition-colors"
+                                    >
+                                        Reset
+                                    </button>
+                                    <div className="flex items-center gap-3 px-4 py-2">
+                                        <Search className="w-5 h-5 text-muted-foreground shrink-0" />
+                                        <input
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            onFocus={() => {
+                                                if (suggestions.length > 0) setShowSuggestions(true)
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') handleSearch()
+                                            }}
+                                            placeholder="Search tours..."
+                                            className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm"
+                                        />
+                                    </div>
+
+                                    <button
+                                        onClick={handleSearch}
+                                        className="bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 py-2 transition rounded-lg flex items-center justify-center gap-2 text-sm"
+                                    >
+                                        <span>Search</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Suggestions Dropdown */}
+                            {showSuggestions && (isSearching || suggestions.length > 0) && (
+                                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[110] max-h-[300px] overflow-y-auto">
+                                    {isSearching ? (
+                                        <div className="flex items-center justify-center py-6">
+                                            <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+                                        </div>
+                                    ) : suggestions.length === 0 ? (
+                                        <div className="flex items-center justify-center py-6">
+                                            <span className="text-sm font-medium text-gray-600">No result found</span>
+                                            <span className="text-xs text-gray-500">Try a different search term</span>
+                                        </div>
+                                    ) : (
+                                        <div className="p-2">
+                                            <h3 className="text-sm font-semibold text-gray-500 px-4 py-2">Suggestions</h3>
+                                            {suggestions.map((tour) => (
+                                                <div
+                                                    key={tour.id}
+                                                    onClick={() => {
+                                                        router.push(`/tour/${tour.id}`)
+                                                        setShowSuggestions(false)
+                                                    }}
+                                                    className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                                                >
+                                                    <div className="w-10 h-10 rounded overflow-hidden shrink-0">
+                                                        <img
+                                                            src={(tour.featured_image || (tour.images && tour.images[0]?.file) || "/placeholder.svg")}
+                                                            alt={tour.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col overflow-hidden">
+                                                        <span className="font-medium text-sm text-gray-900">{tour.title}</span>
+                                                        <span className="text-xs text-gray-500">€{tour.price_adult}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* Filters */}

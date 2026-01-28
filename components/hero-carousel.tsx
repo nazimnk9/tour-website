@@ -89,6 +89,12 @@ export default function HeroCarousel() {
     router.push(`/tour/${id}`)
   }
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/tour?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
   const getImageSrc = (tour: TourSuggestion) => {
     if (tour.featured_image) return tour.featured_image
     if (tour.images && tour.images.length > 0) return tour.images[0].file
@@ -128,10 +134,16 @@ export default function HeroCarousel() {
                     }}
                     placeholder={slides[currentSlide].subtitle}
                     className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSearch()
+                    }}
                   />
                 </div>
 
-                <button className="w-full sm:w-auto bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 sm:px-10 py-3 sm:py-4 transition rounded-xl sm:rounded-full flex items-center justify-center gap-2">
+                <button
+                  onClick={handleSearch}
+                  className="w-full sm:w-auto bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 sm:px-10 py-3 sm:py-4 transition rounded-xl sm:rounded-full flex items-center justify-center gap-2"
+                >
                   <span>Search</span>
                 </button>
               </div>

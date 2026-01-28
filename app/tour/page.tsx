@@ -186,7 +186,7 @@ function ToursContent() {
                             <div className="grid grid-cols-[auto_1fr_auto] items-center">
                                 <button
                                     onClick={handleReset}
-                                    className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-[#ff5533]/50 rounded-lg transition-colors"
+                                    className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-[#ff5533]/50 rounded-lg transition-colors cursor-pointer"
                                 >
                                     Reset
                                 </button>
@@ -209,7 +209,7 @@ function ToursContent() {
 
                                 <button
                                     onClick={handleSearch}
-                                    className="bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 py-2 transition rounded-lg flex items-center justify-center gap-2 text-sm"
+                                    className="bg-[#ff5533] hover:bg-[#ff5533]/90 text-white font-semibold px-6 py-2 transition rounded-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
                                 >
                                     <span>Search</span>
                                 </button>

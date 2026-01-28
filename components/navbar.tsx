@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { Heart, ShoppingCart, Globe, User, LogIn, Bell, Sun, HelpCircle, Smartphone, ChevronRight, LogOut, Menu, X } from "lucide-react"
+import { Heart, ShoppingCart, Globe, User, LogIn, Bell, Sun, HelpCircle, Smartphone, ChevronRight, LogOut, Menu, X, Check } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { RegisterModal } from "./auth/RegisterModal"
@@ -8,6 +8,7 @@ import { LoginModal } from "./auth/LoginModal"
 import { isLoggedIn, removeTokens, getUserProfile } from "@/services/authService"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { fetchCartCount } from "@/lib/features/cart/cartSlice"
+import { useLanguage } from "@/components/LanguageProvider"
 
 export default function Navbar() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
@@ -15,17 +16,20 @@ export default function Navbar() {
   const [isLoggedInState, setIsLoggedInState] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
   const [userName, setUserName] = useState("Profile")
 
   const profileRef = useRef<HTMLDivElement>(null)
+  const languageRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const { language, setLanguage, t } = useLanguage()
   const cart = useAppSelector((state) => state.cart)
 
   const handleLogout = () => {
     removeTokens()
     setIsLoggedInState(false)
-    setUserName("Profile")
+    setUserName(t.nav.profile)
     router.push('/')
   }
 
@@ -46,16 +50,19 @@ export default function Navbar() {
         }
       } else {
         setIsLoggedInState(false)
-        setUserName("Profile")
+        setUserName(t.nav.profile)
       }
     }
     checkLogin()
-  }, [isLoggedInState])
+  }, [isLoggedInState, t])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false)
+      }
+      if (languageRef.current && !languageRef.current.contains(event.target as Node)) {
+        setIsLanguageOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
@@ -107,13 +114,13 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center gap-8">
               <Link href="/tour" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
-                Tours
+                {t.nav.tours}
               </Link>
               <Link href="/about-us" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
-                About us
+                {t.nav.aboutUs}
               </Link>
               <Link href="/contact" className="text-gray-600 font-medium hover:text-[#ff5533] text-sm">
-                Contact
+                {t.nav.contact}
               </Link>
             </div>
 
@@ -128,15 +135,48 @@ export default function Navbar() {
                     </span>
                   )}
                 </div>
-                <span className="text-xs font-medium">Cart</span>
+                <span className="text-xs font-medium">{t.nav.cart}</span>
                 <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
               </Link>
 
-              <button className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer">
-                <Globe size={20} />
-                <span className="text-xs font-medium">EN</span>
-                <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
-              </button>
+              <div className="relative group z-50" ref={languageRef}>
+                <button
+                  onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                  className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer"
+                >
+                  <Globe size={20} />
+                  <span className="text-xs font-medium uppercase">{language === 'en' ? 'EN' : 'IT'}</span>
+                  <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                </button>
+
+                {/* Language Dropdown */}
+                <div className={`absolute right-0 top-full pt-[10px] w-48 ${isLanguageOpen ? 'block' : 'hidden md:group-hover:block'} transition-all duration-200 z-[100]`}>
+                  <div className="bg-white rounded-xl shadow-[0_2px_20px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="p-2">
+                      <button
+                        onClick={() => {
+                          setLanguage('en');
+                          setIsLanguageOpen(false);
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <span className="font-medium">English</span>
+                        {language === 'en' && <Check size={16} className="text-orange-500" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLanguage('it');
+                          setIsLanguageOpen(false);
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <span className="font-medium">Italy</span>
+                        {language === 'it' && <Check size={16} className="text-orange-500" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div className="relative group z-50" ref={profileRef}>
                 <button
@@ -156,7 +196,7 @@ export default function Navbar() {
                       <Link href="/contact" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
                         <div className="flex items-center gap-3">
                           <HelpCircle size={20} className="text-[#051036] stroke-[1.5]" />
-                          <span className="text-[15px] text-[#051036]">Support</span>
+                          <span className="text-[15px] text-[#051036]">{t.nav.support}</span>
                         </div>
                       </Link>
                       {!isLoggedInState && (
@@ -167,7 +207,7 @@ export default function Navbar() {
                           <div className="ml-4">
                             <LogIn size={20} className="text-[#051036] stroke-[1.5]" />
                           </div>
-                          <span className="text-[15px] font-medium text-[#051036]">Log in or sign up</span>
+                          <span className="text-[15px] font-medium text-[#051036]">{t.nav.loginSignup}</span>
                         </div>
                       )}
 
@@ -177,7 +217,7 @@ export default function Navbar() {
                             <Link href="/settings" className="flex items-center justify-between py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4">
                               <div className="flex items-center gap-3">
                                 <Bell size={20} className="text-[#051036] stroke-[1.5]" />
-                                <span className="text-[15px] text-[#051036]">Settings</span>
+                                <span className="text-[15px] text-[#051036]">{t.nav.settings}</span>
                               </div>
                               <div className="flex items-center gap-2">
                                 <ChevronRight size={16} className="text-[#051036]" />
@@ -191,7 +231,7 @@ export default function Navbar() {
                               className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-gray-50 -mx-4 px-4"
                             >
                               <LogOut size={20} className="text-[#051036] stroke-[1.5]" />
-                              <span className="text-[15px] text-[#051036]">Log out</span>
+                              <span className="text-[15px] text-[#051036]">{t.nav.logout}</span>
                             </div>
                           </>
                         )}
@@ -207,7 +247,7 @@ export default function Navbar() {
                 className="md:hidden flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer transition-all duration-200"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                <span className="text-xs font-medium">{isMenuOpen ? "Close" : "Menu"}</span>
+                <span className="text-xs font-medium">{isMenuOpen ? (language === 'en' ? "Close" : "Chiudi") : (language === 'en' ? "Menu" : "Menu")}</span>
               </button>
             </div>
           </div>
@@ -222,21 +262,21 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(false)}
                 className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
               >
-                Tours
+                {t.nav.tours}
               </Link>
               <Link
                 href="/about-us"
                 onClick={() => setIsMenuOpen(false)}
                 className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
               >
-                About us
+                {t.nav.aboutUs}
               </Link>
               <Link
                 href="/contact"
                 onClick={() => setIsMenuOpen(false)}
                 className="block px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#ff5533] rounded-lg transition-colors"
               >
-                Contact
+                {t.nav.contact}
               </Link>
             </div>
           </div>

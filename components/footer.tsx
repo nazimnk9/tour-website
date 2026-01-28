@@ -1,8 +1,10 @@
 "use client"
 import Link from "next/link"
-import { Facebook,  Instagram, Mail, Phone, MapPin  } from "lucide-react"
+import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react"
+import { useLanguage } from "@/components/LanguageProvider"
 
 export default function Footer() {
+  const { t } = useLanguage()
   return (
     <footer className="w-full bg-slate-900 text-white">
       {/* Top gradient divider (subtle, keeps same bg) */}
@@ -15,26 +17,25 @@ export default function Footer() {
           <div className="lg:col-span-6">
             <div className="space-y-4">
               <div className="rounded-xl ">
-                  <Link href="/" className="block cursor-pointer">
+                <Link href="/" className="block cursor-pointer">
                   <img
                     src="/images/logo_city_roam_tickets-transparent.png"
                     alt="City Rome Tickets"
                     className="h-25 w-auto md:h-22 sm:h-22"
                   />
                 </Link>
-                </div>
+              </div>
               <div className="flex items-center gap-3">
-                
+
                 <div>
                   <p className="text-xs text-white/60 tracking-[0.2em] uppercase mt-1">
-                    Tours & Tickets
+                    {t.footer.toursTickets}
                   </p>
                 </div>
               </div>
 
               <p className="text-sm text-white/70 leading-relaxed max-w-md">
-                Book unforgettable experiences with trusted local experts. Fast support, flexible booking,
-                and great value—every time.
+                {t.footer.tagline}
               </p>
 
               {/* Quick contact (compact + responsive) */}
@@ -71,27 +72,27 @@ export default function Footer() {
             {/* Support */}
             <div>
               <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
-                Support
+                {t.footer.support}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">
                 <li>
                   <Link href="/contact" className="text-white/70 hover:text-white transition">
-                    Contact
+                    {t.footer.contact}
                   </Link>
                 </li>
                 <li>
                   <Link href="/legal-notice" className="text-white/70 hover:text-white transition">
-                    Legal Notice
+                    {t.footer.legalNotice}
                   </Link>
                 </li>
                 <li>
                   <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">
-                    Privacy Policy
+                    {t.footer.privacyPolicy}
                   </Link>
                 </li>
                 <li>
                   <Link href="/terms-and-conditions" className="text-white/70 hover:text-white transition">
-                    Terms and Conditions
+                    {t.footer.terms}
                   </Link>
                 </li>
               </ul>
@@ -100,12 +101,12 @@ export default function Footer() {
             {/* Company */}
             <div>
               <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
-                Company
+                {t.footer.company}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">
                 <li>
                   <Link href="/about-us" className="text-white/70 hover:text-white transition">
-                    About Us
+                    {t.footer.aboutUs}
                   </Link>
                 </li>
               </ul>
@@ -129,7 +130,7 @@ export default function Footer() {
           </div>
 
           {/* Small “location / note” card */}
-          
+
         </div>
 
         {/* Divider */}

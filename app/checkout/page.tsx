@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { getCart, createBooking, BookingPayload, TravelerDetail } from "@/services/tourService"
 
-import { isLoggedIn } from "@/services/authService"
+import { isLoggedIn, getUserProfile } from "@/services/authService"
 import { Loader2, User, Mail, Globe, Phone, Check, CheckCircle2, AlertCircle, ShieldCheck, ChevronsUpDown } from "lucide-react"
 import {
     AlertDialog,
@@ -325,6 +325,27 @@ export default function CheckoutPage() {
             setStep(2)
         }
 
+        let prepopulatedName = "";
+        if (isUserLoggedIn) {
+            try {
+                const profile = await getUserProfile();
+                prepopulatedName = `${profile.first_name} ${profile.last_name}`.trim();
+            } catch (error) {
+                console.error("Failed to fetch user profile", error);
+            }
+        } else {
+            const savedGuest = localStorage.getItem('guestCheckoutDetails');
+            if (savedGuest) {
+                try {
+                    const parsed = JSON.parse(savedGuest);
+                    prepopulatedName = parsed.full_name || "";
+                    setGuestDetails(parsed);
+                } catch (e) {
+                    console.error("Failed to parse guest details", e);
+                }
+            }
+        }
+
         // Check for Book Now data first
         const bookNowDataStr = localStorage.getItem('bookNowData')
         let bookNowMode = false
@@ -337,7 +358,13 @@ export default function CheckoutPage() {
                 // Set adults count directly from data
                 const adults = bookNowData.num_adults || 0 // Default to 0 if not found, though interface implies it exists
                 setTotalAdults(adults)
-                setTravelerDetails(Array(adults).fill({ name: "", email: "" }))
+
+                // Initialize traveler details with prepopulated name for first traveler
+                const initialTravelers = Array(adults).fill({ name: "" }).map((t, i) =>
+                    i === 0 && prepopulatedName ? { ...t, name: prepopulatedName } : t
+                );
+                setTravelerDetails(initialTravelers)
+
                 setLoading(false)
                 return; // Skip cart loading
             } catch (e) {
@@ -361,8 +388,11 @@ export default function CheckoutPage() {
             const adults = cartResponse.results.reduce((acc, item) => acc + item.num_adults, 0)
             setTotalAdults(adults)
 
-            // Initialize traveler details array
-            setTravelerDetails(Array(adults).fill({ name: "", email: "" }))
+            // Initialize traveler details array with prepopulated name for first traveler
+            const initialTravelers = Array(adults).fill({ name: "" }).map((t, i) =>
+                i === 0 && prepopulatedName ? { ...t, name: prepopulatedName } : t
+            );
+            setTravelerDetails(initialTravelers)
         } catch (error) {
             console.error("Failed to load cart for checkout", error)
         } finally {
@@ -372,9 +402,16 @@ export default function CheckoutPage() {
 
     const handleGuestSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        // Save to local storage? Or just keep in state? 
-        // Prompt says "save data in local storage"
+        // Save to local storage
         localStorage.setItem('guestCheckoutDetails', JSON.stringify(guestDetails))
+
+        // Also update the first traveler's name if not already set or override it
+        const newDetails = [...travelerDetails]
+        if (newDetails.length > 0) {
+            newDetails[0] = { ...newDetails[0], name: guestDetails.full_name }
+            setTravelerDetails(newDetails)
+        }
+
         setStep(2)
     }
 
@@ -411,7 +448,6 @@ export default function CheckoutPage() {
 
             if (!loggedIn) {
                 // Attach guest formatted details
-                // Prompt says: full_name, email, country, phone post from local storage
                 const savedGuest = localStorage.getItem('guestCheckoutDetails')
                 if (savedGuest) {
                     const parsed = JSON.parse(savedGuest)
@@ -420,7 +456,7 @@ export default function CheckoutPage() {
                     payload.country = parsed.country
                     payload.phone = parsed.phone
                 } else {
-                    // Fallback to state if fetch failed or logic differs
+                    // Fallback to state
                     payload.full_name = guestDetails.full_name
                     payload.email = guestDetails.email
                     payload.country = guestDetails.country
@@ -460,7 +496,7 @@ export default function CheckoutPage() {
         return (
             <div className="min-h-screen flex flex-col bg-gray-50">
                 <Navbar />
-                <div className="flex-grow flex items-center justify-center">
+                <div className="flex justify-center items-center h-[70vh]">
                     <Loader2 className="animate-spin text-orange-600" size={40} />
                 </div>
                 <Footer />
@@ -522,7 +558,6 @@ export default function CheckoutPage() {
                                                 >
                                                     {guestDetails.country ? (
                                                         <span className="font-medium text-gray-900">
-                                                            {/* {countries.find((country) => country.name === guestDetails.country)?.flag}{" "} */}
                                                             {countries.find((country) => country.name === guestDetails.country)?.name}
                                                         </span>
                                                     ) : (
@@ -557,7 +592,6 @@ export default function CheckoutPage() {
                                                                         setOpenCountry(false)
                                                                     }}
                                                                 >
-                                                                    {/* Checkmark Circle */}
                                                                     <div className={cn(
                                                                         "flex items-center justify-center w-5 h-5 rounded-full border transition-all shrink-0",
                                                                         guestDetails.country === country.name
@@ -569,10 +603,6 @@ export default function CheckoutPage() {
                                                                         )}
                                                                     </div>
 
-                                                                    {/* Flag */}
-                                                                    {/* <span className="text-2xl leading-none shadow-sm rounded-sm overflow-hidden">{country.flag}</span> */}
-
-                                                                    {/* Text Content */}
                                                                     <div className="flex flex-col">
                                                                         <span className={cn(
                                                                             "font-medium transition-colors text-sm",
@@ -630,16 +660,6 @@ export default function CheckoutPage() {
                                                 className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none"
                                                 value={traveler.name}
                                                 onChange={e => handleTravelerChange(index, 'name', e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
-                                            <input
-                                                required
-                                                type="email"
-                                                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 outline-none"
-                                                value={traveler.email}
-                                                onChange={e => handleTravelerChange(index, 'email', e.target.value)}
                                             />
                                         </div>
                                     </div>

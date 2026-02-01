@@ -878,13 +878,16 @@ export default function CartPage() {
                                 <p className="text-right text-xs text-teal-600 font-medium mb-6">All taxes and fees included</p>
 
                                 <button
-                                    onClick={() => {
-                                        if (isLoggedIn()) {
-                                            router.push('/checkout')
-                                        } else {
-                                            setIsLoginOpen(true)
-                                        }
-                                    }}
+                                onClick={() => {
+                                    router.push('/checkout')
+                                }}
+                                    // onClick={() => {
+                                    //     if (isLoggedIn()) {
+                                    //         router.push('/checkout')
+                                    //     } else {
+                                    //         setIsLoginOpen(true)
+                                    //     }
+                                    // }}
                                     className="block w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center cursor-pointer"
                                 >
                                     Go to checkout

@@ -59,7 +59,6 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
             await registerUser(formData)
             // Show success modal before closing
             showAlert("Success!", "Registration successful! Please log in with your new account.", 'success')
-            // Delay closing to let user see the alert
         } catch (error: any) {
             showAlert("Registration Failed", error.message || "Something went wrong. Please try again.", 'error')
         } finally {
@@ -180,7 +179,7 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
             </div>
 
             <AlertDialog open={alertDialogState.isOpen} onOpenChange={(open) => !open && handleAlertClose()}>
-                <AlertDialogContent className="bg-white rounded-2xl p-8 max-w-sm z-1000">
+                <AlertDialogContent className="bg-white rounded-2xl p-8 max-w-sm z-[1000]">
                     <AlertDialogHeader>
                         <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto ${alertDialogState.type === 'success' ? 'bg-green-50' : 'bg-red-50'}`}>
                             {alertDialogState.type === 'success' ? (

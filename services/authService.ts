@@ -11,7 +11,20 @@ export async function registerUser(data: any) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
+        let errorMessage = "Registration failed";
+        if (errorData.detail) {
+            errorMessage = errorData.detail;
+        } else if (errorData.email && Array.isArray(errorData.email)) {
+            errorMessage = errorData.email[0];
+        } else if (typeof errorData === 'object') {
+            const firstKey = Object.keys(errorData)[0];
+            if (firstKey && Array.isArray(errorData[firstKey])) {
+                errorMessage = errorData[firstKey][0];
+            } else {
+                errorMessage = errorData.message || errorMessage;
+            }
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -28,7 +41,20 @@ export async function loginUser(data: any) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+        let errorMessage = "Login failed";
+        if (errorData.detail) {
+            errorMessage = errorData.detail;
+        } else if (errorData.email && Array.isArray(errorData.email)) {
+            errorMessage = errorData.email[0];
+        } else if (typeof errorData === 'object') {
+            const firstKey = Object.keys(errorData)[0];
+            if (firstKey && Array.isArray(errorData[firstKey])) {
+                errorMessage = errorData[firstKey][0];
+            } else {
+                errorMessage = errorData.message || errorMessage;
+            }
+        }
+        throw new Error(errorMessage);
     }
 
 

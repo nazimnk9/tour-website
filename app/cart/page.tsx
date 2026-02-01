@@ -649,7 +649,7 @@ export default function CartPage() {
         return (
             <div className="min-h-screen flex flex-col bg-gray-50">
                 <Navbar />
-                <div className="flex-grow flex items-center justify-center">
+                <div className="flex justify-center items-center h-[70vh]">
                     <Loader2 className="animate-spin text-orange-600" size={40} />
                 </div>
                 <Footer />

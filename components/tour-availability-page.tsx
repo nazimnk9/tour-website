@@ -538,10 +538,10 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     }
 
     const handleBookNow = () => {
-        if (!isLoggedIn()) {
-            setIsLoginOpen(true)
-            return
-        }
+        // if (!isLoggedIn()) {
+        //     setIsLoginOpen(true)
+        //     return
+        // }
         if (!tour || !selectedDate || !selectedTimeSlot) {
             showMessage("Missing Selection", "Please select a date and time slot first")
             return
@@ -828,7 +828,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                             <button
                                                 onClick={handleBookNow}
                                                 disabled={isBookingLoading}
-                                                className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[120px] w-full"
+                                                className="bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center min-w-[120px] w-full cursor-pointer"
                                             >
                                                 {isBookingLoading ? (
                                                     <><Loader2 className="animate-spin mr-2 h-4 w-4" />Booking...</>

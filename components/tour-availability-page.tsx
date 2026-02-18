@@ -555,7 +555,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
             num_youth: counts.youths,
             num_student_eu: counts.students,
             tour_plan: tour.id,
-            time_slot_id: selectedTimeSlot.id
+            time_slot: selectedTimeSlot.id
         }
 
         // Save to local storage

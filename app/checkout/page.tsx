@@ -625,7 +625,7 @@ export default function CheckoutPage() {
                                     <div className="relative">
                                         <Phone className="absolute left-3 top-3.5 text-gray-400" size={18} />
                                         <input
-                                            required
+                                            //required
                                             type="tel"
                                             className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                             placeholder="+1 234 567 890"

@@ -1,0 +1,147 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { ArrowRight, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+const blogs = [
+  {
+    id: 1,
+    title: "How to Book Italy Attractions Like a Pro: Skip-the-Line, Timed Entry & Smart Tips",
+    excerpt:
+      "Italy’s top sights sell out fast—especially in peak season. Learn when to book, how timed-entry works, and how skip-the-line tickets can save you hours in Rome, Florence, and Venice.",
+    image: "/blogs/thumb_how_to_book_italy.png",
+    date: "February 15, 2026",
+    category: "Travel Tips",
+    link: "/blog/italy-top-sights",
+  },
+  {
+    id: 2,
+    title: "Colosseum, Roman Forum & Palatine Hill – Private 3 Hour Tour (What’s Worth It?)",
+    excerpt:
+      "Thinking about a private Colosseum tour? Here’s what you’ll actually see in 3 hours, who it’s best for, and how it compares to standard entry or group tours.",
+    image: "/blogs/thumb_Colosseum_Roman.png",
+    date: "February 10, 2026",
+    category: "Day Trips",
+    link: "/blog/private-3-hour-tour",
+  },
+  {
+    id: 3,
+    title: "Colosseum vs Vatican vs Borghese: Which Rome Ticket Should You Book First?",
+    excerpt:
+      "Not sure which landmark to prioritize? Compare time slots, entry rules, and visitor experience—so you can book the right ticket first and build a smooth itinerary without stress.",
+    image: "/blogs/thumb_collusum_vatican.png",
+    date: "February 5, 2026",
+    category: "Ticket Guide",
+    link: "/blog/colosseum-vs-vatican",
+  },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+};
+
+const BlogSection = () => {
+  return (
+    <section className="w-full bg-gray-50 py-12 sm:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="font-heading text-3xl font-semibold text-foreground mb-4">
+            From Our Travel Blog
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Ticket tips, itinerary ideas, and local insights to help you explore Italy smoothly.
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12"
+        >
+          {blogs.map((blog) => (
+            <motion.article
+              key={blog.id}
+              variants={itemVariants}
+              className="group bg-card rounded-2xl overflow-hidden shadow-card card-hover"
+            >
+              {/* Image */}
+              <div className="relative h-56 overflow-hidden">
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className="px-3 py-1 bg-[#ff5533] hover:bg-[#ff5533]/90 text-white text-xs font-semibold rounded-full">
+                    {blog.category}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
+                  <Calendar className="w-4 h-4" />
+                  <span>{blog.date}</span>
+                </div>
+                <h3 className="font-heading text-lg font-semibold text-foreground mb-3 group-hover:text-accent transition-colors duration-300">
+                  {blog.title}
+                </h3>
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                  {blog.excerpt}
+                </p>
+                <a
+                  href={blog.link}
+                  className="inline-flex items-center gap-2 text-accent font-medium text-sm hover:gap-3 transition-all duration-300"
+                >
+                  Read More <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            </motion.article>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <Link href="/blog">
+            <Button variant="outline" size="lg" className="gap-2">
+              View All Posts <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default BlogSection;

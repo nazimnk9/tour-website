@@ -145,33 +145,79 @@ export default function Navbar() {
                   className="relative group flex flex-col items-center gap-1 text-gray-600 hover:text-gray-900 cursor-pointer"
                 >
                   <Globe size={20} />
-                  <span className="text-xs font-medium uppercase">{language === 'en' ? 'EN' : 'IT'}</span>
+                  <span className="text-xs font-medium uppercase">
+                    {language?.toUpperCase()}
+                  </span>
                   <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
                 </button>
 
                 {/* Language Dropdown */}
-                <div className={`absolute right-0 top-full pt-[10px] w-48 ${isLanguageOpen ? 'block' : 'hidden md:group-hover:block'} transition-all duration-200 z-[100]`}>
+                {/* Language Dropdown */}
+                <div
+                  className={`absolute right-0 top-full pt-[10px] w-48 ${
+                    isLanguageOpen ? 'block' : 'hidden md:group-hover:block'
+                  } transition-all duration-200 z-[100]`}
+                >
                   <div className="bg-white rounded-xl shadow-[0_2px_20px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="p-2">
+                      {/* English */}
                       <button
                         onClick={() => {
-                          setLanguage('en');
-                          setIsLanguageOpen(false);
+                          setLanguage('en')
+                          setIsLanguageOpen(false)
                         }}
                         className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
                       >
                         <span className="font-medium">English</span>
                         {language === 'en' && <Check size={16} className="text-orange-500" />}
                       </button>
+
+                      {/* Italian */}
                       <button
                         onClick={() => {
-                          setLanguage('it');
-                          setIsLanguageOpen(false);
+                          setLanguage('it')
+                          setIsLanguageOpen(false)
                         }}
                         className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
                       >
-                        <span className="font-medium">Italy</span>
+                        <span className="font-medium">Italiano</span>
                         {language === 'it' && <Check size={16} className="text-orange-500" />}
+                      </button>
+
+                      {/* German */}
+                      <button
+                        onClick={() => {
+                          setLanguage('de')
+                          setIsLanguageOpen(false)
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <span className="font-medium">Deutsch</span>
+                        {language === 'de' && <Check size={16} className="text-orange-500" />}
+                      </button>
+
+                      {/* Spanish */}
+                      <button
+                        onClick={() => {
+                          setLanguage('es')
+                          setIsLanguageOpen(false)
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <span className="font-medium">Español</span>
+                        {language === 'es' && <Check size={16} className="text-orange-500" />}
+                      </button>
+
+                      {/* French */}
+                      <button
+                        onClick={() => {
+                          setLanguage('fr')
+                          setIsLanguageOpen(false)
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-[#051036] hover:bg-gray-50 rounded-lg transition-colors"
+                      >
+                        <span className="font-medium">Français</span>
+                        {language === 'fr' && <Check size={16} className="text-orange-500" />}
                       </button>
                     </div>
                   </div>

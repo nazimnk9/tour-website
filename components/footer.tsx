@@ -34,7 +34,7 @@ export default function Footer() {
                 </div>
               </div>
 
-              <p className="text-sm text-white/80 leading-relaxed max-w-md">
+              <p className="text-sm text-white leading-relaxed max-w-md">
                 {t.footer.tagline}
               </p>
 
@@ -47,7 +47,7 @@ export default function Footer() {
                   <span className="h-9 w-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-400">
                     <Mail size={18} />
                   </span>
-                  <span className="text-sm text-white/80 group-hover:text-white transition break-all">
+                  <span className="text-sm text-white group-hover:text-white transition break-all">
                     cityrometickets@gmail.com
                   </span>
                 </a>
@@ -59,7 +59,7 @@ export default function Footer() {
                   <span className="h-9 w-9 rounded-lg bg-orange-500/15 flex items-center justify-center text-orange-400">
                     <Phone size={18} />
                   </span>
-                  <span className="text-sm text-white/80 group-hover:text-white transition">
+                  <span className="text-sm text-white group-hover:text-white transition">
                     +33 771 104 8902
                   </span>
                 </a>
@@ -71,7 +71,7 @@ export default function Footer() {
           <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-2 gap-8">
             {/* Support */}
             <div>
-              <h3 className="font-semibold text-sm tracking-widest uppercase text-white/90">
+              <h3 className="font-semibold text-sm tracking-widest uppercase text-white">
                 {t.footer.support}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">
@@ -100,7 +100,7 @@ export default function Footer() {
 
             {/* Company */}
             <div>
-              <h3 className="font-semibold text-sm tracking-widest uppercase text-white/90">
+              <h3 className="font-semibold text-sm tracking-widest uppercase text-white">
                 {t.footer.company}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">

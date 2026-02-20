@@ -26,7 +26,7 @@ export default function GoogleTranslate() {
             new window.google.translate.TranslateElement(
                 {
                     pageLanguage: "en",
-                    includedLanguages: "en,it",
+                    includedLanguages: "en,it,de,es,fr",
                     // We keep it empty because we'll trigger it via cookies and custom UI
                     layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
                     autoDisplay: false,

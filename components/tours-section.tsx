@@ -49,7 +49,7 @@ export default function ToursSection() {
   return (
     <section className="w-full bg-gray-50 py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-8">Travel That Changes You</h2>
+        <h2 className="text-3xl font-semibold text-gray-900 mb-8">Travel That Changes You</h2>
 
         {error && (
           <div className="text-red-500 mb-4 text-center">

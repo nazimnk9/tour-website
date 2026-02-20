@@ -74,7 +74,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister, onLoginSuccess
 
     return (
         <>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
                 <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl p-8 animate-in zoom-in-95 duration-200">
                     <button
                         onClick={onClose}

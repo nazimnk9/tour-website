@@ -667,7 +667,7 @@ export default function CartPage() {
                 {cartItems.length === 0 ? (
                     <div className="bg-white rounded-lg shadow-sm p-8 text-center">
                         <p className="text-gray-600 text-lg">Your cart is currently empty.</p>
-                        <a href="/" className="text-blue-600 hover:underline mt-4 inline-block">Browse tours</a>
+                        <a href="/tour" className="text-blue-600 hover:underline mt-4 inline-block">Browse tours</a>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

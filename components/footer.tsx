@@ -34,7 +34,7 @@ export default function Footer() {
                 </div>
               </div>
 
-              <p className="text-sm text-white/70 leading-relaxed max-w-md">
+              <p className="text-sm text-white/80 leading-relaxed max-w-md">
                 {t.footer.tagline}
               </p>
 
@@ -71,27 +71,27 @@ export default function Footer() {
           <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-2 gap-8">
             {/* Support */}
             <div>
-              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+              <h3 className="font-semibold text-sm tracking-widest uppercase text-white/90">
                 {t.footer.support}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">
                 <li>
-                  <Link href="/contact" className="text-white/70 hover:text-white transition">
+                  <Link href="/contact" className="text-white/80 hover:text-white transition">
                     {t.footer.contact}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/legal-notice" className="text-white/70 hover:text-white transition">
+                  <Link href="/legal-notice" className="text-white/80 hover:text-white transition">
                     {t.footer.legalNotice}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/privacy-policy" className="text-white/70 hover:text-white transition">
+                  <Link href="/privacy-policy" className="text-white/80 hover:text-white transition">
                     {t.footer.privacyPolicy}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms-and-conditions" className="text-white/70 hover:text-white transition">
+                  <Link href="/terms-and-conditions" className="text-white/80 hover:text-white transition">
                     {t.footer.terms}
                   </Link>
                 </li>
@@ -100,12 +100,12 @@ export default function Footer() {
 
             {/* Company */}
             <div>
-              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+              <h3 className="font-semibold text-sm tracking-widest uppercase text-white/90">
                 {t.footer.company}
               </h3>
               <ul className="mt-4 space-y-3 text-sm">
                 <li>
-                  <Link href="/about-us" className="text-white/70 hover:text-white transition">
+                  <Link href="/about-us" className="text-white/80 hover:text-white transition">
                     {t.footer.aboutUs}
                   </Link>
                 </li>
@@ -114,7 +114,7 @@ export default function Footer() {
 
             {/* Language (kept) */}
             {/* <div className="col-span-2 sm:col-span-1">
-              <h3 className="font-bold text-sm tracking-widest uppercase text-white/90">
+              <h3 className="font-semibold text-sm tracking-widest uppercase text-white/90">
                 Language
               </h3>
               <div className="mt-4">

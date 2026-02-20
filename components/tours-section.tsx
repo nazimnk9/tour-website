@@ -49,7 +49,7 @@ export default function ToursSection() {
   return (
     <section className="w-full bg-gray-50 py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">Travel That Changes You</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-8">Travel That Changes You</h2>
 
         {error && (
           <div className="text-red-500 mb-4 text-center">
@@ -86,7 +86,7 @@ export default function ToursSection() {
                 <button
                   onClick={handleSeeMore}
                   disabled={loadingMore}
-                  className="bg-white border border-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full hover:bg-gray-50 transition shadow-sm disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-8 rounded-full hover:bg-gray-50 transition shadow-sm disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {loadingMore && <Loader2 className="animate-spin" size={16} />}
                   {loadingMore ? 'Loading...' : 'See more'}

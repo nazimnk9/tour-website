@@ -87,7 +87,7 @@ export default function Contact() {
             <p className="text-xs sm:text-sm tracking-[0.25em] uppercase text-white/80">
               Get in touch
             </p>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
               Contact us
             </h1>
           </div>
@@ -105,7 +105,7 @@ export default function Contact() {
               <div className="lg:col-span-4">
                 <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6">
                   <div className="mb-4">
-                    <h2 className="text-lg font-extrabold text-[#051036]">
+                    <h2 className="text-lg font-semibold text-[#051036]">
                       Contact details
                     </h2>
                     <p className="text-sm text-gray-500">
@@ -119,7 +119,7 @@ export default function Contact() {
                         <Mail size={20} />
                       </div>
                       <div className="leading-tight">
-                        <p className="font-bold text-[#051036]">Email</p>
+                        <p className="font-semibold text-[#051036]">Email</p>
                         <a
                           className="text-blue-900 font-semibold text-sm hover:underline break-all"
                           href="mailto:cityrometickets@gmail.com"
@@ -137,7 +137,7 @@ export default function Contact() {
                         <Phone size={20} />
                       </div>
                       <div className="leading-tight">
-                        <p className="font-bold text-[#051036]">Phone</p>
+                        <p className="font-semibold text-[#051036]">Phone</p>
                         <a
                           className="text-blue-900 font-semibold text-sm hover:underline"
                           href="tel:+337711048902"
@@ -168,14 +168,14 @@ export default function Contact() {
                 <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6">
                   <div className="mb-4 flex items-end justify-between gap-3">
                     <div>
-                      <h2 className="text-lg font-extrabold text-[#051036]">
+                      <h2 className="text-lg font-semibold text-[#051036]">
                         Send us a message
                       </h2>
                       <p className="text-sm text-gray-500">
                         We’ll get back to you soon.
                       </p>
                     </div>
-                    <span className="hidden sm:inline-flex text-xs font-bold uppercase tracking-widest text-orange-500">
+                    <span className="hidden sm:inline-flex text-xs font-semibold uppercase tracking-widest text-orange-500">
                       City Rome Tickets
                     </span>
                   </div>
@@ -185,7 +185,7 @@ export default function Contact() {
                       <div>
                         <label
                           htmlFor="first_name"
-                          className="block text-xs font-bold text-[#051036] mb-2"
+                          className="block text-xs font-semibold text-[#051036] mb-2"
                         >
                           First Name
                         </label>
@@ -204,7 +204,7 @@ export default function Contact() {
                       <div>
                         <label
                           htmlFor="last_name"
-                          className="block text-xs font-bold text-[#051036] mb-2"
+                          className="block text-xs font-semibold text-[#051036] mb-2"
                         >
                           Last Name
                         </label>
@@ -225,7 +225,7 @@ export default function Contact() {
                       <div>
                         <label
                           htmlFor="email"
-                          className="block text-xs font-bold text-[#051036] mb-2"
+                          className="block text-xs font-semibold text-[#051036] mb-2"
                         >
                           Email
                         </label>
@@ -244,7 +244,7 @@ export default function Contact() {
                       <div>
                         <label
                           htmlFor="phone"
-                          className="block text-xs font-bold text-[#051036] mb-2"
+                          className="block text-xs font-semibold text-[#051036] mb-2"
                         >
                           Phone
                         </label>
@@ -264,7 +264,7 @@ export default function Contact() {
                     <div>
                       <label
                         htmlFor="subject"
-                        className="block text-xs font-bold text-[#051036] mb-2"
+                        className="block text-xs font-semibold text-[#051036] mb-2"
                       >
                         Subject
                       </label>
@@ -283,7 +283,7 @@ export default function Contact() {
                     <div>
                       <label
                         htmlFor="message"
-                        className="block text-xs font-bold text-[#051036] mb-2"
+                        className="block text-xs font-semibold text-[#051036] mb-2"
                       >
                         Message
                       </label>
@@ -302,7 +302,7 @@ export default function Contact() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
@@ -339,7 +339,7 @@ export default function Contact() {
                 </div>
 
                 <div className="space-y-2">
-                  <DialogTitle className="text-3xl font-extrabold text-[#051036] tracking-tight">
+                  <DialogTitle className="text-3xl font-semibold text-[#051036] tracking-tight">
                     Message Sent!
                   </DialogTitle>
                   <DialogDescription className="text-gray-500 text-lg leading-relaxed">
@@ -350,7 +350,7 @@ export default function Contact() {
                 <div className="w-full pt-4">
                   <button
                     onClick={() => setIsSuccessOpen(false)}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-orange-200 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
+                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-4 rounded-xl shadow-lg shadow-orange-200 transition-all duration-300 transform hover:-translate-y-1 active:scale-95"
                   >
                     Awesome, thanks!
                   </button>

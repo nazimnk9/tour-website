@@ -156,7 +156,7 @@ function DatePicker({
                 <div className="flex gap-0 md:gap-8 flex-1 justify-center">
                     {/* Current Month */}
                     <div className="w-64">
-                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
+                        <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
 
                         <div className="grid grid-cols-7 gap-1 mb-2">
                             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -170,7 +170,7 @@ function DatePicker({
 
                     {/* Next Month - Hidden on Mobile */}
                     <div className="hidden md:block w-64">
-                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
+                        <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
 
                         <div className="grid grid-cols-7 gap-1 mb-2">
                             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -644,7 +644,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">{error || "Tour not found"}</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900 mb-4">{error || "Tour not found"}</h1>
                     <Link href="/" className="text-blue-600 hover:underline">
                         Back to tours
                     </Link>
@@ -665,7 +665,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                         >
                             <ChevronLeft size={32} className="text-gray-900" />
                         </button>
-                        <h2 className="text-2xl font-bold text-gray-900">Check availability</h2>
+                        <h2 className="text-2xl font-semibold text-gray-900">Check availability</h2>
                     </div>
 
                     {/* Check availability logic */}
@@ -706,7 +706,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                         <span className="text-xs font-semibold uppercase">
                                             {isToday ? "Today" : date.toLocaleString('default', { weekday: 'short' })}
                                         </span>
-                                        <span className={`text-xl font-bold ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
+                                        <span className={`text-xl font-semibold ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
                                             {date.getDate()}
                                         </span>
                                         <span className="text-xs">
@@ -739,7 +739,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     {/* Time Slot Selector - Only show if date selected AND Select button clicked (showBookingButtons) */}
                     {selectedDate && timeSlots.length > 0 && showBookingButtons && (
                         <div className="mb-6">
-                            <label className="block text-sm font-bold text-[#051036] mb-1">Select a starting time</label>
+                            <label className="block text-sm font-semibold text-[#051036] mb-1">Select a starting time</label>
                             <p className="text-sm text-gray-500 mb-3">
                                 {new Date(selectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                             </p>
@@ -750,7 +750,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                         <button
                                             key={slot.id}
                                             onClick={() => setSelectedTimeSlot(slot)}
-                                            className={`px-6 py-2.5 rounded-lg border text-sm font-bold transition-all
+                                            className={`px-6 py-2.5 rounded-lg border text-sm font-semibold transition-all
                             ${isSelected
                                                     ? "bg-[#051036] text-white border-[#051036]"
                                                     : "bg-white text-[#051036] border-gray-400 hover:border-[#051036]"
@@ -812,7 +812,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                             <div className="flex-1 flex flex-col items-stretch md:items-end gap-4 text-left md:text-right">
                                 <div>
                                     <p className="text-gray-600 text-sm mb-1">{getPriceSummary()}</p>
-                                    <p className="text-3xl font-bold text-gray-900">${calculateTotalPrice()}</p>
+                                    <p className="text-3xl font-semibold text-gray-900">${calculateTotalPrice()}</p>
                                 </div>
 
                                 <div className="w-full sm:w-auto">
@@ -903,7 +903,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                 )}
                             </div>
                         </div>
-                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
                         <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
                             {messageModalContent}
                         </AlertDialogDescription>
@@ -911,7 +911,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     <AlertDialogFooter className="p-6 pt-0 bg-white">
                         <AlertDialogAction
                             onClick={() => setMessageModalOpen(false)}
-                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-semibold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
                                 messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
                                     "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
                                 }`}

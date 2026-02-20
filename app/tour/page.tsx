@@ -170,7 +170,7 @@ function ToursContent() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 md:py-8 border-b border-gray-100 mb-8">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-[#051036] mb-3">
+                        <h1 className="text-2xl font-semibold text-[#051036] mb-3">
                             {initialSearch ? "Search Result" : "Available Tours in Italy"}
                         </h1>
                         {!initialSearch && (

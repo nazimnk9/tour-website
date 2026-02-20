@@ -160,7 +160,7 @@ function DatePicker({
                 <div className="flex gap-8 flex-1 justify-center">
                     {/* Current Month */}
                     <div className="w-64">
-                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
+                        <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
 
                         <div className="grid grid-cols-7 gap-1 mb-2">
                             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -174,7 +174,7 @@ function DatePicker({
 
                     {/* Next Month */}
                     <div className="w-64">
-                        <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
+                        <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
 
                         <div className="grid grid-cols-7 gap-1 mb-2">
                             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -662,7 +662,7 @@ export default function CartPage() {
             <Navbar />
 
             <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-                <h1 className="text-3xl font-bold text-[#051036] mb-8">Shopping cart</h1>
+                <h1 className="text-2xl font-semibold text-[#051036] mb-8">Shopping cart</h1>
 
                 {cartItems.length === 0 ? (
                     <div className="bg-white rounded-lg shadow-sm p-8 text-center">
@@ -694,7 +694,7 @@ export default function CartPage() {
                                         {/* Content */}
                                         <div className="flex-grow">
                                             <div className="flex justify-between items-start mb-2">
-                                                <h3 className="text-lg font-bold text-[#051036] line-clamp-2">
+                                                <h3 className="text-lg font-semibold text-[#051036] line-clamp-2">
                                                     {item.tour?.title || "Tour Title"}
                                                 </h3>
                                             </div>
@@ -785,7 +785,7 @@ export default function CartPage() {
                                                             {/* Time Slot Selector */}
                                                             {editSelectedDate && editTimeSlots.length > 0 && editShowBookingButtons && (
                                                                 <div className="mb-6">
-                                                                    <label className="block text-sm font-bold text-[#051036] mb-1">Select a starting time</label>
+                                                                    <label className="block text-sm font-semibold text-[#051036] mb-1">Select a starting time</label>
                                                                     <p className="text-sm text-gray-500 mb-3">
                                                                         {new Date(editSelectedDate.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                                                                     </p>
@@ -796,7 +796,7 @@ export default function CartPage() {
                                                                                 <button
                                                                                     key={slot.id}
                                                                                     onClick={() => setEditSelectedTimeSlot(slot)}
-                                                                                    className={`px-6 py-2.5 rounded-lg border text-sm font-bold transition-all
+                                                                                    className={`px-6 py-2.5 rounded-lg border text-sm font-semibold transition-all
                                                             ${isSelected
                                                                                             ? "bg-[#051036] text-white border-[#051036]"
                                                                                             : "bg-white text-[#051036] border-gray-400 hover:border-[#051036]"
@@ -856,7 +856,7 @@ export default function CartPage() {
                                                             <Trash2 size={20} />
                                                         </button>
                                                     </div>
-                                                    <div className="text-xl font-bold text-[#051036]">
+                                                    <div className="text-xl font-semibold text-[#051036]">
                                                         ${item.item_price}
                                                     </div>
                                                 </div>
@@ -872,8 +872,8 @@ export default function CartPage() {
                             {/* Summary Card */}
                             <div className="bg-white border border-gray-200 rounded-xl p-6">
                                 <div className="flex justify-between items-start mb-1">
-                                    <span className="text-lg font-bold text-[#051036]">Subtotal ({cartItems.length} items)</span>
-                                    <span className="text-lg font-bold text-[#051036]">${subtotal.toFixed(2)}</span>
+                                    <span className="text-lg font-semibold text-[#051036]">Subtotal ({cartItems.length} items)</span>
+                                    <span className="text-lg font-semibold text-[#051036]">${subtotal.toFixed(2)}</span>
                                 </div>
                                 <p className="text-right text-xs text-teal-600 font-medium mb-6">All taxes and fees included</p>
 
@@ -888,7 +888,7 @@ export default function CartPage() {
                                     //         setIsLoginOpen(true)
                                     //     }
                                     // }}
-                                    className="block w-full bg-[#0071EB] text-white font-bold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center cursor-pointer"
+                                    className="block w-full bg-[#0071EB] text-white font-semibold py-3.5 rounded-full hover:bg-blue-600 transition-colors mb-4 text-center cursor-pointer"
                                 >
                                     Go to checkout
                                 </button>
@@ -901,7 +901,7 @@ export default function CartPage() {
 
                             {/* Why book with us */}
                             <div className="bg-white border border-gray-200 rounded-xl p-6">
-                                <h3 className="font-bold text-[#051036] mb-4">Why book with us?</h3>
+                                <h3 className="font-semibold text-[#051036] mb-4">Why book with us?</h3>
 
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-3">
@@ -932,7 +932,7 @@ export default function CartPage() {
                                 <Trash2 className="text-red-600 w-6 h-6" />
                             </div>
                         </div>
-                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">Delete Item</AlertDialogTitle>
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900 text-center">Delete Item</AlertDialogTitle>
                         <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
                             Are you sure you want to remove this tour from your cart?
                         </AlertDialogDescription>
@@ -957,7 +957,7 @@ export default function CartPage() {
                                     e.preventDefault()
                                     confirmDelete()
                                 }}
-                                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 h-auto rounded-lg shadow-md shadow-red-200"
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 h-auto rounded-lg shadow-md shadow-red-200"
                                 disabled={isDeleting}
                             >
                                 {isDeleting ? (
@@ -997,7 +997,7 @@ export default function CartPage() {
                                 )}
                             </div>
                         </div>
-                        <AlertDialogTitle className="text-xl font-bold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900 text-center">{messageModalTitle}</AlertDialogTitle>
                         <AlertDialogDescription className="text-center text-gray-600 mt-2 max-w-[280px]">
                             {messageModalContent}
                         </AlertDialogDescription>
@@ -1005,7 +1005,7 @@ export default function CartPage() {
                     <AlertDialogFooter className="p-6 pt-0 bg-white">
                         <AlertDialogAction
                             onClick={() => setMessageModalOpen(false)}
-                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-bold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
+                            className={`w-full cursor-pointer py-3 h-auto rounded-lg font-semibold text-white shadow-md transition-all ${messageModalTitle === "Success" ? "bg-green-600 hover:bg-green-700 shadow-green-200" :
                                 messageModalTitle === "Error" ? "bg-red-600 hover:bg-red-700 shadow-red-200" :
                                     "bg-[#051036] hover:bg-[#0a1e5c] shadow-blue-200"
                                 }`}

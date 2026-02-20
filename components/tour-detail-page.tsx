@@ -155,7 +155,7 @@ function DatePicker({
         <div className="flex gap-0 md:gap-8 flex-1 justify-center">
           {/* Current Month */}
           <div className="w-64">
-            <h3 className="text-center font-bold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
+            <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{currentMonth.monthName}</h3>
 
             <div className="grid grid-cols-7 gap-1 mb-2">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -169,7 +169,7 @@ function DatePicker({
 
           {/* Next Month - Hidden on Mobile */}
           <div className="hidden md:block w-64">
-            <h3 className="text-center font-bold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
+            <h3 className="text-center font-semibold text-gray-900 text-base mb-4">{nextMonthData.monthName}</h3>
 
             <div className="grid grid-cols-7 gap-1 mb-2">
               {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
@@ -352,7 +352,7 @@ function ReviewCard({
     <div className="bg-white border border-gray-200 rounded-lg p-6">
       <div className="flex items-start gap-4 mb-4">
         <div
-          className={`${getAvatarColor(reviewer)} text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0`}
+          className={`${getAvatarColor(reviewer)} text-white rounded-full w-12 h-12 flex items-center justify-center font-semibold text-lg flex-shrink-0`}
         >
           {getInitial(reviewer)}
         </div>
@@ -714,7 +714,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">{error || "Tour not found"}</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 mb-4">{error || "Tour not found"}</h1>
           <Link href="/" className="text-blue-600 hover:underline">
             Back to tours
           </Link>
@@ -756,7 +756,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header with Title and Badges */}
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">{tour.title}</h1>
+          <h1 className="text-3xl font-semibold text-gray-900 mb-4">{tour.title}</h1>
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
             {/* Top Rated Badge */}
@@ -824,7 +824,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                       className="absolute bottom-5 right-5 bg-transparent backdrop-blur-[2px] border-[1.5px] border-white text-white px-5 py-3 rounded-full flex items-center gap-2.5 z-10 hover:backdrop-blur-[3px] transition-all cursor-pointer"
                     >
                       <ImageIcon size={22} strokeWidth={2.5} />
-                      <span className="font-bold text-xl leading-none">+{images.length - 3}</span>
+                      <span className="font-semibold text-xl leading-none">+{images.length - 3}</span>
                     </button>
                   )}
                 </div>
@@ -838,7 +838,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
             {/* About this activity */}
             <div className="mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">About this activity</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">About this activity</h2>
 
               {/* Activity Features */}
               {/* <div className="space-y-4 mb-8">
@@ -904,11 +904,11 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="mb-12 grid grid-cols-1 md:grid-cols-1 gap-8">
                 {tour.highlights && tour.highlights.length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Highlights</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Highlights</h2>
                     <ul className="space-y-3">
                       {tour.highlights.map((highlight, index) => (
                         <li key={index} className="flex gap-3">
-                          <span className="text-gray-700 font-bold">•</span>
+                          <span className="text-gray-700 font-semibold">•</span>
                           <span className="text-gray-700 text-sm">{highlight}</span>
                         </li>
                       ))}
@@ -917,7 +917,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 )}
 
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Full description</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Full description</h2>
                   <div className="text-gray-700 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
                     {tour.full_description || tour.description}
                   </div>
@@ -928,7 +928,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                 {tour.includes && tour.includes.length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Includes</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">Includes</h2>
                     <ul className="space-y-3">
                       {tour.includes.map((item, index) => (
                         <li key={index} className="flex items-start gap-3">
@@ -943,11 +943,11 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                 {/* Excludes */}
                 {tour.excludes && tour.excludes.length > 0 && (
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Excludes</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-6">Excludes</h2>
                     <ul className="space-y-3">
                       {tour.excludes.map((item, index) => (
                         <li key={index} className="flex items-start gap-3">
-                          <span className="text-red-500 font-bold text-sm">✕</span>
+                          <span className="text-red-500 font-semibold text-sm">✕</span>
                           <span className="text-gray-700 text-sm">{item}</span>
                         </li>
                       ))}
@@ -958,7 +958,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
               {/* Important Information */}
               <div className="mb-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Important information</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">Important information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
                   <div className="space-y-6">
                     {tour.not_suitable_for && tour.not_suitable_for.length > 0 && (
@@ -1010,8 +1010,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
               <div className="mb-6">
                 <p className="text-gray-600 text-sm mb-2">From</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-gray-900">€{maxPrice}</span>
-                  <span className="text-gray-600 text-sm">per person</span>
+                  <span className="text-3xl font-semibold text-gray-900">€{maxPrice}</span>
+                  <span className="text-gray-600 text-sm">max per person</span>
                 </div>
               </div>
 
@@ -1098,7 +1098,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
         </div>
 
         <div className="mt-20 pb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">You might also like...</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-8">You might also like...</h2>
 
           {/* Carousel Container */}
           <div className="relative">
@@ -1126,8 +1126,8 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
 
 
                       <div className="p-6 flex flex-col flex-grow">
-                        <div className="text-xs font-bold text-gray-600 uppercase mb-2">{recTour.status === 'ACTIVE' ? 'ACTIVE TOUR' : 'TOUR'}</div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">
+                        <div className="text-xs font-semibold text-gray-600 uppercase mb-2">{recTour.status === 'ACTIVE' ? 'ACTIVE TOUR' : 'TOUR'}</div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
                           {recTour.title}
                         </h3>
 
@@ -1139,7 +1139,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
                         <div className="mt-auto pt-2">
                           <div className="flex items-baseline gap-2">
                             <span className="text-gray-600 text-sm">From</span>
-                            <span className="text-red-600 font-bold text-lg">€{recTour.price_adult}</span>
+                            <span className="text-red-600 font-semibold text-lg">€{recTour.price_adult}</span>
                           </div>
                         </div>
                       </div>
@@ -1184,7 +1184,7 @@ export default function TourDetailPage({ tourId }: { tourId: number }) {
       {isLightboxOpen && (
         <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center">
           {/* Image Counter */}
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white text-xl font-bold z-50 tracking-wide">
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white text-xl font-semibold z-50 tracking-wide">
             {lightboxIndex + 1} / {images.length}
           </div>
 

@@ -115,7 +115,7 @@ export default function HeroCarousel() {
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6">
-          <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6 sm:mb-8 text-balance">
+          <h1 className="text-3xl sm:text-5xl font-semibold text-white mb-6 sm:mb-8 text-balance">
             {slides[currentSlide].title}
           </h1>
 

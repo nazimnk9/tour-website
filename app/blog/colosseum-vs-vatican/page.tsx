@@ -348,7 +348,7 @@ const RomeTicketComparisonBlog = () => {
                     </p>
                     <Link href="/tour">
                       <Button variant="secondary" className="w-full">
-                        Browse Rome Tickets
+                        Browse Tours & Tickets
                       </Button>
                     </Link>
                   </div>

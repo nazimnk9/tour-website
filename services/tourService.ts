@@ -92,7 +92,13 @@ export async function getTourPlans(params: TourFilterParams = {}): Promise<TourP
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch tour plans");
+        let errorMessage = "Failed to fetch tour plans";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -108,7 +114,13 @@ export async function getTourById(id: number | string): Promise<TourPlan> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch tour details");
+        let errorMessage = "Failed to fetch tour details";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -139,7 +151,13 @@ export async function getTourDates(tourId: number | string): Promise<TourDateRes
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch tour dates");
+        let errorMessage = "Failed to fetch tour dates";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -176,7 +194,13 @@ export async function getTourTimeSlots(tourDateId: number | string): Promise<Tou
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch tour time slots");
+        let errorMessage = "Failed to fetch tour time slots";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -218,7 +242,13 @@ export async function addToCart(payload: AddToCartPayload): Promise<AddToCartRes
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to add item to cart");
+        let errorMessage = "Failed to add item to cart";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -289,7 +319,13 @@ export async function createBooking(payload: BookingPayload, token?: string): Pr
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to create booking");
+        let errorMessage = "Failed to create booking";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -306,7 +342,13 @@ export async function getCart(cartIds: number[]): Promise<CartResponse> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch cart items");
+        let errorMessage = "Failed to fetch cart items";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -322,7 +364,13 @@ export async function getCartItem(id: number): Promise<CartItem> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch cart item");
+        let errorMessage = "Failed to fetch cart item";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -339,7 +387,13 @@ export async function updateCartItem(id: number, payload: Partial<AddToCartPaylo
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to update cart item");
+        let errorMessage = "Failed to update cart item";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -355,7 +409,13 @@ export async function deleteCartItem(id: number): Promise<void> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to delete cart item");
+        let errorMessage = "Failed to delete cart item";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 }
 
@@ -370,7 +430,13 @@ export async function getRecommendedTours(id: number | string): Promise<TourPlan
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch recommended tours");
+        let errorMessage = "Failed to fetch recommended tours";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -390,7 +456,13 @@ export async function getBookingHistory(): Promise<any> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch booking history");
+        let errorMessage = "Failed to fetch booking history";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -429,7 +501,13 @@ export async function getTourNotice(): Promise<TourNoticeResponse> {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to fetch tour notice");
+        let errorMessage = "Failed to fetch tour notice";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();
@@ -446,7 +524,13 @@ export async function sendContactMessage(payload: ContactMessage): Promise<any> 
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to send contact message");
+        let errorMessage = "Failed to send contact message";
+        if (errorData.non_field_errors && Array.isArray(errorData.non_field_errors)) {
+            errorMessage = errorData.non_field_errors[0];
+        } else {
+            errorMessage = errorData.message || errorMessage;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();

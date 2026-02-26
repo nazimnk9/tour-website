@@ -662,7 +662,7 @@ export default function CartPage() {
             <Navbar />
 
             <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-                <h1 className="text-2xl font-semibold text-[#051036] mb-8">Shopping cart</h1>
+                <h1 className="text-2xl font-semibold text-[#051036] mb-8">Your Cart</h1>
 
                 {cartItems.length === 0 ? (
                     <div className="bg-white rounded-lg shadow-sm p-8 text-center">

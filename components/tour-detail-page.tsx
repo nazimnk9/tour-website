@@ -107,15 +107,21 @@ function DatePicker({
 
       const isAvailable = availableDates.some(d => d.date === dateString);
 
+      // Check if date is in the past
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const checkDate = new Date(year, date.getMonth(), day);
+      const isPast = checkDate < today;
+
       days.push(
         <div
           key={day}
           className={`text-center py-2 text-sm font-medium rounded 
-                ${isAvailable
+                ${isAvailable && !isPast
               ? "cursor-pointer text-gray-900 hover:bg-blue-50 font-semibold"
               : "text-gray-300 cursor-not-allowed pointer-events-none"}`}
           onClick={() => {
-            if (isAvailable) {
+            if (isAvailable && !isPast) {
               const selected = availableDates.find(d => d.date === dateString)
               if (selected) onDateSelect(selected)
             }

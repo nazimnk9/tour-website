@@ -108,15 +108,21 @@ function DatePicker({
 
             const isAvailable = availableDates.some(d => d.date === dateString);
 
+            // Check if date is in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const checkDate = new Date(year, date.getMonth(), day);
+            const isPast = checkDate < today;
+
             days.push(
                 <div
                     key={day}
                     className={`text-center py-2 text-sm font-medium rounded 
-                    ${isAvailable
+                    ${isAvailable && !isPast
                             ? "cursor-pointer text-gray-900 hover:bg-blue-50 font-semibold"
                             : "text-gray-300 cursor-not-allowed pointer-events-none"}`}
                     onClick={() => {
-                        if (isAvailable) {
+                        if (isAvailable && !isPast) {
                             const selected = availableDates.find(d => d.date === dateString)
                             if (selected) onDateSelect(selected)
                         }
@@ -564,22 +570,21 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
     }
 
     // Generate next 14 days for the horizontal strip
-    const getNextDays = (startDate: Date, days: number) => {
+    const getNextDays = (days: number) => {
         const result = []
-        const start = new Date(startDate)
+        const today = new Date()
         // Reset time part to ensure correct comparison
-        start.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
 
         for (let i = 0; i < days; i++) {
-            const date = new Date(start)
-            date.setDate(start.getDate() + i)
+            const date = new Date(today)
+            date.setDate(today.getDate() + i)
             result.push(date)
         }
         return result
     }
 
-    const startDate = selectedDate ? new Date(selectedDate.date + 'T00:00:00') : new Date()
-    const nextDays = getNextDays(startDate, 14)
+    const nextDays = getNextDays(14)
 
     // Derived state for display
     const getTravelerSummary = () => {
@@ -673,7 +678,6 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                     <div className="mb-6 relative flex gap-2">
                         <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide flex-1">
                             {nextDays.map((date, idx) => {
-                                const dateStr = date.toISOString().split('T')[0]
                                 const year = date.getFullYear();
                                 const month = String(date.getMonth() + 1).padStart(2, '0');
                                 const day = String(date.getDate()).padStart(2, '0');
@@ -684,21 +688,21 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
 
                                 // Check if date is today
                                 const today = new Date()
-                                const isToday = date.getDate() === today.getDate() &&
-                                    date.getMonth() === today.getMonth() &&
-                                    date.getFullYear() === today.getFullYear()
+                                today.setHours(0, 0, 0, 0)
+                                const isToday = date.getTime() === today.getTime()
+                                const isPast = date.getTime() < today.getTime()
 
                                 return (
                                     <button
                                         key={idx}
                                         onClick={() => {
-                                            if (availableDate) handleDateSelect(availableDate)
+                                            if (availableDate && !isPast) handleDateSelect(availableDate)
                                         }}
-                                        disabled={!availableDate}
+                                        disabled={!availableDate || isPast}
                                         className={`flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-lg border transition-all
                                         ${isSelected
                                                 ? "border-blue-600 bg-blue-50 text-blue-900"
-                                                : availableDate
+                                                : availableDate && !isPast
                                                     ? "border-gray-300 bg-white text-gray-900 hover:border-gray-400 cursor-pointer"
                                                     : "border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed"
                                             }`}
@@ -706,7 +710,7 @@ export default function TourAvailabilityPage({ tourId }: { tourId: number }) {
                                         <span className="text-xs font-semibold uppercase">
                                             {isToday ? "Today" : date.toLocaleString('default', { weekday: 'short' })}
                                         </span>
-                                        <span className={`text-xl font-semibold ${isSelected ? "text-blue-900" : "text-gray-900"}`}>
+                                        <span className={`text-xl font-semibold ${isSelected ? "text-blue-900" : "text-gray-400"}`}>
                                             {date.getDate()}
                                         </span>
                                         <span className="text-xs">

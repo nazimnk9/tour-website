@@ -14,6 +14,19 @@ export const metadata: Metadata = {
   title: "City Rome Tickets - Book Tours & Experiences",
   description: "Discover and book things to do worldwide",
   generator: "v0.app",
+  icons: {
+    icon: [
+      {
+        url: '/fav.ico',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/fav.ico',
+        media: '(prefers-color-scheme: dark)',
+      },
+    ],
+    apple: '/app_icon.png',
+  },
 }
 
 export default function RootLayout({

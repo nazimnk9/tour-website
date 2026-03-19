@@ -32,17 +32,6 @@ const blogs = [
   {
     id: 3,
     title:
-      "Colosseum vs Vatican vs Borghese: Which Rome Ticket Should You Book First?",
-    excerpt:
-      "Not sure where to start? Compare availability, timed-entry rules, and crowd levels—so you can book the right ticket first and build a smooth Rome itinerary.",
-    image: "/blogs/thumb_collusum_vatican.png",
-    date: "February 5, 2026",
-    category: "Ticket Guide",
-    slug: "/blog/colosseum-vs-vatican",
-  },
-  {
-    id: 4,
-    title:
       "Vatican Museums & Sistine Chapel: A Complete Visitor Guide",
     excerpt:
       "The Vatican Museums and the Sistine Chapel are among the most visited cultural sites in the world. Located within Vatican City, these landmarks offer an extraordinary journey through art, history, and religion.",

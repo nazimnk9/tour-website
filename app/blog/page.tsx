@@ -62,6 +62,17 @@ const blogs = [
     category: "Ticket Guide",
     slug: "/blog/first-time-rome",
   },
+  {
+    id: 6,
+    title:
+      "Rome Travel Tips 2026: 15 Mistakes Tourists Make (And How to Avoid Them)",
+    excerpt:
+      "Rome is one of the most visited cities in the world—but many travelers make simple mistakes that cost time, money, and experience. Here are 15 common mistakes and how you can avoid them for a smoother trip.",
+    image: "/blogs/rome-travel-tips.png",
+    date: "March 2026",
+    category: "Travel Tips",
+    slug: "/blog/rome-travel-tips",
+  },
     
 ];
 

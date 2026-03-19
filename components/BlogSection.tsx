@@ -48,6 +48,17 @@ const blogs = [
     category: "Ticket Guide",
     slug: "/blog/stpeter-colosseum",
   },
+  {
+    id: 5,
+    title:
+      "First Time in Rome? The Perfect 3-Day Itinerary (With Smart Ticket Planning)",
+    excerpt:
+      "Planning your first trip to Rome can feel overwhelming. With so many iconic landmarks, long queues, and limited time, having a smart itinerary is essential. This 3-day plan helps you experience the best of Rome while booking tickets strategically to avoid crowds.",
+    image: "/blogs/stpeter-colosseum.png",
+    date: "March 2026",
+    category: "Ticket Guide",
+    slug: "/blog/stpeter-colosseum",
+  },
 ];
 
 const containerVariants = {

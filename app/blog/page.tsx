@@ -40,6 +40,18 @@ const blogs = [
     category: "Ticket Guide",
     slug: "/blog/vatican-sistine",
   },
+  {
+    id: 4,
+    title:
+      "St. Peter’s Basilica & Colosseum: What to Know Before You Visit",
+    excerpt:
+      "Rome is home to some of the most iconic landmarks in the world, and two of the most essential stops on any itinerary are St. Peter’s Basilica and the Colosseum. While they represent very different eras of history, both offer unforgettable experiences.",
+    image: "/blogs/stpeter-colosseum.png",
+    date: "March 2026",
+    category: "Ticket Guide",
+    slug: "/blog/stpeter-colosseum",
+  },
+    
 ];
 
 const containerVariants = {

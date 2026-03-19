@@ -40,6 +40,17 @@ const blogs = [
     category: "Ticket Guide",
     slug: "/blog/colosseum-vs-vatican",
   },
+  {
+    id: 4,
+    title:
+      "Vatican Museums & Sistine Chapel: A Complete Visitor Guide",
+    excerpt:
+      "The Vatican Museums and the Sistine Chapel are among the most visited cultural sites in the world. Located within Vatican City, these landmarks offer an extraordinary journey through art, history, and religion.",
+    image: "/blogs/vatican-sistine.png",
+    date: "March 2026",
+    category: "Ticket Guide",
+    slug: "/blog/vatican-sistine",
+  },
 ];
 
 const containerVariants = {

@@ -35,7 +35,7 @@ const blogs = [
     image: "/blogs/vatican-sistine.png",
     date: "March 2026",
     category: "Ticket Guide",
-    slug: "/blog/vatican-sistine",
+    link: "/blog/vatican-sistine",
   },
   {
     id: 4,
@@ -46,7 +46,7 @@ const blogs = [
     image: "/blogs/stpeter-colosseum.png",
     date: "March 2026",
     category: "Ticket Guide",
-    slug: "/blog/stpeter-colosseum",
+    link: "/blog/stpeter-colosseum",
   },
   {
     id: 5,
@@ -57,7 +57,7 @@ const blogs = [
     image: "/blogs/first-time-rome.png",
     date: "March 2026",
     category: "Tour Itinerary",
-    slug: "/blog/first-time-rome",
+    link: "/blog/first-time-rome",
   },
 ];
 

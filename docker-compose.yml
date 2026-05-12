@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cityrome_frontend
+    restart: unless-stopped
+    env_file:
+      - .env.local        # Next.js uses .env.local by default
+    ports:
+      - "4000:4000"       # host Nginx proxies to port 4000
+    environment:
+      - PORT=4000
